@@ -14,5 +14,5 @@ class DockerfileRenderer:
         dockerfile_templater = Template(dockerfile_template)
 
         # Render Dockerfile for each robot
-        with open('Dockerfile', 'w+') as output_file:
+        with open('.sirius_config/Dockerfile', 'w+') as output_file:
             output_file.write(dockerfile_templater.render(dockerfile=asdict(configuration_file)))
