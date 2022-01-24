@@ -65,7 +65,7 @@ COPY --from=intermediate /ros_workspace/src ~/ros_workspace/src/
 {%- endif %}
 
 # Copy this repository into the ROS workspace.
-COPY . /ros_workspace/src/{{ dockerfile.package }}
+COPY . ~/ros_workspace/src/{{ dockerfile.package }}
 
 # Copy bringup script.
 COPY .sirius_config/entrypoint.sh ~/entrypoint.sh
