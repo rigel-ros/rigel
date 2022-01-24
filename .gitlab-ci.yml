@@ -12,7 +12,7 @@ release_job:
   only:
     - tags
   script:
-    - apk update && apk add --no-cache build-base gcc python3 python3-dev py3-pip
+    - apk update && apk add --no-cache build-base cargo gcc libffi-dev libressl-dev musl-dev openssl-dev python3 python3-dev py3-pip
     - pip3 install twine wheel
     - rm -rf build dist *.egg-info
     - python3 setup.py sdist bdist_wheel
