@@ -120,7 +120,7 @@ COPY . /home/robomaker/ros_workspace/src/{{ dockerfile.package }}
 COPY .sirius_config/entrypoint.sh /home/robomaker/robot-entrypoint.sh
 
 # Compile ROS workspace.
-RUN /bin/bash -c "source /ros/{{ dockerfile.distro }}/setup.bash \ 
+RUN /bin/bash -c "source /opt/ros/{{ dockerfile.distro }}/setup.bash \ 
     && cd /home/robomaker/ros_workspace \
     && sudo rosdep fix-permissions \
     && rosdep update \
