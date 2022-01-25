@@ -100,6 +100,13 @@ RUN apt clean && apt update && apt install -y \
     ssh \
     xfce4-terminal
 
+{% if dockerfile.run is defined and dockerfile.run|length > 0 -%}
+# Execute additional commands.
+{% for cmd in dockerfile.run -%}
+RUN {{ cmd }}
+{% endfor -%}
+{%- endif %}
+
 # Compile ROS workspace.
 RUN cd ~/ros_workspace \
     && sudo rosdep fix-permissions \

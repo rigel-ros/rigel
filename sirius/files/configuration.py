@@ -34,6 +34,7 @@ class ConfigurationFile:
     env: List[EnvironmentVariable] = field(default_factory=lambda: [])
     hostname: List[str] = field(default_factory=lambda: [])
     rosinstall: List[str] = field(default_factory=lambda: [])
+    run: List[str] = field(default_factory=lambda: [])
     ssh: List[SSHKey] = field(default_factory=lambda: [])
 
     def __post_init__(self) -> None:
