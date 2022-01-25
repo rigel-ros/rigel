@@ -45,18 +45,20 @@ RUN ssh-keyscan {{ hostname }} >> /root/.ssh/known_hosts
 {%- endfor %}
 {%- endif %}
 
+RUN mkdir -p /ros_workspace/src
+
 {% if dockerfile.rosinstall is defined and dockerfile.rosinstall|length > 0 -%}
 # Copy .rosinstall files
 {%- for file in dockerfile.rosinstall %}
-COPY {{ file}} {{ file }}
+COPY {{ file}} /ros_workspace/src/{{ file }}
 {%- endfor %}
 {%- endif %}
 
 # Clone repositories.
-RUN mkdir -p /ros_workspace/src && cd /ros_workspace/src \ 
+RUN cd /ros_workspace/src \ 
     && /bin/bash -c "source /opt/ros/{{ dockerfile.distro }}/setup.bash \
 {%- for rosinstall in dockerfile.rosinstall %}
-    && vcs import src < {{ rosinstall}} \
+    && vcs import src < {{ rosinstall }} \
 {%- endfor %}
     " && echo
 
