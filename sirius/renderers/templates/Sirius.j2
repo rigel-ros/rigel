@@ -27,6 +27,11 @@ command: roslaunch my_package.launch
 #     - sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
 #     - apt update && apt install -y gazebo9
 
+# Specify any extra commands that needs to be executed before the ROS application is launched.
+# 
+# entrypoint:
+#     - source /usr/share/gazebo-9/setup.sh
+
 # Set the value of environment variables using the field 'env'.
 # 
 # env:

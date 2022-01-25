@@ -31,6 +31,7 @@ class ConfigurationFile:
     # Optional fields
     apt: List[str] = field(default_factory=lambda: [])
     compiler: str = field(default_factory=lambda: 'catkin_make')
+    entrypoint: List[str] = field(default_factory=lambda: [])
     env: List[EnvironmentVariable] = field(default_factory=lambda: [])
     hostname: List[str] = field(default_factory=lambda: [])
     rosinstall: List[str] = field(default_factory=lambda: [])

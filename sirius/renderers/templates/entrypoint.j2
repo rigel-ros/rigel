@@ -9,6 +9,11 @@ source ./devel/setup.bash
 {% elif entrypoint.compiler == 'colcon' -%}
 source ./install/setup.bash
 {% endif -%}
+{% if entrypoint.entrypoint is defined and entrypoint.entrypoint|length > 0 -%}
+{% for cmd in entrypoint.entrypoint -%}
+{{ cmd }}
+{% endfor -%}
+{% endif -%}
 printenv
 
 exec "${@:1}"
