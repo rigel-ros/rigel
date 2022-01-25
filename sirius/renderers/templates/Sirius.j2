@@ -23,11 +23,10 @@ command: roslaunch my_package.launch
 # Sirius can automatically download for you any external ROS package required to containerize your ROS package.
 # You are required to have at least one .rosinstall file placed at root of yout ROS package folder listing all external ROS packages that your package depends upon.
 # Then make sure to use the field 'rosinstall' and list your .rosinstall files.
+# Also make sure to use the field 'hostname' and list the hostnames for all PUBLIC dependencies.
 #
 # rosinstall:
 #     - example.rosinstall
-#
-# Also make sure to use the field 'hostname' and list the hostnames for all PUBLIC dependencies.
 # 
 # hostname:
 #     - github.com
