@@ -73,6 +73,21 @@ ENV {{ env.name }} {{ env.value }}
 {% endfor %}
 {% endif -%}
 
+# Install dependencies.
+RUN sudo apt clean && sudo apt update && sudo apt install -y \
+    {% if dockerfile.apt is defined and dockerfile.apt|length > 0 -%}
+    {% for package in dockerfile.apt -%}
+        {{ package }} \
+    {% endfor -%}
+    {% endif -%}
+    devilspie \
+    lsb \
+    {% if dockerfile.compiler == 'colcon' -%}
+        python3-colcon-common-extensions \
+    {% endif -%}
+    ssh \
+    xfce4-terminal
+
 {% if dockerfile.run is defined and dockerfile.run|length > 0 -%}
 # Execute additional commands.
 {% for cmd in dockerfile.run -%}
@@ -103,21 +118,6 @@ COPY . ~/ros_workspace/src/{{ dockerfile.package }}
 
 # Copy bringup script.
 COPY .sirius_config/entrypoint.sh ~/robot-entrypoint.sh
-
-# Install dependencies.
-RUN sudo apt clean && sudo apt update && sudo apt install -y \
-    {% if dockerfile.apt is defined and dockerfile.apt|length > 0 -%}
-    {% for package in dockerfile.apt -%}
-        {{ package }} \
-    {% endfor -%}
-    {% endif -%}
-    devilspie \
-    lsb \
-    {% if dockerfile.compiler == 'colcon' -%}
-        python3-colcon-common-extensions \
-    {% endif -%}
-    ssh \
-    xfce4-terminal
 
 # Compile ROS workspace.
 RUN cd ~/ros_workspace \
