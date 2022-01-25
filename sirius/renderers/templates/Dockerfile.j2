@@ -120,14 +120,15 @@ COPY . /home/robomaker/ros_workspace/src/{{ dockerfile.package }}
 COPY .sirius_config/entrypoint.sh /home/robomaker/robot-entrypoint.sh
 
 # Compile ROS workspace.
-RUN cd /home/robomaker/ros_workspace \
+RUN /bin/bash -c "source /ros/{{ dockerfile.distro }}/setup.bash \ 
+    && cd /home/robomaker/ros_workspace \
     && sudo rosdep fix-permissions \
     && rosdep update \
     && rosdep install --rosdistro {{ dockerfile.distro }} --from-paths src --ignore-src -r -y \
     {% if dockerfile.compiler == 'catkin_make' -%}
-        && catkin_make
+        && catkin_make"
     {% elif dockerfile.compiler == 'colcon' -%}
-        && colcon build
+        && colcon build"
     {%- endif %}
 
 # Give permissions to user
