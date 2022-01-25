@@ -48,7 +48,7 @@ RUN ssh-keyscan {{ hostname }} >> /root/.ssh/known_hosts
 {% if dockerfile.rosinstall is defined and dockerfile.rosinstall|length > 0 -%}
 # Copy .rosinstall files
 {%- for file in dockerfile.rosinstall %}
-COPY ./{{ file}} {{ file }}
+COPY {{ file}} {{ file }}
 {%- endfor %}
 {%- endif %}
 
