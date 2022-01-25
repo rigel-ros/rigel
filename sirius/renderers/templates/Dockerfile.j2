@@ -98,7 +98,7 @@ COPY . ~/ros_workspace/src/{{ dockerfile.package }}
 COPY .sirius_config/entrypoint.sh ~/robot-entrypoint.sh
 
 # Install dependencies.
-RUN apt clean && apt update && apt install -y \
+RUN sudo apt clean && sudo apt update && sudo apt install -y \
     {% if dockerfile.apt is defined and dockerfile.apt|length > 0 -%}
     {% for package in dockerfile.apt -%}
         {{ package }} \
