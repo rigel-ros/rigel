@@ -25,6 +25,7 @@ class ConfigurationFileParser:
             raw_data['env'] = envs
 
             self.configuration_file = ConfigurationFile(**raw_data)
+            # print(self.configuration_file.apt)
 
         except Exception as err:
             print(err)

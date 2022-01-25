@@ -87,6 +87,11 @@ COPY .sirius_config/entrypoint.sh ~/entrypoint.sh
 
 # Install dependencies.
 RUN apt clean && apt update && apt install -y \
+    {% if dockerfile.apt is defined and dockerfile.apt|length > 0 -%}
+    {% for package in dockerfile.apt -%}
+        {{ package }} \
+    {% endfor -%}
+    {% endif -%}
     devilspie \
     lsb \
     {% if dockerfile.compiler == 'colcon' -%}
