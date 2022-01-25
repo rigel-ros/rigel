@@ -16,6 +16,9 @@ class SSHKey:
     value: str
     hostname: str
 
+    # Optional fields
+    file: bool = field(default_factory=lambda: False)
+
 
 @dataclass
 class ConfigurationFile:
@@ -28,6 +31,7 @@ class ConfigurationFile:
     # Optional fields
     compiler: str = field(default_factory=lambda: 'catkin_make')
     env: List[EnvironmentVariable] = field(default_factory=lambda: [])
+    hostname: List[str] = field(default_factory=lambda: [])
     rosinstall: List[str] = field(default_factory=lambda: [])
     ssh: List[SSHKey] = field(default_factory=lambda: [])
 

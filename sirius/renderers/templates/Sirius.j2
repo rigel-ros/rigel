@@ -20,19 +20,30 @@ command: roslaunch my_package.launch
 # env:
 #     - ENV_EXAMPLE=example
 
-# Sirius can automatically download for you any external ROS package before containerizing your ROS package.
+# Sirius can automatically download for you any external ROS package required to containerize your ROS package.
 # You are required to have at least one .rosinstall file placed at root of yout ROS package folder listing all external ROS packages that your package depends upon.
 # Then make sure to use the field 'rosinstall' and list your .rosinstall files.
 #
 # rosinstall:
 #     - example.rosinstall
+#
+# Also make sure to use the field 'hostname' and list the hostnames for all PUBLIC dependencies.
+# 
+# hostname:
+#     - github.com
 
-# In case your package depends on an external private ROS package then Sirius can also safely download it. 
-# You are required to export environment variables holding the values of any required private SSH key (one variable per private key).
+# In case your package depends on an external private ROS package then Sirius can also safely download it.
+# Sirius will require you to provide it with all required SSH keys. These will be kept safe and secure and will not be present in the containerized workspace.
+# You can provide private SSH keys as either files or as environment variables.
+# In the latter case you are required to export environment variables holding the values of any required private SSH key (one variable per private key).
 # Then make sure use the field 'ssh' and inside it list all required SSH keys according to the example.
 # For each key you must specify the name of the exported environment variable, the hostname associated with the key.
 #
 # ssh:
 #     -
-#       value: GITLAB_SSH_KEY
+#       value: keys/gitlab_key
 #       hostname: gitlab.com
+#       file: True
+#     -
+#       value: BITBUCKET_SSH_KEY
+#       hostname: bitbucket.com

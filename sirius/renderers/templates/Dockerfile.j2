@@ -14,28 +14,43 @@ RUN apt clean && apt update && apt install -y \
 {% if dockerfile.ssh is defined and dockerfile.ssh|length > 0 -%}
 # Add SSH keys and set their permissions.
 RUN mkdir -p /root/.ssh/
-{%- for key in dockerfile.ssh %}
+{% for key in dockerfile.ssh -%}
+{%- if key.file == False -%}
 ARG {{ key.value }}
+{%- endif %}
 {%- endfor %}
 {%- for key in dockerfile.ssh %}
+{% if key.file -%}
+COPY {{ key.value }} /root/.ssh/{{ key.value }}
+{%- else -%}
 RUN echo "${{ key.value }}" > /root/.ssh/{{ key.value }} && chmod 600 /root/.ssh/{{ key.value }}
+{%- endif %}
 {%- endfor %}
 
 # Copy SSH configuration file and set its permissions.
 COPY .sirius_config/config /root/.ssh/config
 RUN chmod 600 /root/.ssh/config
+{%- endif %}
 
-# Ensure added SSH keys are accepted.
+# Ensure hosts are accepted.
 RUN touch /root/.ssh/known_hosts
+{%- if dockerfile.ssh is defined and dockerfile.ssh|length > 0 -%}
 {%- for key in dockerfile.ssh %}
 RUN ssh-keyscan {{ key.hostname }} >> /root/.ssh/known_hosts
 {%- endfor %}
 {%- endif %}
+{%- if dockerfile.hostname is defined and dockerfile.hostname|length > 0 -%}
+{%- for hostname in dockerfile.hostname %}
+RUN ssh-keyscan {{ hostname }} >> /root/.ssh/known_hosts
+{%- endfor %}
+{%- endif %}
 
+{% if dockerfile.rosinstall is defined and dockerfile.rosinstall|length > 0 -%}
 # Copy .rosinstall files
 {%- for file in dockerfile.rosinstall %}
 COPY ./{{ file}} {{ file }}
 {%- endfor %}
+{%- endif %}
 
 # Clone repositories.
 RUN mkdir -p /ros_workspace/src && cd /ros_workspace/src \ 
@@ -51,10 +66,10 @@ FROM ros:{{ dockerfile.distro }}
 
 {% if dockerfile.env is defined and dockerfile.env|length > 0 -%}
 # Set required environment variables.
-{%- for env in dockerfile.env %}
+{% for env in dockerfile.env -%}
 ENV {{ env.name }} {{ env.value }}
-{%- endfor %}
-{%- endif %}
+{% endfor %}
+{% endif -%}
 
 # Create ROS workspace folder
 RUN mkdir -p ~/ros_workspace/src
@@ -92,5 +107,5 @@ RUN cd ~/ros_workspace \
     {%- endif %}
 
 # Launch ROS application.
-CMD {{ dockerfile.cmd }}
+CMD {{ dockerfile.command }}
 ENTRYPOINT [ "~/entrypoint.sh" ]
