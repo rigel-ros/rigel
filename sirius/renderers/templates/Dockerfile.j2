@@ -102,25 +102,25 @@ RUN sh -c 'echo "$USERNAME ALL=(root) NOPASSWD:ALL" >> /etc/sudoers'
 USER $USERNAME
 
 # Create ROS workspace folder
-RUN mkdir -p ~/ros_workspace/src
+RUN mkdir -p /home/robomaker/ros_workspace/src
 
 {% if dockerfile.rosinstall is defined and dockerfile.rosinstall|length > 0 -%}
 # Copy dependencies from intermediate stage.
-COPY --from=intermediate /ros_workspace/src ~/ros_workspace/src/
+COPY --from=intermediate /ros_workspace/src /home/robomaker/ros_workspace/src/
 
 # Give workspace permissions to user
-RUN sh -c 'sudo chmod -R +x ~/ros_workspace'
-RUN sh -c 'sudo chown -R robomaker:robomaker ~/ros_workspace'
+RUN sh -c 'sudo chmod -R +x /home/robomaker/ros_workspace'
+RUN sh -c 'sudo chown -R robomaker:robomaker /home/robomaker/ros_workspace'
 {%- endif %}
 
 # Copy this repository into the ROS workspace.
-COPY . ~/ros_workspace/src/{{ dockerfile.package }}
+COPY . /home/robomaker/ros_workspace/src/{{ dockerfile.package }}
 
 # Copy bringup script.
-COPY .sirius_config/entrypoint.sh ~/robot-entrypoint.sh
+COPY .sirius_config/entrypoint.sh /home/robomaker/robot-entrypoint.sh
 
 # Compile ROS workspace.
-RUN cd ~/ros_workspace \
+RUN cd /home/robomaker/ros_workspace \
     && sudo rosdep fix-permissions \
     && rosdep update \
     && rosdep install --rosdistro {{ dockerfile.distro }} --from-paths src --ignore-src -r -y \
@@ -131,9 +131,9 @@ RUN cd ~/ros_workspace \
     {%- endif %}
 
 # Give permissions to user
-RUN sh -c 'sudo chmod +x ~/robot-entrypoint.sh'
-RUN sh -c 'sudo chown robomaker:robomaker ~/robot-entrypoint.sh'
+RUN sh -c 'sudo chmod +x /home/robomaker/robot-entrypoint.sh'
+RUN sh -c 'sudo chown robomaker:robomaker /home/robomaker/robot-entrypoint.sh'
 
 # Launch ROS application.
 CMD {{ dockerfile.command }}
-ENTRYPOINT [ "~/robot-entrypoint.sh" ]
+ENTRYPOINT [ "/home/robomaker/robot-entrypoint.sh" ]
