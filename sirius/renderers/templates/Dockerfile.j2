@@ -54,11 +54,11 @@ COPY ./{{ file}} {{ file }}
 
 # Clone repositories.
 RUN mkdir -p /ros_workspace/src && cd /ros_workspace/src \ 
-    && . /opt/ros/{{ dockerfile.distro }}/setup.bash \
+    && /bin/bash -c "source /opt/ros/{{ dockerfile.distro }}/setup.bash \
 {%- for rosinstall in dockerfile.rosinstall %}
     && vcs import src < {{ rosinstall}} \
 {%- endfor %}
-    && echo
+    " && echo
 
 ############################################################################
 
