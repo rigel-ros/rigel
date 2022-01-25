@@ -73,6 +73,13 @@ ENV {{ env.name }} {{ env.value }}
 {% endfor %}
 {% endif -%}
 
+{% if dockerfile.run is defined and dockerfile.run|length > 0 -%}
+# Execute additional commands.
+{% for cmd in dockerfile.run -%}
+RUN {{ cmd }}
+{% endfor -%}
+{%- endif %}
+
 ARG USERNAME=robomaker
 RUN groupadd $USERNAME
 RUN useradd -ms /bin/bash -g $USERNAME $USERNAME
@@ -111,13 +118,6 @@ RUN sudo apt clean && sudo apt update && sudo apt install -y \
     {% endif -%}
     ssh \
     xfce4-terminal
-
-{% if dockerfile.run is defined and dockerfile.run|length > 0 -%}
-# Execute additional commands.
-{% for cmd in dockerfile.run -%}
-RUN {{ cmd }}
-{% endfor -%}
-{%- endif %}
 
 # Compile ROS workspace.
 RUN cd ~/ros_workspace \
