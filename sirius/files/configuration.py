@@ -26,6 +26,7 @@ class ConfigurationFile:
     # Required fields
     command: str
     distro: str
+    image: str
     package: str
 
     # Optional fields

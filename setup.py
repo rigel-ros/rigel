@@ -6,7 +6,7 @@ with open('./README.md', 'r') as readme:
 
 setuptools.setup(
     name='sirius',
-    version='0.0.8',
+    version='0.0.9',
     author='Pedro Melo',
     author_email='pedro.m.melo@inesctec.pt',
     description='Containerize and deploy your ROS application using Docker.',
@@ -24,6 +24,7 @@ setuptools.setup(
     ],
     python_requires='>=3.8',
     install_requires=[
+        'docker==4.1.0',
         'jinja2==3.0.3',
         'pyyaml==6.0'
     ],
