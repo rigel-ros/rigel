@@ -39,6 +39,13 @@ class ConfigurationFile:
     ssh: List[SSHKey] = field(default_factory=lambda: [])
 
     def __post_init__(self) -> None:
+
+        # Ensure no field is left undefined.
+        for field_name, value in self.__dict__.items():
+            if value is None:
+                print(f"Field '{field_name}' was declared but left undefined.")
+                exit(1)
+
         if self.ssh and not self.rosinstall:
             print('SSH keys were provided but no .rosinstall was declared.')
             exit(1)
