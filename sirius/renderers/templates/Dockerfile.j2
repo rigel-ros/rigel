@@ -95,6 +95,7 @@ RUN {{ cmd }}
 {% endfor -%}
 {%- endif %}
 
+# Create default user 'robomaker'.
 ARG USERNAME=robomaker
 RUN groupadd $USERNAME
 RUN useradd -ms /bin/bash -g $USERNAME $USERNAME
