@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-from docker import APIClient
+from docker import APIClient, from_env
 from json import loads as json_loads
 from pathlib import Path
 from sirius.parsers import ConfigurationFileParser
@@ -36,21 +36,25 @@ def main() -> None:
 
         # Extracted and adapted from:
         # https://stackoverflow.com/questions/43540254/how-to-stream-the-logs-in-docker-python-api
-        docker_client = APIClient(base_url='unix://var/run/docker.sock')
-        image = docker_client.build(path=".sirius_config", rm=True, tag=image_tag)
-        image_logs = iter(image)
-        while True:
-            try:
-                log = next(image_logs)
-                log = log.strip('\r\n')
-                json_log = json_loads(log)
-                if 'stream' in json_log:
-                    print(json_log['stream'].strip('\n'))
-            except StopIteration:
-                print(f'Docker image {image_tag} build complete.')
-                break
-            except ValueError:
-                print(f'Unable to parse log from Docker image being build ({image_tag}): {log}')
+        # docker_client = APIClient(base_url='unix://var/run/docker.sock')
+        # image = docker_client.build(path=".sirius_config", rm=True, tag=image_tag)
+        # image_logs = iter(image)
+        # while True:
+        #     try:
+        #         log = next(image_logs)
+        #         log = log.strip(b'\r\n')
+        #         json_log = json_loads(log)
+        #         if 'stream' in json_log:
+        #             print(json_log['stream'].strip('\n'))
+        #     except StopIteration:
+        #         print(f'Docker image {image_tag} build complete.')
+        #         break
+        #     except ValueError:
+        #         print(f'Unable to parse log from Docker image being build ({image_tag}): {log}')
+
+        docker_client = from_env()
+        docker_client.images.build(path=".sirius_config", rm=True, tag=image_tag)
+        print(f'Docker image {image_tag} build complete.')
 
     else:
         print(f'Invalid command "{cli_args.command}"')
