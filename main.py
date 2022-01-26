@@ -37,7 +37,7 @@ def main() -> None:
         # Extracted and adapted from:
         # https://stackoverflow.com/questions/43540254/how-to-stream-the-logs-in-docker-python-api
         docker_client = APIClient(base_url='unix://var/run/docker.sock')
-        image = docker_client.build(path=".sirius_config/Dockerfile", rm=True, tag=image_tag)
+        image = docker_client.build(path=".sirius_config", rm=True, tag=image_tag)
         image_logs = iter(image)
         while True:
             try:
