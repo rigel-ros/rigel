@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 from docker import APIClient
+from json import loads as json_loads
 from pathlib import Path
 from sirius.parsers import ConfigurationFileParser
 from sirius.renderers import DockerfileRenderer, EntrypointRenderer, SiriusConfigurationRenderer, SSHConfigurationFileRenderer
@@ -33,14 +34,23 @@ def main() -> None:
         image_tag = configuration_parser.configuration_file.image
         print(f"Building Docker image {image_tag}.")
 
-        try:
-            with open(".sirius_config/Dockerfile", "rb") as dockerfile:
-                docker_client = APIClient(base_url='tcp://127.0.0.1:2375')
-                for line in docker_client.build(fileobj=dockerfile, rm=True, tag=image_tag):
-                    print(line['stream'])
-        except FileNotFoundError:
-            print('Unable to find Dockerfile.\n To generate a Dockerfile use "sirius render" .')
-            exit(1)
+        # Extracted and adapted from:
+        # https://stackoverflow.com/questions/43540254/how-to-stream-the-logs-in-docker-python-api
+        docker_client = APIClient(base_url='unix://var/run/docker.sock')
+        image = docker_client.build(path=".sirius_config/Dockerfile", rm=True, tag=image_tag)
+        image_logs = iter(image)
+        while True:
+            try:
+                log = next(image_logs)
+                log = log.strip('\r\n')
+                json_log = json_loads(log)
+                if 'stream' in json_log:
+                    print(json_log['stream'].strip('\n'))
+            except StopIteration:
+                print(f'Docker image {image_tag} build complete.')
+                break
+            except ValueError:
+                print(f'Unable to parse log from Docker image being build ({image_tag}): {log}')
 
     else:
         print(f'Invalid command "{cli_args.command}"')
