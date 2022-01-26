@@ -26,7 +26,6 @@ setuptools.setup(
     install_requires=[
         'docker==4.1.0',
         'jinja2==3.0.3',
-        'json==2.0.9',
         'pyyaml==6.0'
     ],
     py_modules=['main'],
