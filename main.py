@@ -43,40 +43,40 @@ def main() -> None:
 
         # Extracted and adapted from:
         # https://stackoverflow.com/questions/43540254/how-to-stream-the-logs-in-docker-python-api
-        # docker_client = APIClient(base_url='unix:///var/run/docker.sock')
-        # image = docker_client.build(
-        #     path='.',
-        #     dockerfile='.sirius_config/Dockerfile',
-        #     tag=image_tag,
-        #     buildargs=buildargs,
-        #     rm=True,
-        # )
-        # image_logs = iter(image)
-        # while True:
-        #     try:
-        #         log = next(image_logs)
-        #         log = log.strip(b'\r\n')
-        #         json_log = json_loads(log)
-        #         # if 'stream' in json_log:
-        #         #     print(json_log['stream'].strip('\n'))
-        #         print(json_log)
-        #     except StopIteration:
-        #         print(f'Docker image {image_tag} build complete.')
-        #         break
-        #     except ValueError:
-        #         print(f'Unable to parse log from Docker image being build ({image_tag}): {log}')
-
-        docker_client = from_env()
-        print(f"$DOCKER_HOST = {environ.get('DOCKER_HOST')}")
-        print(f"base_url = {docker_client.base_url}")
-        docker_client.images.build(
+        docker_client = APIClient(base_url='tcp://docker:2375')
+        image = docker_client.build(
             path='.',
             dockerfile='.sirius_config/Dockerfile',
             tag=image_tag,
             buildargs=buildargs,
-            rm=True
+            rm=True,
         )
-        print(f'Docker image {image_tag} build complete.')
+        image_logs = iter(image)
+        while True:
+            try:
+                log = next(image_logs)
+                log = log.strip(b'\r\n')
+                json_log = json_loads(log)
+                # if 'stream' in json_log:
+                #     print(json_log['stream'].strip('\n'))
+                print(json_log)
+            except StopIteration:
+                print(f'Docker image {image_tag} build complete.')
+                break
+            except ValueError:
+                print(f'Unable to parse log from Docker image being build ({image_tag}): {log}')
+
+        # docker_client = from_env()
+        # print(f"$DOCKER_HOST = {environ.get('DOCKER_HOST')}")
+        # print(f"base_url = {docker_client.base_url}")
+        # docker_client.images.build(
+        #     path='.',
+        #     dockerfile='.sirius_config/Dockerfile',
+        #     tag=image_tag,
+        #     buildargs=buildargs,
+        #     rm=True
+        # )
+        # print(f'Docker image {image_tag} build complete.')
 
     else:
         print(f'Invalid command "{cli_args.command}"')
