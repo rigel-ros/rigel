@@ -86,6 +86,7 @@ ignore log files someone is creating
 .sirius_config
 Dockerfile
 Sirius
+test.sh
 
 # ignore Python build related
 dist/

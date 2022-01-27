@@ -4,6 +4,22 @@ from sys import exit
 
 
 @dataclass
+class DockerImage:
+    # Required fields
+    name: str
+
+    # Optional fields
+    tag: str = field(default_factory=lambda: 'latest')
+
+
+@dataclass
+class DockerRegistry:
+    # Required fields
+    name: str
+    user: str
+
+
+@dataclass
 class EnvironmentVariable:
     # Required fields
     name: str
@@ -26,7 +42,8 @@ class ConfigurationFile:
     # Required fields
     command: str
     distro: str
-    image: str
+    image: DockerImage
+    registry: DockerRegistry
     package: str
 
     # Optional fields

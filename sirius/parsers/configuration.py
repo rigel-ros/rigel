@@ -1,4 +1,10 @@
-from sirius.files import ConfigurationFile, EnvironmentVariable, SSHKey
+from sirius.files import (
+    ConfigurationFile,
+    DockerImage,
+    DockerRegistry,
+    EnvironmentVariable,
+    SSHKey
+)
 from typing import Any, Dict
 from yaml import safe_load, YAMLError
 
@@ -23,6 +29,9 @@ class ConfigurationFileParser:
                     name, value = env.strip().split('=')
                     envs.append(EnvironmentVariable(name, value))
             raw_data['env'] = envs
+
+            raw_data['image'] = DockerImage(**raw_data['image'])
+            raw_data['registry'] = DockerRegistry(**raw_data['registry'])
 
             self.configuration_file = ConfigurationFile(**raw_data)
 
