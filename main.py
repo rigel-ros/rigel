@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 from docker import APIClient, from_env
 from io import BytesIO
 from json import loads as json_loads
+from os import environ
 from pathlib import Path
 from sirius.parsers import ConfigurationFileParser
 from sirius.renderers import DockerfileRenderer, EntrypointRenderer, SiriusConfigurationRenderer, SSHConfigurationFileRenderer
@@ -58,12 +59,18 @@ def main() -> None:
         #     except ValueError:
         #         print(f'Unable to parse log from Docker image being build ({image_tag}): {log}')
 
+        buildargs = {}
+        for key in configuration_parser.configuration_file.ssh:
+            if not key.file:
+                buildargs[key.value] = environ.get(key.value)
+
         docker_client = from_env()
         docker_client.images.build(
             path='.',
             dockerfile='.sirius_config/Dockerfile',
-            rm=True,
-            tag=image_tag
+            tag=image_tag,
+            buildargs=buildargs,
+            rm=True
         )
         print(f'Docker image {image_tag} build complete.')
 
