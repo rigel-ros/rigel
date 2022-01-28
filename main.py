@@ -48,8 +48,8 @@ def main() -> None:
 
         # Extracted and adapted from:
         # https://stackoverflow.com/questions/43540254/how-to-stream-the-logs-in-docker-python-api
-        # docker_client = APIClient(base_url='tcp://docker:2375')
-        docker_client = APIClient(base_url='unix:///var/run/docker.sock')
+        docker_client = APIClient(base_url='tcp://docker:2375')
+        # docker_client = APIClient(base_url='unix:///var/run/docker.sock')
         image = docker_client.build(
             path='.',
             dockerfile='.sirius_config/Dockerfile',
