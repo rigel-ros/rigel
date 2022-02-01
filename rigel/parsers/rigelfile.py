@@ -5,10 +5,16 @@ from rigel.files import (
     EnvironmentVariable,
     SSHKey
 )
-from rigel.exceptions import IncompleteRigelfileError
+from rigel.exceptions import (
+    IncompleteRigelfileError,
+    MissingRequiredFieldError,
+    PluginNotFoundError,
+    UnknownFieldError
+)
 from rigel.plugins import RegistryPlugin, SimulationPlugin
 from typing import Any, Dict, List, Tuple, Union
 
+Plugin = Union[RegistryPlugin, SimulationPlugin]
 YAMLData = Dict[str, Any]
 
 
@@ -66,23 +72,8 @@ class RigelfileParser:
         """
         try:
 
-            ssh = []
             if 'ssh' in yaml_data:
-                for key in yaml_data['ssh']:
-                    ssh.append(SSHKey(**key))
-            yaml_data['ssh'] = ssh
-
-        except Exception as err:
-            print(err.args)
-
-            if 'got an unexpected keyword' in err.args[0]:
-                print('raise UnknownFieldError(type, field_name)')
-            elif 'missing' in err.args[0]:
-                print('raise MissingRequiredFieldError(type, field_name)')
-
-            exit(1)
-
-        try:
+                yaml_data['ssh'] = [SSHKey(**key) for key in yaml_data['ssh']]
 
             envs = []
             if 'env' in yaml_data:
@@ -91,37 +82,63 @@ class RigelfileParser:
                     envs.append(EnvironmentVariable(name, value))
             yaml_data['env'] = envs
 
-        except Exception as err:
-            print(err)
-            exit(1)
+        except TypeError as err:
 
-        self.dockerfile = ImageConfigurationFile(**yaml_data)
+            message = err.args[0]
+            field = message.split()[-1].replace("'", '')
+
+            if 'got an unexpected keyword' in err.args[0]:
+                raise UnknownFieldError(field=field)
+
+            elif 'missing' in err.args[0]:
+                raise MissingRequiredFieldError(field=field)
+
+        return ImageConfigurationFile(**yaml_data)
 
 
-    def __load_plugins(self, yaml_data: YAMLData, container: List[Union[RegistryPlugin, SimulationPlugin]]) -> None:
+    def __load_plugins(self, yaml_data: YAMLData) -> List[Plugin]:
+        """
+        Parse a list of plugins.
+
+        :type yaml_data: 
+        :param yaml_data: All data concerning which plugins to use.
+
+        :rtype: Union[List[RegistryPlugin], List[SimulationPlugin]]
+        :return: A list of data aggregators.  
+        """
         for plugin_data in yaml_data:
 
             try:
+
                 plugin_name = plugin_data.pop('plugin')
+
             except KeyError:
-                print("Plugin was declared without required field 'plugin' .")
-                exit(1)
+                raise MissingRequiredFieldError(field='plugin')
+
+            print(f"Loading plugin '{plugin_name}'.")
 
             try:
-                print(f"Loading plugin '{plugin_name}'.Plugin ")
 
                 module = import_module(plugin_name)
                 cls = getattr(module, 'Plugin')
                 container.append(cls(**plugin_data))
-                print(f"Using external registry plugin '{plugin_name}' .")
 
-            except Exception as err:
-                print(err)
-                exit(1)
+            except ModuleNotFoundError:
+                raise PluginNotFoundError(plugin=plugin_name)
+
+            print(f"Using external registry plugin '{plugin_name}' .")
 
     def __init__(self, yaml_data: YAMLData) -> None:
+        """
+        Class constructor.
+        Initializes a data aggregator for each of the main sections of the Rigelfile. 
+
+        :type yaml_data: Dict[str, Any]
+        :param yaml_data: The data extracted from a Rigelfile.
+        """
 
         build_data, registry_plugins_data, simulation_plugins_data = self.__segment_data((yaml_data))
-        self.__build_dockerfile(build_data)
-        self.__load_plugins(registry_plugins_data, self.registry_plugins)
-        self.__load_plugins(simulation_plugins_data, self.simulation_plugins)
+
+        self.dockerfile = self.__build_dockerfile(build_data)
+        self.registry_plugins = self.__load_plugins(registry_plugins_data)
+        self.simulation_plugins = self.__load_plugins(simulation_plugins_data)

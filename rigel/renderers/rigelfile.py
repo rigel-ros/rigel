@@ -3,10 +3,16 @@ from pkg_resources import resource_string
 
 
 class RigelConfigurationRenderer:
+    """
+    A class that creates new Rigelfiles.
+    """
 
     # TODO: use copy instead of Jinja for this operation
     @staticmethod
     def render() -> None:
+        """
+        Create a new Rigelfile.
+        """
 
         # Open template of Dockerfile.
         rigelfile_template = resource_string(__name__, 'templates/Rigelfile.j2').decode('utf-8')

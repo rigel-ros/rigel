@@ -4,9 +4,12 @@ from . import renderers  # noqa: 401
 from .exceptions import (  # noqa: 401
     EmptyRigelfileError,
     IncompleteRigelfileError,
+    MissingRequiredFieldError,
+    PluginNotFoundError,
     RigelError,
     RigelfileAlreadyExistsError,
     RigelfileNotFound,
     UnformattedRigelfileError,
+    UnknownFieldError,
     UnsupportedCompilerError
 )

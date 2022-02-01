@@ -65,3 +65,33 @@ class UnsupportedCompilerError(RigelError):
     """
     base = "Unsupported compiler '{compiler}'."
     code = 7
+
+class UnknownFieldError(RigelError):
+    """
+    Raised whenever an attempt is made to create an entity using unknown fields.
+
+    :type field: string
+    :ivar field: Name of the unknown field. 
+    """
+    base = "Unknown field '{field}' found while parsing Rigelfile."
+    code = 8
+
+class MissingRequiredFieldError(RigelError):
+    """
+    Raised whenever an attempt is made to create an entity with insufficient data. 
+
+    :type field: string
+    :ivar field: Name of the missing field.
+    """
+    base = "Required field '{field}' is missing."
+    code = 9
+
+class PluginNotFoundError(RigelError):
+    """
+    Raised whenever an attempt is made to load a plugin that is not installed.
+
+    :type plugin: string
+    :ivar plugin: Name of the plugin.
+    """
+    base = "Unable to load plugin '{plugin}'. Not installed."
+    code = 10

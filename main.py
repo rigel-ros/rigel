@@ -82,7 +82,6 @@ def init(new) -> None:
         if rigelfile_exists() and not new:
             raise RigelfileAlreadyExistsError()
 
-        create_folder('.rigel_config')
         RigelConfigurationRenderer.render()
         print('Rigelfile created with success.')
 
@@ -91,10 +90,13 @@ def init(new) -> None:
         sys.exit(err.code)
 
 @click.command()
-def build() -> None:
+def create() -> None:
     """
-    Build a Docker image encapsulating your ROS application.
+    Create all files required to containerize your ROS application.
     """
+
+    create_folder('.rigel_config')
+
     try:
 
         configuration_parser = create_configuration_parser()
@@ -104,6 +106,18 @@ def build() -> None:
         EntrypointRenderer.render(configuration_parser.dockerfile)
         if configuration_parser.dockerfile.ssh:
             SSHConfigurationFileRenderer.render(configuration_parser.dockerfile)
+
+    except RigelError as err:
+        print(err)
+        sys.exit(err.code)
+
+@click.command()
+def build() -> None:
+    """
+    Build a Docker image with your ROS application.
+    """
+
+    try:
 
         build_args = {}
         for key in configuration_parser.dockerfile.ssh:
@@ -119,18 +133,25 @@ def deploy() -> None:
     """
     Push a Docker image to a remote image registry.
     """
-    configuration_parser = create_configuration_parser()
-    docker_client = create_docker_client()
+    try:
 
-    if configuration_parser.registry_plugins:
-        for plugin in configuration_parser.registry_plugins:
-            plugin.tag(docker_client, TEMPORARY_IMAGE_NAME)
-            plugin.authenticate(docker_client)
-            plugin.deploy(docker_client)
-    else:
-        print('WARNING - no plugin was declared.')
+        configuration_parser = create_configuration_parser()
+        docker_client = create_docker_client()
+
+        if configuration_parser.registry_plugins:
+            for plugin in configuration_parser.registry_plugins:
+                plugin.tag(docker_client, TEMPORARY_IMAGE_NAME)
+                plugin.authenticate(docker_client)
+                plugin.deploy(docker_client)
+        else:
+            print('WARNING - no plugin was declared.')
+
+    except RigelError as err:
+        print(err)
+        sys.exit(err.code)
 
 cli.add_command(init)
+cli.add_command(create)
 cli.add_command(build)
 cli.add_command(deploy)
 

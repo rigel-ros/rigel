@@ -15,8 +15,8 @@ class ImageBuilder:
         :type docker_client: docker.api.client.APIClient
         :param docker_client: A Docker client instance.
         :type image: string
-        :param image: The name of the Docker image to build.
-        :type build_args: dict
+        :param image: The final name for the Docker image.
+        :type build_args: Dict[str, Any]
         :param build_args: A dictionary holding the values of all arguments declared in the Dockerfile.
         """
 
@@ -33,10 +33,14 @@ class ImageBuilder:
         # Log state messages during the build process.
         iterator = iter(temp)
         while True:
+
             try:
+
+                # TODO: add printer for each type of message.
                 log = next(iterator)
                 if 'stream' in log:
                     print(log['stream'].strip('\n'))
+
             except StopIteration:  # no more log messages
                 if 'error' in log:
                     print(f'An error occurred while building Docker image {image}.')
