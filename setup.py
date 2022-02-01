@@ -24,7 +24,6 @@ setuptools.setup(
     ],
     python_requires='>=3.8',
     install_requires=[
-        'boto3==1.20.44',
         'docker==4.1.0',
         'jinja2==3.0.3',
         'pyyaml==6.0'
