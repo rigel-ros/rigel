@@ -19,7 +19,7 @@ class DockerfileRenderer:
         :param configuration_file: A data aggregator holding information about the containerization of the ROS application.
         """
         # Open file template.
-        dockerfile_template = resource_string(__name__, 'templates/Dockerfile.j2').decode('utf-8')
+        dockerfile_template = resource_string(__name__, 'assets/templates/Dockerfile.j2').decode('utf-8')
         dockerfile_templater = Template(dockerfile_template)
 
         with open('.rigel_config/Dockerfile', 'w+') as output_file:
@@ -42,7 +42,7 @@ class EntrypointRenderer:
         """
 
         # Open file template.
-        entrypoint_template = resource_string(__name__, 'templates/entrypoint.j2').decode('utf-8')
+        entrypoint_template = resource_string(__name__, 'assets/templates/entrypoint.j2').decode('utf-8')
         entrypoint_templater = Template(entrypoint_template)
 
         with open('.rigel_config/entrypoint.sh', 'w+') as output_file:
@@ -66,7 +66,7 @@ class SSHConfigurationFileRenderer:
         """
 
         # Open file template.
-        ssh_config_template = resource_string(__name__, 'templates/config.j2').decode('utf-8')
+        ssh_config_template = resource_string(__name__, 'assets/templates/config.j2').decode('utf-8')
         ssh_config_templater = Template(ssh_config_template)
 
         with open(f'.rigel_config/config', 'w+') as output_file:

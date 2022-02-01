@@ -9,14 +9,14 @@ from rigel.exceptions import (
     RigelfileAlreadyExistsError,
     RigelError
 )
-from rigel.files import YAMLDataLoader
-from rigel.parsers import RigelfileParser
-from rigel.renderers import (
+from rigel.files import (
     DockerfileRenderer,
     EntrypointRenderer,
-    RigelConfigurationRenderer,
-    SSHConfigurationFileRenderer
+    RigelfileCreator,
+    SSHConfigurationFileRenderer,
+    YAMLDataLoader
 )
+from rigel.parsers import RigelfileParser
 
 # Name of the temporary Docker image to be used locally.
 TEMPORARY_IMAGE_NAME = 'rigel:temp'
@@ -72,17 +72,17 @@ def cli():
     pass
 
 @click.command()
-@click.option('--new', is_flag=True, default=False, help='Write over an existing Rigelfile',)
-def init(new) -> None:
+@click.option('--force', is_flag=True, default=False, help='Write over an existing Rigelfile.',)
+def init(force) -> None:
     """
     Create an empty Rigelfile.
     """
     try:
 
-        if rigelfile_exists() and not new:
+        if rigelfile_exists() and not force:
             raise RigelfileAlreadyExistsError()
 
-        RigelConfigurationRenderer.render()
+        RigelfileCreator.create()
         print('Rigelfile created with success.')
 
     except RigelfileAlreadyExistsError as err:
@@ -156,6 +156,9 @@ cli.add_command(build)
 cli.add_command(deploy)
 
 def main() -> None:
+    """
+    Rigel application entry point.
+    """
     cli()
 
 if __name__ == '__main__':
