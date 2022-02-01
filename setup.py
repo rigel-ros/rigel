@@ -5,7 +5,7 @@ with open('./README.md', 'r') as readme:
     long_description = readme.read()
 
 setuptools.setup(
-    name='sirius',
+    name='rigel',
     version='0.0.10',
     author='Pedro Melo',
     author_email='pedro.m.melo@inesctec.pt',
@@ -32,7 +32,7 @@ setuptools.setup(
     py_modules=['main'],
     entry_points={
         'console_scripts': [
-            'sirius=main:main'
+            'rigel=main:main'
         ]
     },
     include_package_data=True
