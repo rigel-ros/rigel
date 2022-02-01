@@ -35,10 +35,16 @@ class Plugin:
 
     def tag(self, docker_client: docker.api.client.APIClient, image: str) -> None:
 
+        if ':' in self.image:
+            new_image_name, new_image_tag = self.image.split(':')
+        else:
+            new_image_name = self.image
+            new_image_tag = 'latest'
+
         docker_client.tag(
             image=image,
-            repository=self.registry,
-            tag=self.image
+            repository=f'{self.registry}/{new_image_name}',
+            tag=new_image_tag
         )
 
         print(f"Set tag for Docker image '{self.image}' .")
@@ -57,7 +63,7 @@ class Plugin:
 
             # Decode ECR authentication token
             token = aws_ecr.get_authorization_token()['authorizationData'][0]['authorizationToken']
-            self.token = base64.b64decode(token).replace(b'AWS:', b'').decode('utf-8')
+            self.__token = base64.b64decode(token).replace(b'AWS:', b'').decode('utf-8')
 
         except ClientError:
             print('Invalid AWS credentials.')
@@ -66,7 +72,7 @@ class Plugin:
         # Authenticate with AWS ECR.
         docker_client.login(
             username=self.user,
-            password=self.token,
+            password=self.__token,
             registry=self.registry
         )
 
@@ -76,7 +82,7 @@ class Plugin:
 
         complete_image_name = f'{self.registry}/{self.image}'
 
-        image = docker_client.images.push(
+        image = docker_client.push(
             complete_image_name,
             stream=True,
             decode=True,

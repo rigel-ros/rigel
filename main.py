@@ -21,15 +21,6 @@ def create_folder(path: str) -> None:
     Path(path).mkdir(parents=True, exist_ok=True)
 
 
-def create_plugins_folder() -> None:
-    """
-    Create Rigel plugin folder.
-    This folder is always placed at ~/.rigel/plugins and works as a placeholder for external plugins.
-    """
-    home = os.path.expanduser('~')
-    create_folder(f'{home}/.rigel/plugins')
-
-
 def create_docker_client() -> docker.api.client.APIClient:
     """
     Create a Docker client instance.
@@ -50,7 +41,6 @@ def main() -> None:
     """
 
     # Ensure all required folders exist beforehand.
-    create_plugins_folder()
     create_folder('.rigel_config')
 
     # Parse CLI arguments.

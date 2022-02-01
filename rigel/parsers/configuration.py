@@ -1,14 +1,12 @@
-import importlib.util
-import os
-import pkg_resources
 import sys
+from importlib import import_module
 from rigel.files import (
     ImageConfigurationFile,
     EnvironmentVariable,
     SSHKey
 )
 from rigel.plugins import RegistryPlugin, SimulationPlugin
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, Union
 
 YAMLData = Dict[str, Any]
 
@@ -18,9 +16,6 @@ class ConfigurationFileParser:
     dockerfile: ImageConfigurationFile = None
     registry_plugins: List[RegistryPlugin] = []
     simulation_plugins: List[SimulationPlugin] = []
-
-    __bultin_registry_plugins = ['gitlab']
-    __bultin_simulation_plugins = []
 
     def __segment_data(self, yaml_data: YAMLData) -> Tuple[YAMLData, List[YAMLData], List[YAMLData]]:
 
@@ -56,7 +51,7 @@ class ConfigurationFileParser:
             print(err)
             exit(1)
 
-    def __build_registry_plugins(self, yaml_data: YAMLData) -> None:
+    def __load_plugins(self, yaml_data: YAMLData, container: List[Union[RegistryPlugin, SimulationPlugin]]) -> None:
         for plugin_data in yaml_data:
 
             try:
@@ -65,32 +60,21 @@ class ConfigurationFileParser:
                 print("Plugin was declared without required field 'plugin' .")
                 exit(1)
 
-            if plugin_name not in self.__bultin_registry_plugins:
-                home = os.path.expanduser('~')
-                plugin_path = f'{home}/.rigel/plugins/{plugin_name}.py'
-
-            else:
-                plugin_path = pkg_resources.resource_string(__name__, '../plugins/{plugin_name}.py')
-
             try:
-                print(f"Loading plugin '{plugin_path}' .")
-                specification = importlib.util.spec_from_file_location('Plugin', plugin_path)
-                module = importlib.util.module_from_spec(specification)
-                specification.loader.exec_module(module)
-                self.registry_plugins.append(module.Plugin(**plugin_data))
+                print(f"Loading plugin '{plugin_name}'.Plugin ")
+
+                module = import_module(plugin_name)
+                cls = getattr(module, 'Plugin')
+                container.append(cls(**plugin_data))
                 print(f"Using external registry plugin '{plugin_name}' .")
 
             except Exception as err:
                 print(err)
                 exit(1)
 
-    # TODO: implement
-    def __build_simulation_plugins(self, yaml_data: YAMLData) -> None:
-        pass
-
     def __init__(self, yaml_data: YAMLData) -> None:
 
         build_data, registry_plugins_data, simulation_plugins_data = self.__segment_data((yaml_data))
         self.__build_dockerfile(build_data)
-        self.__build_registry_plugins(registry_plugins_data)
-        self.__build_simulation_plugins(simulation_plugins_data)
+        self.__load_plugins(registry_plugins_data, self.registry_plugins)
+        self.__load_plugins(simulation_plugins_data, self.simulation_plugins)
