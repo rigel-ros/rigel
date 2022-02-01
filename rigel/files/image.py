@@ -1,5 +1,6 @@
 import sys
 from dataclasses import dataclass, field
+from rigel.exceptions import UnsupportedCompilerError
 from typing import List
 
 
@@ -15,7 +16,6 @@ class EnvironmentVariable:
     """
     name: str
     value: str  # numeric values are also interpreted as text
-
 
 @dataclass
 class SSHKey:
@@ -33,7 +33,6 @@ class SSHKey:
     hostname: str
 
     file: bool = field(default_factory=lambda: False)
-
 
 @dataclass
 class ImageConfigurationFile:
@@ -77,16 +76,8 @@ class ImageConfigurationFile:
 
     def __post_init__(self) -> None:
 
-        # Ensure no field is left undefined.
-        for field_name, value in self.__dict__.items():
-            if value is None:
-                print(f"Field '{field_name}' was declared but left undefined.")
-                sys.exit(1)
-
         if self.ssh and not self.rosinstall:
-            print('SSH keys were provided but no .rosinstall was declared.')
-            sys.exit(1)
+            print('WARNING - SSH keys were provided but no .rosinstall file was declared.')
 
         if self.compiler not in ['catkin_make', 'colcon']:
-            print(f'Unsupported compiler "{self.compiler}".')
-            sys.exit(1)
+            raise UnsupportedCompilerError(compiler=self.compiler)

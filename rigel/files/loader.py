@@ -1,5 +1,10 @@
 import sys
 import yaml
+from rigel.exceptions import (
+    EmptyRigelfileError,
+    RigelfileNotFound,
+    UnformattedRigelfileError
+)
 from typing import Any, Dict
 
 YAMLData = Dict[str, Any]
@@ -20,7 +25,6 @@ class YAMLDataLoader:
 
         :rtype: dict
         :return: The YAML data.
-
         """
         try:
 
@@ -29,16 +33,22 @@ class YAMLDataLoader:
 
             # Ensure that the file contains some data.
             if not yaml_data:
-                print('Empty YAML configuration file.')
-                sys.exit(1)
-
-            # Ensure that the data is of intended type.
-            if not isinstance(yaml_data, dict):
-                print('Invalid YAML.')
-                sys.exit(1)
+                raise EmptyRigelfileError()
 
             return yaml_data
 
-        except (FileNotFoundError, yaml.YAMLError) as err:
-            print(err)
-            exit(1)
+        except FileNotFoundError:
+            raise RigelfileNotFound()
+
+        except yaml.YAMLError as err:
+
+            # Collect the error details from the original error before
+            # raising proper RigelError.
+            message = []
+            for arg in err.args:
+                if isinstance(arg, str):
+                    message.append(arg)
+                else:
+                    message.append(f'(line: {arg.line}, column: {arg.column})')
+
+            raise UnformattedRigelfileError(trace=' '.join(message))
