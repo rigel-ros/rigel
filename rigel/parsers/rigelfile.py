@@ -114,8 +114,6 @@ class RigelfileParser:
             except KeyError:
                 raise MissingRequiredFieldError(field='plugin')
 
-            print(f"Loading plugin '{plugin_name}'.")
-
             try:
 
                 module = import_module(plugin_name)
@@ -124,8 +122,6 @@ class RigelfileParser:
 
             except ModuleNotFoundError:
                 raise PluginNotFoundError(plugin=plugin_name)
-
-            print(f"Using external registry plugin '{plugin_name}' .")
 
         return plugins
 
