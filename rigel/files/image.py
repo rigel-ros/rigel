@@ -1,4 +1,3 @@
-import sys
 from dataclasses import dataclass, field
 from rigel.exceptions import UnsupportedCompilerError
 from typing import List
@@ -17,6 +16,7 @@ class EnvironmentVariable:
     name: str
     value: str  # numeric values are also interpreted as text
 
+
 @dataclass
 class SSHKey:
     """
@@ -34,6 +34,7 @@ class SSHKey:
 
     file: bool = field(default_factory=lambda: False)
 
+
 @dataclass
 class ImageConfigurationFile:
     """
@@ -45,20 +46,20 @@ class ImageConfigurationFile:
     :param distro: The ROS distro to be used (REQUIRED).
     :type package: string
     :param package: The name of the package ROS to be containerized (REQUIRED).
-    :type apt: list
+    :type apt: List[string]
     :param apt: The name of dependencies to be installed using APT.
     :type compiler: string
     :param compiler: The tool with which to compile the containerized ROS workspace. Default value is 'catkin_make'.
-    :type entrypoint: list
+    :type entrypoint: List[string]
     :param entrypoint: A list of commands to be run while executing the entrypoint script.
-    :type env: list
+    :type env: List[rigel.files.EnvironmentVariable]
     :param env: A list of environment variables to be set inside the Docker image.
-    :type hostname: list
-    :type rosinstall: list
+    :type hostname: List[string]
+    :type rosinstall: List[string]
     :param rosinstall: A list of all required .rosinstall files.
-    :type run: list
-    :param run: A list of command to be executed while building the Docker image.
-    :type ssh: list
+    :type run: List[string]
+    :param run: A list of commands to be executed while building the Docker image.
+    :type ssh: List[rigel.files.SSHKey]
     :param ssh: A list of all required private SSH keys.
     """
     command: str

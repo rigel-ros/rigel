@@ -2,7 +2,6 @@ import click
 import docker
 import os
 import sys
-from argparse import ArgumentParser
 from pathlib import Path
 from rigel.docker import ImageBuilder
 from rigel.exceptions import (
@@ -45,6 +44,7 @@ def create_docker_client() -> docker.api.client.APIClient:
     else:
         return docker.APIClient(base_url='unix:///var/run/docker.sock')
 
+
 def create_configuration_parser() -> RigelfileParser:
     """
     Parse information inside local Rigelfile.
@@ -55,14 +55,16 @@ def create_configuration_parser() -> RigelfileParser:
     yaml_data = YAMLDataLoader.load_data('./Rigelfile')
     return RigelfileParser(yaml_data)
 
+
 def rigelfile_exists() -> bool:
     """
     Verify if a Rigelfile is present.
 
     :rtype: bool
-    :return: True if a Rigelfile is found at the current directory. False otherwise. 
+    :return: True if a Rigelfile is found at the current directory. False otherwise.
     """
     return os.path.isfile('./Rigelfile')
+
 
 @click.group()
 def cli():
@@ -70,6 +72,7 @@ def cli():
     Rigel - containerize and deploy your ROS application using Docker
     """
     pass
+
 
 @click.command()
 @click.option('--force', is_flag=True, default=False, help='Write over an existing Rigelfile.',)
@@ -89,6 +92,7 @@ def init(force) -> None:
         print(err)
         sys.exit(err.code)
 
+
 @click.command()
 def create() -> None:
     """
@@ -100,7 +104,6 @@ def create() -> None:
     try:
 
         configuration_parser = create_configuration_parser()
-        docker_client = create_docker_client()
 
         DockerfileRenderer.render(configuration_parser.dockerfile)
         EntrypointRenderer.render(configuration_parser.dockerfile)
@@ -111,22 +114,27 @@ def create() -> None:
         print(err)
         sys.exit(err.code)
 
+
 @click.command()
 def build() -> None:
     """
     Build a Docker image with your ROS application.
     """
 
+    configuration_parser = create_configuration_parser()
+    docker_client = create_docker_client()
+
     try:
 
         build_args = {}
         for key in configuration_parser.dockerfile.ssh:
-                build_args[key.value] = os.environ.get(key.value)
+            build_args[key.value] = os.environ.get(key.value)
         ImageBuilder.build(docker_client, TEMPORARY_IMAGE_NAME, build_args)
 
     except RigelError as err:
         print(err)
         sys.exit(err.code)
+
 
 @click.command()
 def deploy() -> None:
@@ -150,16 +158,19 @@ def deploy() -> None:
         print(err)
         sys.exit(err.code)
 
+
 cli.add_command(init)
 cli.add_command(create)
 cli.add_command(build)
 cli.add_command(deploy)
+
 
 def main() -> None:
     """
     Rigel application entry point.
     """
     cli()
+
 
 if __name__ == '__main__':
     main()

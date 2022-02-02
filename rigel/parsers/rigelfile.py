@@ -1,4 +1,3 @@
-import sys
 from importlib import import_module
 from rigel.files import (
     ImageConfigurationFile,
@@ -41,12 +40,12 @@ class RigelfileParser:
         Each Rigelfile contains YAML data that can be broken into three main logic blocks:
         - 'build': holds all data concerning how to containerize the ROS application.
         - 'deploy': holds all data concerning how and where to deploy the containerized ROS application.
-        - 'simulate': holds all data concerning how to start executing the containerized ROS application.   
+        - 'simulate': holds all data concerning how to start executing the containerized ROS application.
 
-        :type yaml_data: Dict[str, Any]
+        :type yaml_data: Dict[string, Any]
         :param yaml_data: All the data extracted from a Rigelfile.
 
-        :rtype: Tuple[Dict[str, Any], List[Dict[str, Any]], List[Dict[str, Any]]]
+        :rtype: Tuple[Dict[string, Any], List[Dict[string, Any]], List[Dict[string, Any]]]
         :return: A tuple containing the segmented data and separated according to logic block.
         """
         # The 'build' block is mandatory and its existence must be checked.
@@ -64,11 +63,11 @@ class RigelfileParser:
         """
         Parse the data contained within the logical block 'build'.
 
-        :type yaml_data: Dict[str, Any]
+        :type yaml_data: Dict[string, Any]
         :param yaml_data: All data concerning how to containertize the ROS application.
 
         :rtype: rigel.files.ImageConfigurationFile
-        :return: A data aggregator.  
+        :return: A data aggregator.
         """
         try:
 
@@ -95,17 +94,17 @@ class RigelfileParser:
 
         return ImageConfigurationFile(**yaml_data)
 
-
     def __load_plugins(self, yaml_data: YAMLData) -> List[Plugin]:
         """
         Parse a list of plugins.
 
-        :type yaml_data: 
+        :type yaml_data:
         :param yaml_data: All data concerning which plugins to use.
 
         :rtype: Union[List[RegistryPlugin], List[SimulationPlugin]]
-        :return: A list of data aggregators.  
+        :return: A list of data aggregators.
         """
+        plugins = []
         for plugin_data in yaml_data:
 
             try:
@@ -121,19 +120,21 @@ class RigelfileParser:
 
                 module = import_module(plugin_name)
                 cls = getattr(module, 'Plugin')
-                container.append(cls(**plugin_data))
+                plugins.append(cls(**plugin_data))
 
             except ModuleNotFoundError:
                 raise PluginNotFoundError(plugin=plugin_name)
 
             print(f"Using external registry plugin '{plugin_name}' .")
 
+        return plugins
+
     def __init__(self, yaml_data: YAMLData) -> None:
         """
         Class constructor.
-        Initializes a data aggregator for each of the main sections of the Rigelfile. 
+        Initializes a data aggregator for each of the main sections of the Rigelfile.
 
-        :type yaml_data: Dict[str, Any]
+        :type yaml_data: Dict[string, Any]
         :param yaml_data: The data extracted from a Rigelfile.
         """
 

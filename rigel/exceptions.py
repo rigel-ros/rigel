@@ -14,6 +14,7 @@ class RigelError(Exception):
         Exception.__init__(self, f'[ERROR {self.code}] {self.base.format(**kwargs)}')
         self.kwargs = kwargs
 
+
 class RigelfileNotFound(RigelError):
     """
     Raised whenever a Rigelfile is required but is not found.
@@ -21,13 +22,15 @@ class RigelfileNotFound(RigelError):
     base = "Rigelfile was not found. Use 'rigel init' to create one."
     code = 2
 
+
 class RigelfileAlreadyExistsError(RigelError):
     """
     Raised whenever an attempt is made to create a Rigelfile inside a folder
-    that already contains a Rigelfile.  
+    that already contains a Rigelfile.
     """
     base = "A Rigelfile already exists. Use '--new' flag to write over existing Rigelfile."
     code = 3
+
 
 class UnformattedRigelfileError(RigelError):
     """
@@ -39,6 +42,7 @@ class UnformattedRigelfileError(RigelError):
     base = "Rigelfile is not properly formatted: {trace}."
     code = 4
 
+
 class IncompleteRigelfileError(RigelError):
     """
     Raised whenever an attempt is made to use an incomplete Rigelfile.
@@ -49,12 +53,14 @@ class IncompleteRigelfileError(RigelError):
     base = "Incomplete Rigelfile. Missing required block '{block}'."
     code = 5
 
+
 class EmptyRigelfileError(RigelError):
     """
     Raised whenever an empty Rigelfile is found.
     """
     base = "Provided Rigelfile is empty."
     code = 6
+
 
 class UnsupportedCompilerError(RigelError):
     """
@@ -66,25 +72,28 @@ class UnsupportedCompilerError(RigelError):
     base = "Unsupported compiler '{compiler}'."
     code = 7
 
+
 class UnknownFieldError(RigelError):
     """
     Raised whenever an attempt is made to create an entity using unknown fields.
 
     :type field: string
-    :ivar field: Name of the unknown field. 
+    :ivar field: Name of the unknown field.
     """
     base = "Unknown field '{field}' found while parsing Rigelfile."
     code = 8
 
+
 class MissingRequiredFieldError(RigelError):
     """
-    Raised whenever an attempt is made to create an entity with insufficient data. 
+    Raised whenever an attempt is made to create an entity with insufficient data.
 
     :type field: string
     :ivar field: Name of the missing field.
     """
     base = "Required field '{field}' is missing."
     code = 9
+
 
 class PluginNotFoundError(RigelError):
     """

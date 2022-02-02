@@ -1,7 +1,7 @@
+from .image import ImageConfigurationFile
 from dataclasses import asdict
 from jinja2 import Template
 from pkg_resources import resource_string
-from rigel.files import ImageConfigurationFile
 
 
 class DockerfileRenderer:

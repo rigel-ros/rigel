@@ -16,7 +16,7 @@ class ImageBuilder:
         :param docker_client: A Docker client instance.
         :type image: string
         :param image: The final name for the Docker image.
-        :type build_args: Dict[str, Any]
+        :type build_args: Dict[string, Any]
         :param build_args: A dictionary holding the values of all arguments declared in the Dockerfile.
         """
 
