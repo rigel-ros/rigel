@@ -173,6 +173,7 @@ def run() -> None:
         if configuration_parser.simulation_plugins:
             for plugin in configuration_parser.simulation_plugins:
                 MessageLogger.info(f'Using external plugin {plugin.__class__.__module__}.{plugin.__class__.__name__}')
+                plugin.authenticate()
                 plugin.simulate()
         else:
             MessageLogger.warning('No plugin was declared.')

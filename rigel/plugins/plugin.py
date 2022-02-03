@@ -44,6 +44,12 @@ class SimulationPlugin(Protocol):
     applications must comply with.
     """
 
+    def authenticate(*args, **kwargs) -> None:
+        """
+        Use this function to authenticate with used provider, if required.
+        """
+        ...
+
     def simulate(*args, **kwargs) -> None:
         """
         Use this function to launch the containerized ROS application.
