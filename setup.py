@@ -6,7 +6,7 @@ with open('./README.md', 'r') as readme:
 
 setuptools.setup(
     name='rigel',
-    version='0.0.12',
+    version='0.0.13',
     author='Pedro Melo',
     author_email='pedro.m.melo@inesctec.pt',
     description='Containerize and deploy your ROS application using Docker.',
@@ -27,7 +27,8 @@ setuptools.setup(
         'Click==7.0',
         'docker==4.1.0',
         'jinja2==3.0.3',
-        'pyyaml==6.0'
+        'pyyaml==6.0',
+        'rich==11.0.0'
     ],
     py_modules=['main'],
     entry_points={

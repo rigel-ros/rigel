@@ -15,6 +15,7 @@ from rigel.files import (
     SSHConfigurationFileRenderer,
     YAMLDataLoader
 )
+from rigel.loggers import ErrorLogger, MessageLogger
 from rigel.parsers import RigelfileParser
 
 # Name of the temporary Docker image to be used locally.
@@ -89,7 +90,7 @@ def init(force) -> None:
         print('Rigelfile created with success.')
 
     except RigelfileAlreadyExistsError as err:
-        print(err)
+        ErrorLogger.log(err)
         sys.exit(err.code)
 
 
@@ -111,7 +112,7 @@ def create() -> None:
             SSHConfigurationFileRenderer.render(configuration_parser.dockerfile)
 
     except RigelError as err:
-        print(err)
+        ErrorLogger.log(err)
         sys.exit(err.code)
 
 
@@ -132,7 +133,7 @@ def build() -> None:
         ImageBuilder.build(docker_client, TEMPORARY_IMAGE_NAME, build_args)
 
     except RigelError as err:
-        print(err)
+        ErrorLogger.log(err)
         sys.exit(err.code)
 
 
@@ -148,14 +149,15 @@ def deploy() -> None:
 
         if configuration_parser.registry_plugins:
             for plugin in configuration_parser.registry_plugins:
+                MessageLogger.info(f'Using external plugin {plugin.__class__.__module__}.{plugin.__class__.__name__}')
                 plugin.tag(docker_client, TEMPORARY_IMAGE_NAME)
                 plugin.authenticate(docker_client)
                 plugin.deploy(docker_client)
         else:
-            print('WARNING - no plugin was declared.')
+            MessageLogger.warning('No plugin was declared.')
 
     except RigelError as err:
-        print(err)
+        ErrorLogger.log(err)
         sys.exit(err.code)
 
 

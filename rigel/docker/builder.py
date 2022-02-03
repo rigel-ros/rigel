@@ -1,4 +1,5 @@
 import docker
+from rigel.loggers import DockerLogPrinter, MessageLogger
 from typing import Any, Dict
 
 
@@ -30,6 +31,8 @@ class ImageBuilder:
             rm=True,
         )
 
+        printer = DockerLogPrinter()
+
         # Log state messages during the build process.
         iterator = iter(temp)
         while True:
@@ -38,12 +41,12 @@ class ImageBuilder:
 
                 # TODO: add printer for each type of message.
                 log = next(iterator)
-                if 'stream' in log:
-                    print(log['stream'].strip('\n'))
+                printer.log(log)
 
             except StopIteration:  # no more log messages
                 if 'error' in log:
-                    print(f'An error occurred while building Docker image {image}.')
+                    MessageLogger.error(f'An error occurred while building Docker image {image}.')
                 else:
-                    print(f'Docker image {image} was built with success.')
+                    MessageLogger.info(f'Docker image {image} was built with success.')
+
                 break

@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from rigel.exceptions import UnsupportedCompilerError
+from rigel.loggers import MessageLogger
 from typing import List
 
 
@@ -78,7 +79,7 @@ class ImageConfigurationFile:
     def __post_init__(self) -> None:
 
         if self.ssh and not self.rosinstall:
-            print('WARNING - SSH keys were provided but no .rosinstall file was declared.')
+            MessageLogger.warning('SSH keys were provided but no .rosinstall file was declared.')
 
         if self.compiler not in ['catkin_make', 'colcon']:
             raise UnsupportedCompilerError(compiler=self.compiler)

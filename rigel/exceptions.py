@@ -11,7 +11,7 @@ class RigelError(Exception):
     code = 1
 
     def __init__(self, **kwargs):
-        Exception.__init__(self, f'[ERROR {self.code}] {self.base.format(**kwargs)}')
+        Exception.__init__(self, self.base.format(**kwargs))
         self.kwargs = kwargs
 
 
@@ -28,7 +28,7 @@ class RigelfileAlreadyExistsError(RigelError):
     Raised whenever an attempt is made to create a Rigelfile inside a folder
     that already contains a Rigelfile.
     """
-    base = "A Rigelfile already exists. Use '--new' flag to write over existing Rigelfile."
+    base = "A Rigelfile already exists. Use '--force' flag to write over existing Rigelfile."
     code = 3
 
 

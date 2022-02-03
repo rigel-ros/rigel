@@ -1,5 +1,4 @@
 import shutil
-from jinja2 import Template
 from pkg_resources import resource_filename
 
 

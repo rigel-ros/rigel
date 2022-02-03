@@ -2,6 +2,7 @@ from .image import ImageConfigurationFile
 from dataclasses import asdict
 from jinja2 import Template
 from pkg_resources import resource_string
+from rigel.loggers import MessageLogger
 
 
 class DockerfileRenderer:
@@ -24,6 +25,7 @@ class DockerfileRenderer:
 
         with open('.rigel_config/Dockerfile', 'w+') as output_file:
             output_file.write(dockerfile_templater.render(dockerfile=asdict(configuration_file)))
+            MessageLogger.info("Created Dockerfile")
 
 class EntrypointRenderer:
     """
@@ -47,6 +49,7 @@ class EntrypointRenderer:
 
         with open('.rigel_config/entrypoint.sh', 'w+') as output_file:
             output_file.write(entrypoint_templater.render(entrypoint=asdict(configuration_file)))
+            MessageLogger.info("Created entrypoint.sh")
 
 class SSHConfigurationFileRenderer:
     """
@@ -71,3 +74,4 @@ class SSHConfigurationFileRenderer:
 
         with open(f'.rigel_config/config', 'w+') as output_file:
             output_file.write(ssh_config_templater.render(config=asdict(configuration_file)))
+            MessageLogger.info("Created SSH configuration file")
