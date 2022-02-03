@@ -161,10 +161,32 @@ def deploy() -> None:
         sys.exit(err.code)
 
 
+@click.command()
+def run() -> None:
+    """
+    Start your containerized ROS application.
+    """
+    try:
+
+        configuration_parser = create_configuration_parser()
+
+        if configuration_parser.simulation_plugins:
+            for plugin in configuration_parser.simulation_plugins:
+                MessageLogger.info(f'Using external plugin {plugin.__class__.__module__}.{plugin.__class__.__name__}')
+                plugin.simulate()
+        else:
+            MessageLogger.warning('No plugin was declared.')
+
+    except RigelError as err:
+        ErrorLogger.log(err)
+        sys.exit(err.code)
+
+
 cli.add_command(init)
 cli.add_command(create)
 cli.add_command(build)
 cli.add_command(deploy)
+cli.add_command(run)
 
 
 def main() -> None:

@@ -44,7 +44,7 @@ class SimulationPlugin(Protocol):
     applications must comply with.
     """
 
-    def simulate(client: docker.api.client.APIClient, *args, **kwargs) -> None:
+    def simulate(*args, **kwargs) -> None:
         """
         Use this function to launch the containerized ROS application.
         """
