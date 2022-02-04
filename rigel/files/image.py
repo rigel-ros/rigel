@@ -47,6 +47,8 @@ class ImageConfigurationFile:
     :param distro: The ROS distro to be used (REQUIRED).
     :type package: string
     :param package: The name of the package ROS to be containerized (REQUIRED).
+    :type image: string
+    :param image: The name for the final Docker image (REQUIRED).
     :type apt: List[string]
     :param apt: The name of dependencies to be installed using APT.
     :type compiler: string
@@ -65,6 +67,7 @@ class ImageConfigurationFile:
     """
     command: str
     distro: str
+    image: str
     package: str
 
     apt: List[str] = field(default_factory=lambda: [])

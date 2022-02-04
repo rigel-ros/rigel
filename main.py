@@ -1,5 +1,4 @@
 import click
-import docker
 import os
 import sys
 from pathlib import Path
@@ -17,9 +16,8 @@ from rigel.files import (
 )
 from rigel.loggers import ErrorLogger, MessageLogger
 from rigel.parsers import RigelfileParser
-
-# Name of the temporary Docker image to be used locally.
-TEMPORARY_IMAGE_NAME = 'rigel:temp'
+from rigel.plugins import Plugin
+from typing import List
 
 
 def create_folder(path: str) -> None:
@@ -30,20 +28,6 @@ def create_folder(path: str) -> None:
     :param path: Path of the folder to be created.
     """
     Path(path).mkdir(parents=True, exist_ok=True)
-
-
-def create_docker_client() -> docker.api.client.APIClient:
-    """
-    Create a Docker client instance.
-
-    :rtype: docker.api.client.APIClient
-    :return: A Docker client instance.
-    """
-    docker_host = os.environ.get('DOCKER_PATH')
-    if docker_host:
-        return docker.APIClient(base_url=docker_host)
-    else:
-        return docker.APIClient(base_url='unix:///var/run/docker.sock')
 
 
 def create_configuration_parser() -> RigelfileParser:
@@ -65,6 +49,27 @@ def rigelfile_exists() -> bool:
     :return: True if a Rigelfile is found at the current directory. False otherwise.
     """
     return os.path.isfile('./Rigelfile')
+
+
+def run_plugins(plugins: List[Plugin]) -> None:
+    """
+    Run a set of external plugins.
+
+    :rtype plugins: List[rigel.plugin.Plugin]
+    :return plugins: List of external plugins to be run.
+    """
+    try:
+
+        if plugins:
+            for plugin in plugins:
+                MessageLogger.info(f'Using external plugin {plugin.__class__.__module__}.{plugin.__class__.__name__}')
+                plugin.run()
+        else:
+            MessageLogger.warning('No plugin was declared.')
+
+    except RigelError as err:
+        ErrorLogger.log(err)
+        sys.exit(err.code)
 
 
 @click.group()
@@ -123,14 +128,9 @@ def build() -> None:
     """
 
     configuration_parser = create_configuration_parser()
-    docker_client = create_docker_client()
 
     try:
-
-        build_args = {}
-        for key in configuration_parser.dockerfile.ssh:
-            build_args[key.value] = os.environ.get(key.value)
-        ImageBuilder.build(docker_client, TEMPORARY_IMAGE_NAME, build_args)
+        ImageBuilder.build(configuration_parser.dockerfile)
 
     except RigelError as err:
         ErrorLogger.log(err)
@@ -142,23 +142,8 @@ def deploy() -> None:
     """
     Push a Docker image to a remote image registry.
     """
-    try:
-
-        configuration_parser = create_configuration_parser()
-        docker_client = create_docker_client()
-
-        if configuration_parser.registry_plugins:
-            for plugin in configuration_parser.registry_plugins:
-                MessageLogger.info(f'Using external plugin {plugin.__class__.__module__}.{plugin.__class__.__name__}')
-                plugin.tag(docker_client, TEMPORARY_IMAGE_NAME)
-                plugin.authenticate(docker_client)
-                plugin.deploy(docker_client)
-        else:
-            MessageLogger.warning('No plugin was declared.')
-
-    except RigelError as err:
-        ErrorLogger.log(err)
-        sys.exit(err.code)
+    configuration_parser = create_configuration_parser()
+    run_plugins(configuration_parser.registry_plugins)
 
 
 @click.command()
@@ -166,23 +151,11 @@ def run() -> None:
     """
     Start your containerized ROS application.
     """
-    try:
-
-        configuration_parser = create_configuration_parser()
-
-        if configuration_parser.simulation_plugins:
-            for plugin in configuration_parser.simulation_plugins:
-                MessageLogger.info(f'Using external plugin {plugin.__class__.__module__}.{plugin.__class__.__name__}')
-                plugin.authenticate()
-                plugin.simulate()
-        else:
-            MessageLogger.warning('No plugin was declared.')
-
-    except RigelError as err:
-        ErrorLogger.log(err)
-        sys.exit(err.code)
+    configuration_parser = create_configuration_parser()
+    run_plugins(configuration_parser.simulation_plugins)
 
 
+# Add commands to CLI
 cli.add_command(init)
 cli.add_command(create)
 cli.add_command(build)

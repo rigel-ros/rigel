@@ -10,10 +10,9 @@ from rigel.exceptions import (
     PluginNotFoundError,
     UnknownFieldError
 )
-from rigel.plugins import RegistryPlugin, SimulationPlugin
-from typing import Any, Dict, List, Tuple, Union
+from rigel.plugins import Plugin
+from typing import Any, Dict, List, Tuple
 
-Plugin = Union[RegistryPlugin, SimulationPlugin]
 YAMLData = Dict[str, Any]
 
 
@@ -23,15 +22,15 @@ class RigelfileParser:
 
     :type dockerfile: rigel.files.ImageConfigurationFile
     :cvar dockerfile: Information regarding how to containerize the ROS application.
-    :type registry_plugins: List[rigel.files.RegistryPlugin]
+    :type registry_plugins: List[rigel.files.Plugin]
     :cvar registry_plugins: List of plugins to be used to deploy the containerized ROS application.
-    :type simulation_plugins: List[rigel.files.SimulationPlugin]
+    :type simulation_plugins: List[rigel.files.Plugin]
     :cvar simulation_plugins: List of plugins to be used to run the containerized ROS application.
     """
 
     dockerfile: ImageConfigurationFile
-    registry_plugins: List[RegistryPlugin]
-    simulation_plugins: List[SimulationPlugin]
+    registry_plugins: List[Plugin]
+    simulation_plugins: List[Plugin]
 
     def __segment_data(self, yaml_data: YAMLData) -> Tuple[YAMLData, List[YAMLData], List[YAMLData]]:
         """
@@ -101,7 +100,7 @@ class RigelfileParser:
         :type yaml_data:
         :param yaml_data: All data concerning which plugins to use.
 
-        :rtype: Union[List[RegistryPlugin], List[SimulationPlugin]]
+        :rtype: List[Plugin]
         :return: A list of data aggregators.
         """
         plugins = []

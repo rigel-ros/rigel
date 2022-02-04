@@ -1,1 +1,1 @@
-from .plugin import RegistryPlugin, SimulationPlugin  # noqa: 401
+from .plugin import Plugin  # noqa: 401
