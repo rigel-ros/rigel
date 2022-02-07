@@ -1,0 +1,14 @@
+build:
+  package: test_package
+  distro: melodic
+  command: roslaunch my_package.launch
+  image: rigel:temp
+  env:
+  ssh:
+    -
+      value: keys/test.key
+      hostname: gitlab.com
+      file: True
+    -
+      value: BITBUCKET_SSH_KEY
+      hostname: bitbucket.com

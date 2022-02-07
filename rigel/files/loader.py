@@ -25,6 +25,27 @@ class YAMLDataLoader:
         :rtype: dict
         :return: The YAML data.
         """
+
+        # Extracted and adapted from:
+        # https://stackoverflow.com/questions/52858143/how-to-ensure-there-are-no-null-values-in-my-yaml-file
+        def __find_undefined(d: Dict[str, Any], path=[]) -> None:
+
+            # NOTE: All field in a YAML file are either a list or a dict.
+            # Standalone values will result in an UnformattedRigelfileError error.
+            if isinstance(d, dict):  # entry point as YAML is a dict
+                for k, v in d.items():
+                    if v is None:
+                        print('null value for', path + [k])
+                    else:
+                        __find_undefined(v, path + [k])
+
+            elif isinstance(d, list):
+                for idx, elem in enumerate(d):
+                    if elem is None:
+                        print('null value for', path + [idx])
+                    else:
+                        __find_undefined(elem, path + [idx])
+
         try:
 
             with open(filepath, 'r') as configuration_file:
@@ -33,6 +54,8 @@ class YAMLDataLoader:
             # Ensure that the file contains some data.
             if not yaml_data:
                 raise EmptyRigelfileError()
+
+            # Ensure that no field was left undefined.
 
             return yaml_data
 

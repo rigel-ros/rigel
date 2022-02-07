@@ -1,3 +1,4 @@
+import copy
 from .injector import YAMLInjector
 from importlib import import_module
 from rigel.files import (
@@ -48,7 +49,7 @@ class RigelfileParser:
         :return: A tuple containing the segmented data and separated according to logic block.
         """
         # The 'build' block is mandatory and its existence must be checked.
-        build_data = yaml_data.get('build')
+        build_data = copy.deepcopy(yaml_data).get('build')  # use 'deepcopy' to ensure that original data is unaltered.
         if build_data is None:
             raise IncompleteRigelfileError(block='build')
 

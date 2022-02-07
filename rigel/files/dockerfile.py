@@ -27,12 +27,13 @@ class DockerfileRenderer:
             output_file.write(dockerfile_templater.render(dockerfile=asdict(configuration_file)))
             MessageLogger.info("Created Dockerfile")
 
+
 class EntrypointRenderer:
     """
     A class that creates the 'entrypoint.sh' script.
-    This script contains all setup commands that are to be executed at runtime. 
+    This script contains all setup commands that are to be executed at runtime.
     """
-    
+
     @staticmethod
     def render(configuration_file: ImageConfigurationFile) -> None:
         """
@@ -50,6 +51,7 @@ class EntrypointRenderer:
         with open('.rigel_config/entrypoint.sh', 'w+') as output_file:
             output_file.write(entrypoint_templater.render(entrypoint=asdict(configuration_file)))
             MessageLogger.info("Created entrypoint.sh")
+
 
 class SSHConfigurationFileRenderer:
     """
@@ -72,6 +74,6 @@ class SSHConfigurationFileRenderer:
         ssh_config_template = resource_string(__name__, 'assets/templates/config.j2').decode('utf-8')
         ssh_config_templater = Template(ssh_config_template)
 
-        with open(f'.rigel_config/config', 'w+') as output_file:
+        with open('.rigel_config/config', 'w+') as output_file:
             output_file.write(ssh_config_templater.render(config=asdict(configuration_file)))
             MessageLogger.info("Created SSH configuration file")
