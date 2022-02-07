@@ -9,6 +9,7 @@ from .exceptions import (  # noqa: 401
     RigelError,
     RigelfileAlreadyExistsError,
     RigelfileNotFound,
+    UndefinedValueError,
     UnformattedRigelfileError,
     UnknownFieldError,
     UnsupportedCompilerError

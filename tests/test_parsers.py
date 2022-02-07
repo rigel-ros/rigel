@@ -5,6 +5,7 @@ from pkg_resources import resource_filename
 from rigel.exceptions import (
     IncompleteRigelfileError,
     MissingRequiredFieldError,
+    PluginNotFoundError,
     UnknownFieldError
 )
 from rigel.files import EnvironmentVariable, SSHKey, YAMLDataLoader
@@ -14,6 +15,9 @@ from rigel.parsers.rigelfile import RigelfileParser
 
 @dataclass
 class TestDataclass:
+    """
+    A simple class that works as a fake Rigelfile for testing.
+    """
     number: int
     flag: bool
 
@@ -56,6 +60,9 @@ class ParserTesting(unittest.TestCase):
     Test suite for rigel.parsers.riglefile.RigelfileParser class.
     """
 
+    file_basic_build = 'assets/build_basic'
+    file_complete_build = 'assets/build_complete'
+
     def test_missing_build_block(self) -> None:
         """
         Test if IncompleteRigelfileError is thrown if Rigelfile misses 'build' block.
@@ -68,7 +75,7 @@ class ParserTesting(unittest.TestCase):
         """
         Test if no custom environment variable value is stored when field 'env' is left undeclared.
         """
-        yaml_file = resource_filename(__name__, 'assets/build_basic')
+        yaml_file = resource_filename(__name__, self.file_basic_build)
         yaml_data = YAMLDataLoader.load_data(yaml_file)
         RigelfileParser(yaml_data)
 
@@ -79,7 +86,7 @@ class ParserTesting(unittest.TestCase):
         """
         Test if custom environment variables' values are properly stored.
         """
-        yaml_file = resource_filename(__name__, 'assets/build_complete')
+        yaml_file = resource_filename(__name__, self.file_complete_build)
         yaml_data = YAMLDataLoader.load_data(yaml_file)
         RigelfileParser(yaml_data)
 
@@ -93,7 +100,7 @@ class ParserTesting(unittest.TestCase):
         """
         Test if no SSH information is stored when field 'ssh' is left undeclared.
         """
-        yaml_file = resource_filename(__name__, 'assets/build_basic')
+        yaml_file = resource_filename(__name__, self.file_basic_build)
         yaml_data = YAMLDataLoader.load_data(yaml_file)
         RigelfileParser(yaml_data)
 
@@ -104,13 +111,54 @@ class ParserTesting(unittest.TestCase):
         """
         Test if custom SSH information is properly stored.
         """
-        yaml_file = resource_filename(__name__, 'assets/build_complete')
+        yaml_file = resource_filename(__name__, self.file_complete_build)
         yaml_data = YAMLDataLoader.load_data(yaml_file)
         RigelfileParser(yaml_data)
 
         self.assertEqual(len(yaml_data['build']['ssh']), mock_dataclass.call_count)
         for key in yaml_data['build']['ssh']:
             mock_dataclass.called_once_with(**key)
+
+    def test_invalid_plugin_declaration(self) -> None:
+        """
+        Test if an MissingRequiredFieldError is thrown when an invalid plugin is declared.
+        """
+        yaml_file = resource_filename(__name__, self.file_basic_build)
+        yaml_data = YAMLDataLoader.load_data(yaml_file)
+
+        with self.assertRaises(MissingRequiredFieldError):
+            yaml_data['deploy'] = [{}]
+            RigelfileParser(yaml_data)
+
+        with self.assertRaises(MissingRequiredFieldError):
+            yaml_data['simulate'] = [{}]
+            RigelfileParser(yaml_data)
+
+    def test_module_not_found(self) -> None:
+        """
+        Test if PluginNotFoundError is thrown if an unknown plugin is declared.
+        """
+        yaml_file = resource_filename(__name__, self.file_basic_build)
+        yaml_data = YAMLDataLoader.load_data(yaml_file)
+
+        with self.assertRaises(PluginNotFoundError):
+            yaml_data['deploy'] = [{'plugin': 'unknown'}]
+            RigelfileParser(yaml_data)
+
+        yaml_data.pop('deploy')
+
+        with self.assertRaises(PluginNotFoundError):
+            yaml_data['simulate'] = [{'plugin': 'unknown'}]
+            RigelfileParser(yaml_data)
+
+    # @patch.object(RigelfileParser, '__load_plugins.getattr')
+    # @patch('importlib.import_module')
+    # def test_plugin_creation(self, importlib_mock) -> None:
+    #     """
+    #     Test if plugins are properly initialized and correctly passed their data.
+    #     """
+    #     yaml_file = resource_filename(__name__, self.file_complete_build)
+    #     yaml_data = YAMLDataLoader.load_data(yaml_file)
 
 
 if __name__ == '__main__':
