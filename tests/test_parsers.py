@@ -1,5 +1,6 @@
 import unittest
 from dataclasses import dataclass
+from mock import patch
 from rigel.exceptions import (
     IncompleteRigelfileError,
     MissingRequiredFieldError,
@@ -7,7 +8,6 @@ from rigel.exceptions import (
 )
 from rigel.parsers.injector import YAMLInjector
 from rigel.parsers.rigelfile import RigelfileParser
-from unittest.mock import Mock
 
 
 @dataclass
@@ -39,13 +39,14 @@ class YAMLInjectorTesting(unittest.TestCase):
                 'sentence': "Field 'sentence' is unknown."
             })
 
-    def test_injected_data(self) -> None:
+    @patch.object(TestDataclass, '__init__')
+    def test_injected_data(self, mock_dataclass) -> None:
         """
         Test if the provided data is properly forwarded to the dataclass constructor.
         """
         data = {'number': 1, 'flag': True}
-        mock = YAMLInjector.inject(Mock, data)
-        self.assertEquals(mock.number, 2)
+        YAMLInjector.inject(TestDataclass, data)
+        mock_dataclass.assert_called_once_with(**data)
 
 
 class ParserTesting(unittest.TestCase):
