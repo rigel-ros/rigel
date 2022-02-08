@@ -1,6 +1,12 @@
 # This file was generate by Rigel.
 # Feel free to alter this file and use it to configure Rigel according to your own preferences.
 
+# Place in this sectin all global variable values to be later referenced in this file.
+vars:
+  ros_distro: melodic
+  local_image: rigel:temp
+
+
 # Place in this section all information regarding how to containerize your ROS workspace.
 build:
 
@@ -8,13 +14,13 @@ build:
   package: my_package
 
   # Set the value of required field 'distro' to be the ROS distro to be used.
-  distro: melodic
+  distro: $ros_distro
 
   # Set the value of required field 'command' to be the command to launch your ROS nodes.
   command: roslaunch my_package.launch
 
   # Set the name for the final Docker image.
-  image: rigel:temp
+  image: $local_image
 
   # Set the value of required field 'compiler' to be the name of the tool your want Rigel to use when compiling your ROS workspace.
   # Rigel supports the following ROS tools: 'catkin_make' (default) and 'colcon'.
