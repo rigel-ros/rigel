@@ -61,7 +61,7 @@ class UndefinedValueError(RigelError):
     :type path: string
     :ivar path: The value that was left undefined.
     """
-    base = "Invalid Rigelfile. Field {path} was declared but left undefined."
+    base = "Invalid Rigelfile. Field '{path}' was declared but left undefined."
     code = 6
 
 

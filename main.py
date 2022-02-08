@@ -39,7 +39,6 @@ def create_configuration_parser() -> RigelfileParser:
     """
     yaml_data = YAMLDataLoader.load_data('./Rigelfile')
     decoded = RigelfileDecoder.decode(yaml_data)
-    print(decoded)
     return RigelfileParser(decoded)
 
 
