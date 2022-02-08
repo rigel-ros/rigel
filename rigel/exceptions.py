@@ -35,7 +35,7 @@ class RigelfileAlreadyExistsError(RigelError):
 class UnformattedRigelfileError(RigelError):
     """
     Raised whenever an attempt is made to use an unformatted Rigelfile.
-    
+
     :type trace: string
     :ivar trace: A message detailing what format error was found and where.
     """
@@ -54,12 +54,23 @@ class IncompleteRigelfileError(RigelError):
     code = 5
 
 
+class UndefinedValueError(RigelError):
+    """
+    Raised whenever a Rigelfile is declared with undefined values.
+
+    :type path: string
+    :ivar path: The value that was left undefined.
+    """
+    base = "Invalid Rigelfile. Field '{path}' was declared but left undefined."
+    code = 6
+
+
 class EmptyRigelfileError(RigelError):
     """
     Raised whenever an empty Rigelfile is found.
     """
     base = "Provided Rigelfile is empty."
-    code = 6
+    code = 7
 
 
 class UnsupportedCompilerError(RigelError):
@@ -70,7 +81,7 @@ class UnsupportedCompilerError(RigelError):
     :ivar compiler: The name of the unsupported compiler.
     """
     base = "Unsupported compiler '{compiler}'."
-    code = 7
+    code = 8
 
 
 class UnknownFieldError(RigelError):
@@ -81,7 +92,7 @@ class UnknownFieldError(RigelError):
     :ivar field: Name of the unknown field.
     """
     base = "Unknown field '{field}' found while parsing Rigelfile."
-    code = 8
+    code = 9
 
 
 class MissingRequiredFieldError(RigelError):
@@ -92,7 +103,20 @@ class MissingRequiredFieldError(RigelError):
     :ivar field: Name of the missing field.
     """
     base = "Required field '{field}' is missing."
-    code = 9
+    code = 10
+
+
+class UndeclaredGlobalVariable(RigelError):
+    """
+    Raised whenever an attempt is made to use an undeclared global variable.
+
+    :type var: string
+    :ivar var: Name of the undeclared global variable.
+    :type field: string
+    :ivar field: Path for the field referencing the global varialble.
+    """
+    base = "Field '{field}' set to have the value of undeclared global variable '{var}'."
+    code = 11
 
 
 class PluginNotFoundError(RigelError):
@@ -103,4 +127,4 @@ class PluginNotFoundError(RigelError):
     :ivar plugin: Name of the plugin.
     """
     base = "Unable to load plugin '{plugin}'. Not installed."
-    code = 10
+    code = 12

@@ -1,0 +1,28 @@
+build:
+  package: test_package
+  distro: melodic
+  command: roslaunch my_package.launch
+  image: rigel:temp
+  env:
+    - TEST_VAR_1=test_var_1
+    - TEST_VAR_2=test_var_2
+  ssh:
+    -
+      value: keys/test.key
+      hostname: gitlab.com
+      file: True
+    -
+      value: BITBUCKET_SSH_KEY
+      hostname: bitbucket.com
+
+deploy:
+  -
+    plugin: 'test_deploy_plugin'
+    number: 42
+    flag: True
+
+simulate:
+  -
+    plugin: 'test_simulate_plugin'
+    number: 42
+    flag: False

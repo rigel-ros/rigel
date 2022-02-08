@@ -1,3 +1,5 @@
+import copy
+from .injector import YAMLInjector
 from importlib import import_module
 from rigel.files import (
     ImageConfigurationFile,
@@ -7,8 +9,7 @@ from rigel.files import (
 from rigel.exceptions import (
     IncompleteRigelfileError,
     MissingRequiredFieldError,
-    PluginNotFoundError,
-    UnknownFieldError
+    PluginNotFoundError
 )
 from rigel.plugins import Plugin
 from typing import Any, Dict, List, Tuple
@@ -68,30 +69,20 @@ class RigelfileParser:
         :rtype: rigel.files.ImageConfigurationFile
         :return: A data aggregator.
         """
-        try:
+        if 'ssh' in yaml_data:
+            yaml_data['ssh'] = [YAMLInjector.inject(SSHKey, key) for key in yaml_data['ssh']]
 
-            if 'ssh' in yaml_data:
-                yaml_data['ssh'] = [SSHKey(**key) for key in yaml_data['ssh']]
+        envs = []
+        if 'env' in yaml_data:
+            for env in yaml_data['env']:
+                name, value = env.strip().split('=')
+                envs.append(YAMLInjector.inject(
+                    EnvironmentVariable,
+                    {'name': name, 'value': value}
+                ))
+        yaml_data['env'] = envs
 
-            envs = []
-            if 'env' in yaml_data:
-                for env in yaml_data['env']:
-                    name, value = env.strip().split('=')
-                    envs.append(EnvironmentVariable(name, value))
-            yaml_data['env'] = envs
-
-        except TypeError as err:
-
-            message = err.args[0]
-            field = message.split()[-1].replace("'", '')
-
-            if 'got an unexpected keyword' in err.args[0]:
-                raise UnknownFieldError(field=field)
-
-            elif 'missing' in err.args[0]:
-                raise MissingRequiredFieldError(field=field)
-
-        return ImageConfigurationFile(**yaml_data)
+        return YAMLInjector.inject(ImageConfigurationFile, yaml_data)
 
     def __load_plugins(self, yaml_data: YAMLData) -> List[Plugin]:
         """
@@ -107,20 +98,17 @@ class RigelfileParser:
         for plugin_data in yaml_data:
 
             try:
-
                 plugin_name = plugin_data.pop('plugin')
-
             except KeyError:
                 raise MissingRequiredFieldError(field='plugin')
 
             try:
-
                 module = import_module(plugin_name)
                 cls = getattr(module, 'Plugin')
-                plugins.append(cls(**plugin_data))
-
             except ModuleNotFoundError:
                 raise PluginNotFoundError(plugin=plugin_name)
+
+            plugins.append(YAMLInjector.inject(cls, plugin_data))
 
         return plugins
 
@@ -133,7 +121,9 @@ class RigelfileParser:
         :param yaml_data: The data extracted from a Rigelfile.
         """
 
-        build_data, registry_plugins_data, simulation_plugins_data = self.__segment_data((yaml_data))
+        data = copy.deepcopy(yaml_data)  # use 'deepcopy' to ensure that original data is unaltered.
+
+        build_data, registry_plugins_data, simulation_plugins_data = self.__segment_data((data))
 
         self.dockerfile = self.__build_dockerfile(build_data)
         self.registry_plugins = self.__load_plugins(registry_plugins_data)

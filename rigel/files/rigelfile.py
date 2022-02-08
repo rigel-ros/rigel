@@ -13,5 +13,5 @@ class RigelfileCreator:
         Create a new Rigelfile.
         """
 
-        rigelfile_path = resource_filename(__name__, 'assets/Rigelfile.j2')
+        rigelfile_path = resource_filename(__name__, 'assets/Rigelfile')
         shutil.copyfile(rigelfile_path, 'Rigelfile')

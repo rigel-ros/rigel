@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from rigel.exceptions import UnsupportedCompilerError
 from rigel.loggers import MessageLogger
-from typing import List
+from typing import Dict, List
 
 
 @dataclass
@@ -64,6 +64,8 @@ class ImageConfigurationFile:
     :param run: A list of commands to be executed while building the Docker image.
     :type ssh: List[rigel.files.SSHKey]
     :param ssh: A list of all required private SSH keys.
+    :type vars: Dict[str, Any]
+    :param vars: The name of custom global variables.
     """
     command: str
     distro: str
@@ -78,6 +80,7 @@ class ImageConfigurationFile:
     rosinstall: List[str] = field(default_factory=lambda: [])
     run: List[str] = field(default_factory=lambda: [])
     ssh: List[SSHKey] = field(default_factory=lambda: [])
+    vars: Dict[str, any] = field(default_factory=lambda: {})
 
     def __post_init__(self) -> None:
 
