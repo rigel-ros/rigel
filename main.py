@@ -15,7 +15,7 @@ from rigel.files import (
     YAMLDataLoader
 )
 from rigel.loggers import ErrorLogger, MessageLogger
-from rigel.parsers import RigelfileParser
+from rigel.parsers import RigelfileDecoder, RigelfileParser
 from rigel.plugins import Plugin
 from typing import List
 
@@ -38,7 +38,9 @@ def create_configuration_parser() -> RigelfileParser:
     :return: The parsed information.
     """
     yaml_data = YAMLDataLoader.load_data('./Rigelfile')
-    return RigelfileParser(yaml_data)
+    decoded = RigelfileDecoder.decode(yaml_data)
+    print(decoded)
+    return RigelfileParser(decoded)
 
 
 def rigelfile_exists() -> bool:

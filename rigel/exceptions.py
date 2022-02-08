@@ -106,6 +106,19 @@ class MissingRequiredFieldError(RigelError):
     code = 10
 
 
+class UndeclaredGlobalVariable(RigelError):
+    """
+    Raised whenever an attempt is made to use an undeclared global variable.
+
+    :type var: string
+    :ivar var: Name of the undeclared global variable.
+    :type field: string
+    :ivar field: Path for the field referencing the global varialble.
+    """
+    base = "Field '{field}' set to have the value of undeclared global variable '{var}'."
+    code = 11
+
+
 class PluginNotFoundError(RigelError):
     """
     Raised whenever an attempt is made to load a plugin that is not installed.
@@ -114,4 +127,4 @@ class PluginNotFoundError(RigelError):
     :ivar plugin: Name of the plugin.
     """
     base = "Unable to load plugin '{plugin}'. Not installed."
-    code = 11
+    code = 12

@@ -49,7 +49,7 @@ class RigelfileParser:
         :return: A tuple containing the segmented data and separated according to logic block.
         """
         # The 'build' block is mandatory and its existence must be checked.
-        build_data = copy.deepcopy(yaml_data).get('build')  # use 'deepcopy' to ensure that original data is unaltered.
+        build_data = yaml_data.get('build')
         if build_data is None:
             raise IncompleteRigelfileError(block='build')
 
@@ -121,7 +121,9 @@ class RigelfileParser:
         :param yaml_data: The data extracted from a Rigelfile.
         """
 
-        build_data, registry_plugins_data, simulation_plugins_data = self.__segment_data((yaml_data))
+        data = copy.deepcopy(yaml_data)  # use 'deepcopy' to ensure that original data is unaltered.
+
+        build_data, registry_plugins_data, simulation_plugins_data = self.__segment_data((data))
 
         self.dockerfile = self.__build_dockerfile(build_data)
         self.registry_plugins = self.__load_plugins(registry_plugins_data)

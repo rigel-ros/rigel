@@ -41,7 +41,7 @@ class YAMLDataLoader:
             # Standalone values will result in an UnformattedRigelfileError error.
             if isinstance(yaml_data, dict):  # entry point as YAML is a dict
                 for k, v in yaml_data.items():
-                    new_path = f'{path}.{k}'
+                    new_path = f'{path}.{k}' if path else k
                     if v is None:
                         raise UndefinedValueError(path=new_path)
                     else:
@@ -65,7 +65,7 @@ class YAMLDataLoader:
                 raise EmptyRigelfileError()
 
             # Ensure that no field was left undefined.
-            # __find_undefined(yaml_data)
+            __find_undefined(yaml_data)
 
             return yaml_data
 
