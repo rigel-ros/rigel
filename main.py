@@ -8,10 +8,8 @@ from rigel.exceptions import (
     RigelError
 )
 from rigel.files import (
-    DockerfileRenderer,
-    EntrypointRenderer,
+    Renderer,
     RigelfileCreator,
-    SSHConfigurationFileRenderer,
     YAMLDataLoader
 )
 from rigel.loggers import ErrorLogger, MessageLogger
@@ -112,10 +110,10 @@ def create() -> None:
 
         configuration_parser = create_configuration_parser()
 
-        DockerfileRenderer.render(configuration_parser.dockerfile)
-        EntrypointRenderer.render(configuration_parser.dockerfile)
+        Renderer.render(configuration_parser.dockerfile, 'Dockerfile.j2', 'Dockerfile')
+        Renderer.render(configuration_parser.dockerfile, 'entrypoint.j2', 'entrypoint.sh')
         if configuration_parser.dockerfile.ssh:
-            SSHConfigurationFileRenderer.render(configuration_parser.dockerfile)
+            Renderer.render(configuration_parser.dockerfile, 'config.j2', 'config')
 
     except RigelError as err:
         ErrorLogger.log(err)
