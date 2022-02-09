@@ -2,7 +2,7 @@ import yaml
 from rigel.exceptions import (
     EmptyRigelfileError,
     RigelfileNotFound,
-    UndefinedValueError,
+    UndeclaredValueError,
     UnformattedRigelfileError
 )
 from typing import Any, Dict
@@ -43,7 +43,7 @@ class YAMLDataLoader:
                 for k, v in yaml_data.items():
                     new_path = f'{path}.{k}' if path else k
                     if v is None:
-                        raise UndefinedValueError(path=new_path)
+                        raise UndeclaredValueError(path=new_path)
                     else:
                         __find_undefined(v, new_path)
 
@@ -51,7 +51,7 @@ class YAMLDataLoader:
                 for idx, elem in enumerate(yaml_data):
                     new_path = f'{path}[{idx}]'
                     if elem is None:
-                        raise UndefinedValueError(path=new_path)
+                        raise UndeclaredValueError(path=new_path)
                     else:
                         __find_undefined(elem, new_path)
 

@@ -3,7 +3,7 @@
 
 # Use an intermediate stage to clone external repositories without
 # compromising the security of any private SSH key.
-FROM ros:{{ dockerfile.distro }} as intermediate
+FROM ros:{{ configuration.distro }} as intermediate
 
 RUN apt clean && apt update && apt install -y \
     git \
@@ -11,15 +11,15 @@ RUN apt clean && apt update && apt install -y \
     python-vcstool \
     ssh
 
-{% if dockerfile.ssh is defined and dockerfile.ssh|length > 0 -%}
+{% if configuration.ssh is defined and configuration.ssh|length > 0 -%}
 # Add SSH keys and set their permissions.
 RUN mkdir -p /root/.ssh/
-{% for key in dockerfile.ssh -%}
+{% for key in configuration.ssh -%}
 {%- if key.file == False -%}
 ARG {{ key.value }}
 {%- endif %}
 {%- endfor %}
-{%- for key in dockerfile.ssh %}
+{%- for key in configuration.ssh %}
 {% if key.file -%}
 COPY {{ key.value }} /root/.ssh/{{ key.value }}
 {%- else -%}
@@ -34,63 +34,63 @@ RUN chmod 600 /root/.ssh/config
 
 # Ensure hosts are accepted.
 RUN touch /root/.ssh/known_hosts
-{%- if dockerfile.ssh is defined and dockerfile.ssh|length > 0 -%}
-{%- for key in dockerfile.ssh %}
+{%- if configuration.ssh is defined and configuration.ssh|length > 0 -%}
+{%- for key in configuration.ssh %}
 RUN ssh-keyscan {{ key.hostname }} >> /root/.ssh/known_hosts
 {%- endfor %}
 {%- endif %}
-{%- if dockerfile.hostname is defined and dockerfile.hostname|length > 0 -%}
-{%- for hostname in dockerfile.hostname %}
+{%- if configuration.hostname is defined and configuration.hostname|length > 0 -%}
+{%- for hostname in configuration.hostname %}
 RUN ssh-keyscan {{ hostname }} >> /root/.ssh/known_hosts
 {%- endfor %}
 {%- endif %}
 
 RUN mkdir -p /ros_workspace/src
 
-{% if dockerfile.rosinstall is defined and dockerfile.rosinstall|length > 0 -%}
+{% if configuration.rosinstall is defined and configuration.rosinstall|length > 0 -%}
 # Copy .rosinstall files
-{%- for file in dockerfile.rosinstall %}
+{%- for file in configuration.rosinstall %}
 COPY {{ file}} /ros_workspace/src/{{ file }}
 {%- endfor %}
 {%- endif %}
 
 # Clone repositories.
 RUN cd /ros_workspace \ 
-    && /bin/bash -c "source /opt/ros/{{ dockerfile.distro }}/setup.bash \
-{%- for file in dockerfile.rosinstall %}
+    && /bin/bash -c "source /opt/ros/{{ configuration.distro }}/setup.bash \
+{%- for file in configuration.rosinstall %}
     && vcs import src < src/{{ file }} \
 {%- endfor %}
     " && echo
 
 ############################################################################
 
-FROM ros:{{ dockerfile.distro }}
+FROM ros:{{ configuration.distro }}
 
-{% if dockerfile.env is defined and dockerfile.env|length > 0 -%}
+{% if configuration.env is defined and configuration.env|length > 0 -%}
 # Set required environment variables.
-{% for env in dockerfile.env -%}
+{% for env in configuration.env -%}
 ENV {{ env.name }} {{ env.value }}
 {% endfor %}
 {% endif -%}
 
 # Install dependencies.
 RUN sudo apt clean && sudo apt update && sudo apt install -y \
-    {% if dockerfile.apt is defined and dockerfile.apt|length > 0 -%}
-    {% for package in dockerfile.apt -%}
+    {% if configuration.apt is defined and configuration.apt|length > 0 -%}
+    {% for package in configuration.apt -%}
         {{ package }} \
     {% endfor -%}
     {% endif -%}
     devilspie \
     lsb \
-    {% if dockerfile.compiler == 'colcon' -%}
+    {% if configuration.compiler == 'colcon' -%}
         python3-colcon-common-extensions \
     {% endif -%}
     ssh \
     xfce4-terminal
 
-{% if dockerfile.run is defined and dockerfile.run|length > 0 -%}
+{% if configuration.run is defined and configuration.run|length > 0 -%}
 # Execute additional commands.
-{% for cmd in dockerfile.run -%}
+{% for cmd in configuration.run -%}
 RUN {{ cmd }}
 {% endfor -%}
 {%- endif %}
@@ -105,7 +105,7 @@ USER $USERNAME
 # Create ROS workspace folder
 RUN mkdir -p /home/robomaker/ros_workspace/src
 
-{% if dockerfile.rosinstall is defined and dockerfile.rosinstall|length > 0 -%}
+{% if configuration.rosinstall is defined and configuration.rosinstall|length > 0 -%}
 # Copy dependencies from intermediate stage.
 COPY --from=intermediate /ros_workspace/src /home/robomaker/ros_workspace/src/
 
@@ -115,20 +115,20 @@ RUN sh -c 'sudo chown -R robomaker:robomaker /home/robomaker/ros_workspace'
 {%- endif %}
 
 # Copy this repository into the ROS workspace.
-COPY . /home/robomaker/ros_workspace/src/{{ dockerfile.package }}
+COPY . /home/robomaker/ros_workspace/src/{{ configuration.package }}
 
 # Copy bringup script.
 COPY .rigel_config/entrypoint.sh /home/robomaker/robot-entrypoint.sh
 
 # Compile ROS workspace.
-RUN /bin/bash -c "source /opt/ros/{{ dockerfile.distro }}/setup.bash \ 
+RUN /bin/bash -c "source /opt/ros/{{ configuration.distro }}/setup.bash \ 
     && cd /home/robomaker/ros_workspace \
     && sudo rosdep fix-permissions \
     && rosdep update \
-    && rosdep install --rosdistro {{ dockerfile.distro }} --from-paths src --ignore-src -r -y \
-    {% if dockerfile.compiler == 'catkin_make' -%}
+    && rosdep install --rosdistro {{ configuration.distro }} --from-paths src --ignore-src -r -y \
+    {% if configuration.compiler == 'catkin_make' -%}
         && catkin_make"
-    {% elif dockerfile.compiler == 'colcon' -%}
+    {% elif configuration.compiler == 'colcon' -%}
         && colcon build"
     {%- endif %}
 
@@ -137,5 +137,5 @@ RUN sh -c 'sudo chmod +x /home/robomaker/robot-entrypoint.sh'
 RUN sh -c 'sudo chown robomaker:robomaker /home/robomaker/robot-entrypoint.sh'
 
 # Launch ROS application.
-CMD {{ dockerfile.command }}
+CMD {{ configuration.command }}
 ENTRYPOINT [ "/home/robomaker/robot-entrypoint.sh" ]

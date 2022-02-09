@@ -10,7 +10,7 @@ from .exceptions import (  # noqa: 401
     RigelfileAlreadyExistsError,
     RigelfileNotFound,
     UndeclaredGlobalVariable,
-    UndefinedValueError,
+    UndeclaredValueError,
     UnformattedRigelfileError,
     UnknownFieldError,
     UnsupportedCompilerError

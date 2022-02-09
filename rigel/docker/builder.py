@@ -4,20 +4,6 @@ from rigel.loggers import DockerLogPrinter, MessageLogger
 from rigel.files import ImageConfigurationFile
 
 
-def create_docker_client() -> docker.api.client.APIClient:
-    """
-    Create a Docker client instance.
-
-    :rtype: docker.api.client.APIClient
-    :return: A Docker client instance.
-    """
-    docker_host = os.environ.get('DOCKER_PATH')
-    if docker_host:
-        return docker.APIClient(base_url=docker_host)
-    else:
-        return docker.APIClient(base_url='unix:///var/run/docker.sock')
-
-
 class ImageBuilder:
     """
     A class to build Docker images.
@@ -31,6 +17,19 @@ class ImageBuilder:
         :type configuration: rigel.files.ImageConfigurationFile
         :param docker_client: Information regarding the Docker build process.
         """
+
+        def create_docker_client() -> docker.api.client.APIClient:
+            """
+            Create a Docker client instance.
+
+            :rtype: docker.api.client.APIClient
+            :return: A Docker client instance.
+            """
+            docker_host = os.environ.get('DOCKER_PATH')
+            if docker_host:
+                return docker.APIClient(base_url=docker_host)
+            else:
+                return docker.APIClient(base_url='unix:///var/run/docker.sock')
 
         build_args = {}
         for key in configuration.ssh:

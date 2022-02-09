@@ -1,5 +1,0 @@
-build:
-  package: test_package
-  distro: melodic
-  command: roslaunch my_package.launch
-  image: rigel:temp
