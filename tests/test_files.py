@@ -1,9 +1,10 @@
 import unittest
 from dataclasses import asdict, dataclass
+from io import StringIO
 from unittest.mock import mock_open, MagicMock, patch
-from pkg_resources import resource_filename
 from rigel.exceptions import (
     EmptyRigelfileError,
+    RigelError,
     RigelfileNotFound,
     UndeclaredValueError,
     UnformattedRigelfileError,
@@ -13,6 +14,7 @@ from rigel.files.renderer import Renderer
 from rigel.files.image import ImageConfigurationFile
 from rigel.files.rigelfile import RigelfileCreator
 from rigel.files.loader import YAMLDataLoader
+from unittest.mock import Mock
 
 
 @dataclass
@@ -107,26 +109,37 @@ class YAMLDataLoaderTesting(unittest.TestCase):
         with self.assertRaises(RigelfileNotFound):
             YAMLDataLoader.load_data('./unexistent_file')
 
-    def test_undeclared_value(self) -> None:
+    def __base_error_test(self, error: RigelError, content: str, open_mock: Mock) -> None:
+        """
+        Test if a specific error is thrown when parsing a given YAML data.
+        """
+        open_mock.return_value = StringIO(content)
+        with self.assertRaises(error):
+
+            filename = 'invalid_file'
+            YAMLDataLoader.load_data(filename)
+            open_mock.assert_called_once_with(filename, 'r')
+
+    @patch('builtins.open', new_callable=mock_open())
+    def test_undeclared_value(self, open_mock) -> None:
         """
         Test if UndeclaredValueError is thrown if a Rigelfile field is declared but left undefined.
         """
-        with self.assertRaises(UndeclaredValueError):
-            YAMLDataLoader.load_data(resource_filename(__name__, 'assets/invalid_undeclared'))
+        self.__base_error_test(UndeclaredValueError, 'field:', open_mock)
 
-    def test_empty_rigelfile(self) -> None:
+    @patch('builtins.open', new_callable=mock_open())
+    def test_empty_rigelfile(self, open_mock) -> None:
         """
         Test if EmptyRigelfileError is thrown if Rigelfile contains no data.
         """
-        with self.assertRaises(EmptyRigelfileError):
-            YAMLDataLoader.load_data(resource_filename(__name__, 'assets/invalid_blank'))
+        self.__base_error_test(EmptyRigelfileError, '', open_mock)
 
-    def test_unformatted_rigelfile(self) -> None:
+    @patch('builtins.open', new_callable=mock_open())
+    def test_unformatted_rigelfile(self, open_mock) -> None:
         """
         Test if UnformattedRigelfileError is thrown if Rigelfile is not properly formatted.
         """
-        with self.assertRaises(UnformattedRigelfileError):
-            YAMLDataLoader.load_data(resource_filename(__name__, 'assets/invalid_unformatted'))
+        self.__base_error_test(UnformattedRigelfileError, ':', open_mock)
 
 
 if __name__ == '__main__':
