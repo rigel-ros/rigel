@@ -1,7 +1,7 @@
+import copy
 import unittest
 from dataclasses import dataclass
 from mock import patch
-from pkg_resources import resource_filename
 from rigel.exceptions import (
     IncompleteRigelfileError,
     MissingRequiredFieldError,
@@ -9,10 +9,11 @@ from rigel.exceptions import (
     UndeclaredGlobalVariable,
     UnknownFieldError
 )
-from rigel.files import EnvironmentVariable, SSHKey, YAMLDataLoader
+from rigel.files import EnvironmentVariable, SSHKey
 from rigel.parsers.decoder import RigelfileDecoder
 from rigel.parsers.injector import YAMLInjector
 from rigel.parsers.rigelfile import RigelfileParser
+from unittest.mock import MagicMock
 
 
 @dataclass
@@ -138,6 +139,15 @@ class RigelfileParserTesting(unittest.TestCase):
     Test suite for rigel.parsers.riglefile.RigelfileParser class.
     """
 
+    build_yaml_data = {
+        'build': {
+            'package': 'test_package',
+            'distro': 'test_distro',
+            'command': 'test_command',
+            'image': 'test_image'
+        }
+    }
+
     file_basic_build = 'assets/build_basic'
     file_complete_build = 'assets/build_complete'
 
@@ -153,90 +163,151 @@ class RigelfileParserTesting(unittest.TestCase):
         """
         Test if no custom environment variable value is stored when field 'env' is left undeclared.
         """
-        yaml_file = resource_filename(__name__, self.file_basic_build)
-        yaml_data = YAMLDataLoader.load_data(yaml_file)
-        RigelfileParser(yaml_data)
-
+        RigelfileParser(self.build_yaml_data)
         self.assertFalse(mock_dataclass.called)
 
-    # @patch.object(EnvironmentVariable, '__init__')
-    # def test_env_variables_creation(self, mock_dataclass) -> None:
-    #     """
-    #     Test if custom environment variables' values are properly stord.
-    #     """
-    #     yaml_file = resource_filename(__name__, self.file_complete_build)
-    #     yaml_data = YAMLDataLoader.load_data(yaml_file)
-    #     RigelfileParser(yaml_data)
+    @patch.object(EnvironmentVariable, '__init__')
+    def test_env_variables_creation(self, mock_dataclass) -> None:
+        """
+        Test if custom environment variables' values are properly stord.
+        """
+        yaml_data = copy.deepcopy(self.build_yaml_data)
+        yaml_data['build'].update(
+            {'env': [
+                'TEST_VAR_1=test_var_1',
+                'TEST_VAR_2=test_var_2',
+                'TEST_VAR_3=test_var_3'
+            ]}
+        )
+        RigelfileParser(yaml_data)
 
-    #     self.assertEqual(len(yaml_data['build']['env']), mock_dataclass.call_count)
-    #     for env in yaml_data['build']['env']:
-    #         name, value = env.strip().split('=')
-    #         mock_dataclass.called_once_with(**{'name': name, 'value': value})
+        self.assertEqual(len(yaml_data['build']['env']), mock_dataclass.call_count)
+        for env in yaml_data['build']['env']:
+            name, value = env.strip().split('=')
+            mock_dataclass.called_once_with(**{'name': name, 'value': value})
 
-    # @patch.object(SSHKey, '__init__')
-    # def test_ssh_keys_ignored(self, mock_dataclass) -> None:
-    #     """
-    #     Test if no SSH information is stored when field 'ssh' is left undeclared.
-    #     """
-    #     yaml_file = resource_filename(__name__, self.file_basic_build)
-    #     yaml_data = YAMLDataLoader.load_data(yaml_file)
-    #     RigelfileParser(yaml_data)
+    @patch.object(SSHKey, '__init__')
+    def test_ssh_keys_ignored(self, mock_dataclass) -> None:
+        """
+        Test if no SSH information is stored when field 'ssh' is left undeclared.
+        """
+        RigelfileParser(self.build_yaml_data)
+        self.assertFalse(mock_dataclass.called)
 
-    #     self.assertFalse(mock_dataclass.called)
+    @patch.object(SSHKey, '__init__')
+    def test_ssh_keys_creation(self, mock_dataclass) -> None:
+        """
+        Test if custom SSH information is properly stored.
+        """
+        yaml_data = copy.deepcopy(self.build_yaml_data)
+        yaml_data['build'].update(
+            {'ssh': [
+                {
+                    'value': 'keys/test.key',
+                    'hostname': 'gitlab.com',
+                    'file': True
+                },
+                {
+                    'value': 'BITBUCKET_SSH_KEY',
+                    'hostname': 'bitbucket.com'
+                }
+            ]}
+        )
+        RigelfileParser(yaml_data)
 
-#     @patch.object(SSHKey, '__init__')
-#     def test_ssh_keys_creation(self, mock_dataclass) -> None:
-#         """
-#         Test if custom SSH information is properly stored.
-#         """
-#         yaml_file = resource_filename(__name__, self.file_complete_build)
-#         yaml_data = YAMLDataLoader.load_data(yaml_file)
-#         RigelfileParser(yaml_data)
+        self.assertEqual(len(yaml_data['build']['ssh']), mock_dataclass.call_count)
+        for key in yaml_data['build']['ssh']:
+            mock_dataclass.called_once_with(**key)
 
-#         self.assertEqual(len(yaml_data['build']['ssh']), mock_dataclass.call_count)
-#         for key in yaml_data['build']['ssh']:
-#             mock_dataclass.called_once_with(**key)
+    def test_invalid_plugin_declaration(self) -> None:
+        """
+        Test if an MissingRequiredFieldError is thrown when an invalid plugin is declared.
+        """
+        with self.assertRaises(MissingRequiredFieldError):
+            yaml_data = copy.deepcopy(self.build_yaml_data)
+            yaml_data.update({'deploy': [{}]})
+            RigelfileParser(yaml_data)
 
-#     def test_invalid_plugin_declaration(self) -> None:
-#         """
-#         Test if an MissingRequiredFieldError is thrown when an invalid plugin is declared.
-#         """
-#         yaml_file = resource_filename(__name__, self.file_basic_build)
-#         yaml_data = YAMLDataLoader.load_data(yaml_file)
+        with self.assertRaises(MissingRequiredFieldError):
+            yaml_data = copy.deepcopy(self.build_yaml_data)
+            yaml_data.update({'simulate': [{}]})
+            RigelfileParser(yaml_data)
 
-#         with self.assertRaises(MissingRequiredFieldError):
-#             yaml_data['deploy'] = [{}]
-#             RigelfileParser(yaml_data)
+    def test_module_not_found(self) -> None:
+        """
+        Test if PluginNotFoundError is thrown if an unknown plugin is declared.
+        """
+        with self.assertRaises(PluginNotFoundError):
+            yaml_data = copy.deepcopy(self.build_yaml_data)
+            yaml_data.update({'deploy': [{'plugin': 'unknown'}]})
+            RigelfileParser(yaml_data)
 
-#         with self.assertRaises(MissingRequiredFieldError):
-#             yaml_data['simulate'] = [{}]
-#             RigelfileParser(yaml_data)
+        with self.assertRaises(PluginNotFoundError):
+            yaml_data = copy.deepcopy(self.build_yaml_data)
+            yaml_data.update({'simulate': [{'plugin': 'unknown'}]})
+            RigelfileParser(yaml_data)
 
-#     def test_module_not_found(self) -> None:
-#         """
-#         Test if PluginNotFoundError is thrown if an unknown plugin is declared.
-#         """
-#         yaml_file = resource_filename(__name__, self.file_basic_build)
-#         yaml_data = YAMLDataLoader.load_data(yaml_file)
+    @patch('rigel.parsers.rigelfile.getattr')
+    @patch('rigel.parsers.rigelfile.import_module')
+    @patch('rigel.parsers.rigelfile.YAMLInjector.inject')
+    def test_deploy_plugin_creation(self, injector_mock, importlib_mock, getattr_mock) -> None:
+        """
+        Test if deploy plugins are properly initialized and correctly passed their data.
+        """
+        deploy_plugin_name = 'test_deploy_plugin'
+        module_name = 'test_module'
+        plugin_class = 'PluginClass'
 
-#         with self.assertRaises(PluginNotFoundError):
-#             yaml_data['deploy'] = [{'plugin': 'unknown'}]
-#             RigelfileParser(yaml_data)
+        yaml_data = copy.deepcopy(self.build_yaml_data)
+        deploy_plugin_data = {
+            'plugin': deploy_plugin_name,
+            'number': 42,
+            'flag': True
+        }
+        yaml_data.update({'deploy': [deploy_plugin_data]})
 
-#         yaml_data.pop('deploy')
+        importlib_mock.return_value = module_name
+        getattr_mock.return_value = plugin_class
+        injector_mock.return_value = 'PluginInstance'
 
-#         with self.assertRaises(PluginNotFoundError):
-#             yaml_data['simulate'] = [{'plugin': 'unknown'}]
-#             RigelfileParser(yaml_data)
+        parser = RigelfileParser(yaml_data)
 
-    # @patch.object(RigelfileParser, '__load_plugins.getattr')
-    # @patch('importlib.import_module')
-    # def test_plugin_creation(self, importlib_mock) -> None:
-    #     """
-    #     Test if plugins are properly initialized and correctly passed their data.
-    #     """
-    #     yaml_file = resource_filename(__name__, self.file_complete_build)
-    #     yaml_data = YAMLDataLoader.load_data(yaml_file)
+        importlib_mock.assert_called_once_with(deploy_plugin_name)
+        getattr_mock.assert_called_once_with(module_name, 'Plugin')
+        deploy_plugin_data.pop('plugin')
+        injector_mock.assert_called_with(plugin_class, deploy_plugin_data)
+        self.assertEqual(len(parser.registry_plugins), 1)
+
+    @patch('rigel.parsers.rigelfile.getattr')
+    @patch('rigel.parsers.rigelfile.import_module')
+    @patch('rigel.parsers.rigelfile.YAMLInjector.inject')
+    def test_simulate_plugin_creation(self, injector_mock, importlib_mock, getattr_mock) -> None:
+        """
+        Test if simulation plugins are properly initialized and correctly passed their data.
+        """
+        simulate_plugin_name = 'test_simulate_plugin'
+        module_name = 'test_module'
+        plugin_class = 'PluginClass'
+
+        yaml_data = copy.deepcopy(self.build_yaml_data)
+        simulate_plugin_data = {
+            'plugin': simulate_plugin_name,
+            'number': 42,
+            'flag': True
+        }
+        yaml_data.update({'simulate': [simulate_plugin_data]})
+
+        importlib_mock.return_value = module_name
+        getattr_mock.return_value = plugin_class
+        injector_mock.return_value = 'PluginInstance'
+
+        parser = RigelfileParser(yaml_data)
+
+        importlib_mock.assert_called_once_with(simulate_plugin_name)
+        getattr_mock.assert_called_once_with(module_name, 'Plugin')
+        simulate_plugin_data.pop('plugin')
+        injector_mock.assert_called_with(plugin_class, simulate_plugin_data)
+        self.assertEqual(len(parser.simulation_plugins), 1)
 
 
 if __name__ == '__main__':
