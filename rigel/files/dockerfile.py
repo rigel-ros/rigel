@@ -5,6 +5,7 @@ from pkg_resources import resource_string
 from rigel.loggers import MessageLogger
 
 
+# TODO: generalize all these classes into a single one.
 class DockerfileRenderer:
     """
     A class that creates Dockerfiles.

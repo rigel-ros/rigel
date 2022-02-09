@@ -54,7 +54,7 @@ class IncompleteRigelfileError(RigelError):
     code = 5
 
 
-class UndefinedValueError(RigelError):
+class UndeclaredValueError(RigelError):
     """
     Raised whenever a Rigelfile is declared with undefined values.
 
