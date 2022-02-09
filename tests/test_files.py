@@ -19,6 +19,9 @@ from unittest.mock import Mock
 
 @dataclass
 class TestFileConfiguration:
+    """
+    A simple class that works as a fake Rigelfile for testing.
+    """
     message: str
 
 
