@@ -1,4 +1,3 @@
-
 import setuptools
 
 with open('./README.md', 'r') as readme:
@@ -6,7 +5,7 @@ with open('./README.md', 'r') as readme:
 
 setuptools.setup(
     name='rigel',
-    version='0.0.16',
+    version='0.0.17',
     author='Pedro Melo',
     author_email='pedro.m.melo@inesctec.pt',
     description='Containerize and deploy your ROS application using Docker.',
