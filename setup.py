@@ -24,11 +24,11 @@ setuptools.setup(
     ],
     python_requires='>=3.8',
     install_requires=[
-        'Click==7.0',
-        'docker==4.1.0',
-        'jinja2==3.0.3',
-        'pyyaml==6.0',
-        'rich==11.0.0'
+        'Click',
+        'docker',
+        'jinja2',
+        'pyyaml',
+        'rich'
     ],
     py_modules=['main'],
     entry_points={
