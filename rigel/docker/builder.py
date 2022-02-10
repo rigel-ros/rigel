@@ -1,5 +1,6 @@
 import docker
 import os
+from rigel.exceptions import DockerBuildError
 from rigel.loggers import DockerLogPrinter, MessageLogger
 from rigel.files import ImageConfigurationFile
 
@@ -25,11 +26,7 @@ class ImageBuilder:
             :rtype: docker.api.client.APIClient
             :return: A Docker client instance.
             """
-            docker_host = os.environ.get('DOCKER_PATH')
-            if docker_host:
-                return docker.APIClient(base_url=docker_host)
-            else:
-                return docker.APIClient(base_url='unix:///var/run/docker.sock')
+            return docker.from_env().api
 
         build_args = {}
         for key in configuration.ssh:
@@ -59,7 +56,7 @@ class ImageBuilder:
 
             except StopIteration:  # no more log messages
                 if 'error' in log:
-                    MessageLogger.error(f'An error occurred while building Docker image {configuration.image}.')
+                    raise DockerBuildError(msg=log['error'])
                 else:
                     MessageLogger.info(f'Docker image {configuration.image} was built with success.')
 

@@ -128,3 +128,14 @@ class PluginNotFoundError(RigelError):
     """
     base = "Unable to load plugin '{plugin}'. Not installed."
     code = 12
+
+
+class DockerBuildError(RigelError):
+    """
+    Raised whenever an error occurs while building a Docker image.
+
+    :type msg: string
+    :ivar msg: The error message as provided by the Docker API.
+    """
+    base = "An error occurred while building Docker image: {msg}."
+    code = 13
