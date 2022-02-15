@@ -13,6 +13,5 @@ from .exceptions import (  # noqa: 401
     UndeclaredGlobalVariable,
     UndeclaredValueError,
     UnformattedRigelfileError,
-    UnknownFieldError,
     UnsupportedCompilerError
 )

@@ -3,9 +3,11 @@ from rigel.exceptions import RigelError
 
 
 class ErrorLogger:
+    """
+    A class that proides a common interface to display error messages.
+    """
 
-    @staticmethod
-    def log(err: RigelError) -> None:
+    def log(self, err: RigelError) -> None:
         """
         Display error message.
 

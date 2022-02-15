@@ -6,8 +6,7 @@ class MessageLogger:
     A logger for text messages.
     """
 
-    @staticmethod
-    def error(message: str) -> None:
+    def error(self, message: str) -> None:
         """
         Log an error message.
 
@@ -16,8 +15,7 @@ class MessageLogger:
         """
         rich_print(f'[bold red]ERROR - {message}[/bold red]')
 
-    @staticmethod
-    def warning(message: str) -> None:
+    def warning(self, message: str) -> None:
         """
         Log a warning message.
 
@@ -26,8 +24,7 @@ class MessageLogger:
         """
         rich_print(f'[bold yellow]WARNING - {message}[/bold yellow]')
 
-    @staticmethod
-    def info(message: str) -> None:
+    def info(self, message: str) -> None:
         """
         Log textual information.
 

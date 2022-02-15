@@ -10,8 +10,14 @@ class ImageBuilder:
     A class to build Docker images.
     """
 
-    @staticmethod
-    def build(configuration: ImageConfigurationFile) -> None:
+    def __init__(self, docker_client: docker.api.client.APIClient) -> None:
+        """
+        :rtype: docker.api.client.APIClient
+        :return: A Docker client instance.
+        """
+        self.docker_client = docker_client
+
+    def build(self, configuration: ImageConfigurationFile) -> None:
         """
         Build a Docker image.
 
@@ -19,22 +25,12 @@ class ImageBuilder:
         :param docker_client: Information regarding the Docker build process.
         """
 
-        def create_docker_client() -> docker.api.client.APIClient:
-            """
-            Create a Docker client instance.
-
-            :rtype: docker.api.client.APIClient
-            :return: A Docker client instance.
-            """
-            return docker.from_env().api
-
         build_args = {}
         for key in configuration.ssh:
             build_args[key.value] = os.environ.get(key.value)
 
         # Build Docker image.
-        docker_client = create_docker_client()
-        temp = docker_client.build(
+        temp = self.docker_client.build(
             path='.',
             dockerfile='.rigel_config/Dockerfile',
             tag=configuration.image,
@@ -58,6 +54,6 @@ class ImageBuilder:
                 if 'error' in log:
                     raise DockerBuildError(msg=log['error'])
                 else:
-                    MessageLogger.info(f'Docker image {configuration.image} was built with success.')
+                    MessageLogger().info(f'Docker image {configuration.image} was built with success.')
 
                 break

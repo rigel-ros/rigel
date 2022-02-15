@@ -7,8 +7,7 @@ class DockerLogPrinter:
     A class that displays Docker logs.
     """
 
-    @staticmethod
-    def log(log: Dict[str, Any]) -> None:
+    def log(self, log: Dict[str, Any]) -> None:
         """
         Display a Docker log.
 

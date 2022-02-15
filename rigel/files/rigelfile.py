@@ -7,8 +7,7 @@ class RigelfileCreator:
     A class that creates new Rigelfiles.
     """
 
-    @staticmethod
-    def create() -> None:
+    def create(self) -> None:
         """
         Create a new Rigelfile.
         """

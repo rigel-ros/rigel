@@ -1,5 +1,4 @@
 from .image import ImageConfigurationFile
-from dataclasses import asdict
 from jinja2 import Template
 from pkg_resources import resource_string
 from rigel.loggers import MessageLogger
@@ -9,14 +8,19 @@ class Renderer:
     """
     A class that creates Dockerfiles.
     """
-    @staticmethod
-    def render(configuration_file: ImageConfigurationFile, template: str, output: str) -> None:
+
+    def __init__(self, configuration_file: ImageConfigurationFile) -> None:
+        """
+        :type configuration_file: rigel.files.ImageConfigurationFile
+        :param configuration_file: An aggregator of information about the containerization of the ROS application.
+        """
+        self.configuration_file = configuration_file
+
+    def render(self, template: str, output: str) -> None:
         """
         Create a new Dockerfile.
         Dockerfiles are always placed inside the .rigel_config directory.
 
-        :type configuration_file: rigel.files.ImageConfigurationFile
-        :param configuration_file: A data aggregator holding information about the containerization of the ROS application.
         :type template: string
         :param template: Name of the template file to render.
         :type output: string
@@ -27,5 +31,5 @@ class Renderer:
         dockerfile_templater = Template(dockerfile_template)
 
         with open(f'.rigel_config/{output}', 'w+') as output_file:
-            output_file.write(dockerfile_templater.render(configuration=asdict(configuration_file)))
-            MessageLogger.info(f"Created {output}.")
+            output_file.write(dockerfile_templater.render(configuration=self.configuration_file.dict()))
+            MessageLogger().info(f"Created {output}.")

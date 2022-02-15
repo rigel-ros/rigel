@@ -1,4 +1,5 @@
 import click
+import docker
 import os
 import sys
 from pathlib import Path
@@ -35,9 +36,19 @@ def create_configuration_parser() -> RigelfileParser:
     :rtype: rigle.parsers.RigelfileParser
     :return: The parsed information.
     """
-    yaml_data = YAMLDataLoader.load_data('./Rigelfile')
-    decoded = RigelfileDecoder.decode(yaml_data)
+    yaml_data = YAMLDataLoader('./Rigelfile').load()
+    decoded = RigelfileDecoder().decode(yaml_data)
     return RigelfileParser(decoded)
+
+
+def create_docker_client() -> docker.api.client.APIClient:
+    """
+    Create a Docker client intance.
+
+    :rtype docker.api.client.APIClient
+    ::return: A docker client instance.
+    """
+    return docker.from_env().api
 
 
 def rigelfile_exists() -> bool:
@@ -61,18 +72,18 @@ def run_plugins(plugins: List[Plugin]) -> None:
 
         if plugins:
             for plugin in plugins:
-                MessageLogger.info(f'Using external plugin {plugin.__class__.__module__}.{plugin.__class__.__name__}')
+                MessageLogger().info(f'Using external plugin {plugin.__class__.__module__}.{plugin.__class__.__name__}')
                 plugin.run()
         else:
-            MessageLogger.warning('No plugin was declared.')
+            MessageLogger().warning('No plugin was declared.')
 
     except RigelError as err:
-        ErrorLogger.log(err)
+        ErrorLogger().log(err)
         sys.exit(err.code)
 
 
 @click.group()
-def cli():
+def cli() -> None:
     """
     Rigel - containerize and deploy your ROS application using Docker
     """
@@ -81,7 +92,7 @@ def cli():
 
 @click.command()
 @click.option('--force', is_flag=True, default=False, help='Write over an existing Rigelfile.',)
-def init(force) -> None:
+def init(force: bool) -> None:
     """
     Create an empty Rigelfile.
     """
@@ -90,11 +101,11 @@ def init(force) -> None:
         if rigelfile_exists() and not force:
             raise RigelfileAlreadyExistsError()
 
-        RigelfileCreator.create()
+        RigelfileCreator().create()
         print('Rigelfile created with success.')
 
     except RigelfileAlreadyExistsError as err:
-        ErrorLogger.log(err)
+        ErrorLogger().log(err)
         sys.exit(err.code)
 
 
@@ -110,13 +121,15 @@ def create() -> None:
 
         configuration_parser = create_configuration_parser()
 
-        Renderer.render(configuration_parser.dockerfile, 'Dockerfile.j2', 'Dockerfile')
-        Renderer.render(configuration_parser.dockerfile, 'entrypoint.j2', 'entrypoint.sh')
+        renderer = Renderer(configuration_parser.dockerfile)
+
+        renderer.render('Dockerfile.j2', 'Dockerfile')
+        renderer.render('entrypoint.j2', 'entrypoint.sh')
         if configuration_parser.dockerfile.ssh:
-            Renderer.render(configuration_parser.dockerfile, 'config.j2', 'config')
+            renderer.render('config.j2', 'config')
 
     except RigelError as err:
-        ErrorLogger.log(err)
+        ErrorLogger().log(err)
         sys.exit(err.code)
 
 
@@ -127,12 +140,14 @@ def build() -> None:
     """
 
     configuration_parser = create_configuration_parser()
+    docker_client = create_docker_client()
 
     try:
-        ImageBuilder.build(configuration_parser.dockerfile)
+        builder = ImageBuilder(docker_client)
+        builder.build(configuration_parser.dockerfile)
 
     except RigelError as err:
-        ErrorLogger.log(err)
+        ErrorLogger().log(err)
         sys.exit(err.code)
 
 

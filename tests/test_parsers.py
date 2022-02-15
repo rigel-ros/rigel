@@ -1,23 +1,21 @@
 import copy
 import unittest
-from dataclasses import dataclass
-from mock import patch
+from pydantic import BaseModel
 from rigel.exceptions import (
     IncompleteRigelfileError,
     MissingRequiredFieldError,
     PluginNotFoundError,
-    UndeclaredGlobalVariable,
-    UnknownFieldError
+    UndeclaredGlobalVariable
 )
 from rigel.files import EnvironmentVariable, SSHKey
 from rigel.parsers.decoder import RigelfileDecoder
 from rigel.parsers.injector import YAMLInjector
 from rigel.parsers.rigelfile import RigelfileParser
-from unittest.mock import MagicMock
+from typing import Any, Dict
+from unittest.mock import Mock, patch
 
 
-@dataclass
-class TestDataclass:
+class TestDataclass(BaseModel):
     """
     A simple class that works as a fake Rigelfile for testing.
     """
@@ -31,14 +29,14 @@ class RigelfileDecoderTesting(unittest.TestCase):
     """
 
     @patch('rigel.parsers.decoder.copy.deepcopy')
-    def test_data_deep_copy(self, copy_mock) -> None:
+    def test_data_deep_copy(self, copy_mock: Mock) -> None:
         """
         Test if original YAML data is preserved before the decoding process.
         """
         test_data = {'test_key': 'test_value'}
 
         copy_mock.return_value = test_data
-        RigelfileDecoder.decode(test_data)
+        RigelfileDecoder().decode(test_data)
         copy_mock.assert_called_once_with(test_data)
 
     def test_vars_field_removal(self) -> None:
@@ -48,8 +46,8 @@ class RigelfileDecoderTesting(unittest.TestCase):
         test_data_without = {'test_key': 'test_value'}
         test_data_with = {'test_key': 'test_value', 'vars': {'test_var': 'test_value'}}
 
-        self.assertEqual(test_data_without, RigelfileDecoder.decode(test_data_without))
-        self.assertEqual(test_data_without, RigelfileDecoder.decode(test_data_with))
+        self.assertEqual(test_data_without, RigelfileDecoder().decode(test_data_without))
+        self.assertEqual(test_data_without, RigelfileDecoder().decode(test_data_with))
 
     def test_undeclared_variable_error_dict(self) -> None:
         """
@@ -58,7 +56,7 @@ class RigelfileDecoderTesting(unittest.TestCase):
         """
         test_data = {'test_key': '$unknown', 'vars': {'template_var': 'test_value'}}
         with self.assertRaises(UndeclaredGlobalVariable):
-            RigelfileDecoder.decode(test_data)
+            RigelfileDecoder().decode(test_data)
 
     def test_undeclared_variable_error_list(self) -> None:
         """
@@ -67,7 +65,7 @@ class RigelfileDecoderTesting(unittest.TestCase):
         """
         test_data = {'test_key': ['$unknown'], 'vars': {'template_var': 'test_value'}}
         with self.assertRaises(UndeclaredGlobalVariable):
-            RigelfileDecoder.decode(test_data)
+            RigelfileDecoder().decode(test_data)
 
     def test_decoding_mechanism_dict(self) -> None:
         """
@@ -81,7 +79,7 @@ class RigelfileDecoderTesting(unittest.TestCase):
             'test_key': '$template_var',
             'unchanged_key': unchanged_value
         }
-        decoded_test_data = RigelfileDecoder.decode(test_data)
+        decoded_test_data = RigelfileDecoder().decode(test_data)
         self.assertEqual(decoded_test_data['test_key'], template_value)
         self.assertEqual(decoded_test_data['unchanged_key'], unchanged_value)  # control value
 
@@ -96,7 +94,7 @@ class RigelfileDecoderTesting(unittest.TestCase):
             'vars': {'template_var': template_value},
             'test_key': ['$template_var', unchanged_value]
         }
-        decoded_test_data = RigelfileDecoder.decode(test_data)
+        decoded_test_data = RigelfileDecoder().decode(test_data)
         self.assertEqual(decoded_test_data['test_key'][0], template_value)
         self.assertEqual(decoded_test_data['test_key'][1], unchanged_value)  # control value
 
@@ -111,26 +109,21 @@ class YAMLInjectorTesting(unittest.TestCase):
         Test if MissingRequiredFieldError is thrown is a required field is not provided.
         """
         with self.assertRaises(MissingRequiredFieldError):
-            YAMLInjector.inject(TestDataclass, {})
-
-    def test_injecting_missing_field(self) -> None:
-        """
-        Test if UnknownFieldError is thrown if a required field is not provided.
-        """
-        with self.assertRaises(UnknownFieldError):
-            YAMLInjector.inject(TestDataclass, {
-                'number': 1,
-                'flag': True,
-                'sentence': "Field 'sentence' is unknown."
-            })
+            injector = YAMLInjector(TestDataclass)
+            injector.inject({})
 
     @patch.object(TestDataclass, '__init__')
-    def test_injected_data(self, mock_dataclass) -> None:
+    def test_injected_data(self, mock_dataclass: Mock) -> None:
         """
         Test if the provided data is properly forwarded to the dataclass constructor.
         """
         data = {'number': 1, 'flag': True}
-        YAMLInjector.inject(TestDataclass, data)
+
+        mock_dataclass.return_value = None
+
+        injector = YAMLInjector(TestDataclass)
+        injector.inject(data)
+
         mock_dataclass.assert_called_once_with(**data)
 
 
@@ -139,7 +132,7 @@ class RigelfileParserTesting(unittest.TestCase):
     Test suite for rigel.parsers.riglefile.RigelfileParser class.
     """
 
-    build_yaml_data = {
+    build_yaml_data: Dict[str, Any] = {
         'build': {
             'package': 'test_package',
             'distro': 'test_distro',
@@ -159,7 +152,7 @@ class RigelfileParserTesting(unittest.TestCase):
             RigelfileParser({})
 
     @patch.object(EnvironmentVariable, '__init__')
-    def test_env_variables_ignored(self, mock_dataclass) -> None:
+    def test_env_variables_ignored(self, mock_dataclass: Mock) -> None:
         """
         Test if no custom environment variable value is stored when field 'env' is left undeclared.
         """
@@ -167,7 +160,7 @@ class RigelfileParserTesting(unittest.TestCase):
         self.assertFalse(mock_dataclass.called)
 
     @patch.object(EnvironmentVariable, '__init__')
-    def test_env_variables_creation(self, mock_dataclass) -> None:
+    def test_env_variables_creation(self, mock_dataclass: Mock) -> None:
         """
         Test if custom environment variables' values are properly stord.
         """
@@ -179,6 +172,8 @@ class RigelfileParserTesting(unittest.TestCase):
                 'TEST_VAR_3=test_var_3'
             ]}
         )
+        mock_dataclass.return_value = None
+
         RigelfileParser(yaml_data)
 
         self.assertEqual(len(yaml_data['build']['env']), mock_dataclass.call_count)
@@ -187,37 +182,12 @@ class RigelfileParserTesting(unittest.TestCase):
             mock_dataclass.called_once_with(**{'name': name, 'value': value})
 
     @patch.object(SSHKey, '__init__')
-    def test_ssh_keys_ignored(self, mock_dataclass) -> None:
+    def test_ssh_keys_ignored(self, mock_dataclass: Mock) -> None:
         """
         Test if no SSH information is stored when field 'ssh' is left undeclared.
         """
         RigelfileParser(self.build_yaml_data)
         self.assertFalse(mock_dataclass.called)
-
-    @patch.object(SSHKey, '__init__')
-    def test_ssh_keys_creation(self, mock_dataclass) -> None:
-        """
-        Test if custom SSH information is properly stored.
-        """
-        yaml_data = copy.deepcopy(self.build_yaml_data)
-        yaml_data['build'].update(
-            {'ssh': [
-                {
-                    'value': 'keys/test.key',
-                    'hostname': 'gitlab.com',
-                    'file': True
-                },
-                {
-                    'value': 'BITBUCKET_SSH_KEY',
-                    'hostname': 'bitbucket.com'
-                }
-            ]}
-        )
-        RigelfileParser(yaml_data)
-
-        self.assertEqual(len(yaml_data['build']['ssh']), mock_dataclass.call_count)
-        for key in yaml_data['build']['ssh']:
-            mock_dataclass.called_once_with(**key)
 
     def test_invalid_plugin_declaration(self) -> None:
         """
@@ -250,7 +220,12 @@ class RigelfileParserTesting(unittest.TestCase):
     @patch('rigel.parsers.rigelfile.getattr')
     @patch('rigel.parsers.rigelfile.import_module')
     @patch('rigel.parsers.rigelfile.YAMLInjector.inject')
-    def test_deploy_plugin_creation(self, injector_mock, importlib_mock, getattr_mock) -> None:
+    def test_deploy_plugin_creation(
+            self,
+            injector_mock: Mock,
+            importlib_mock: Mock,
+            getattr_mock: Mock
+            ) -> None:
         """
         Test if deploy plugins are properly initialized and correctly passed their data.
         """
@@ -275,13 +250,18 @@ class RigelfileParserTesting(unittest.TestCase):
         importlib_mock.assert_called_once_with(deploy_plugin_name)
         getattr_mock.assert_called_once_with(module_name, 'Plugin')
         deploy_plugin_data.pop('plugin')
-        injector_mock.assert_called_with(plugin_class, deploy_plugin_data)
+        injector_mock.assert_called_with(deploy_plugin_data)
         self.assertEqual(len(parser.registry_plugins), 1)
 
     @patch('rigel.parsers.rigelfile.getattr')
     @patch('rigel.parsers.rigelfile.import_module')
     @patch('rigel.parsers.rigelfile.YAMLInjector.inject')
-    def test_simulate_plugin_creation(self, injector_mock, importlib_mock, getattr_mock) -> None:
+    def test_simulate_plugin_creation(
+            self,
+            injector_mock: Mock,
+            importlib_mock: Mock,
+            getattr_mock: Mock
+            ) -> None:
         """
         Test if simulation plugins are properly initialized and correctly passed their data.
         """
@@ -306,7 +286,7 @@ class RigelfileParserTesting(unittest.TestCase):
         importlib_mock.assert_called_once_with(simulate_plugin_name)
         getattr_mock.assert_called_once_with(module_name, 'Plugin')
         simulate_plugin_data.pop('plugin')
-        injector_mock.assert_called_with(plugin_class, simulate_plugin_data)
+        injector_mock.assert_called_with(simulate_plugin_data)
         self.assertEqual(len(parser.simulation_plugins), 1)
 
 

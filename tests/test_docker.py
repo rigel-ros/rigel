@@ -1,7 +1,7 @@
 import unittest
-from mock import MagicMock, patch
 from rigel.docker.builder import ImageBuilder
 from rigel.exceptions import DockerBuildError
+from unittest.mock import MagicMock, Mock, patch
 
 
 class ImageBuilderTesting(unittest.TestCase):
@@ -9,18 +9,17 @@ class ImageBuilderTesting(unittest.TestCase):
     Test suite for rigel.docker.build.ImageBuilder class.
     """
 
-    @patch('rigel.docker.builder.docker.APIClient')
     @patch('rigel.docker.builder.ImageConfigurationFile')
     @patch('rigel.docker.builder.os.environ')
     @patch('rigel.docker.builder.DockerLogPrinter')
     @patch('rigel.docker.builder.MessageLogger')
     def test_docker_with_buildargs(
-        self,
-        logger_mock,
-        printer_mock,
-        environ_mock,
-        configuration_mock,
-        docker_mock) -> None:
+            self,
+            logger_mock: Mock,
+            printer_mock: Mock,
+            environ_mock: Mock,
+            configuration_mock: Mock,
+            ) -> None:
         """
         Test if build_args are properly created whenever an SSH key is defined.
         """
@@ -30,18 +29,19 @@ class ImageBuilderTesting(unittest.TestCase):
 
         key_mock = MagicMock()
         key_mock.value = key_name
+
         configuration_mock.ssh = [key_mock]
         configuration_mock.image = image
 
         environ_mock.get.return_value = key_value
 
-        docker_client_instance = MagicMock()
-        docker_client_instance.build.return_value = [{}]
-        docker_mock.return_value = docker_client_instance
+        docker_client_mock = MagicMock()
+        docker_client_mock.build.return_value = [{}]
 
-        ImageBuilder.build(configuration_mock)
+        builder = ImageBuilder(docker_client_mock)
+        builder.build(configuration_mock)
 
-        docker_client_instance.build.assert_called_once_with(
+        docker_client_mock.build.assert_called_once_with(
             path='.',
             dockerfile='.rigel_config/Dockerfile',
             tag=image,
@@ -50,18 +50,17 @@ class ImageBuilderTesting(unittest.TestCase):
             rm=True,
         )
 
-    @patch('rigel.docker.builder.docker.APIClient')
     @patch('rigel.docker.builder.ImageConfigurationFile')
     @patch('rigel.docker.builder.os.environ')
     @patch('rigel.docker.builder.DockerLogPrinter')
     @patch('rigel.docker.builder.MessageLogger')
     def test_docker_without_buildargs(
-        self,
-        logger_mock,
-        printer_mock,
-        environ_mock,
-        configuration_mock,
-        docker_mock) -> None:
+            self,
+            logger_mock: Mock,
+            printer_mock: Mock,
+            environ_mock: Mock,
+            configuration_mock: Mock,
+            ) -> None:
         """
         Test if Docker build works properly.
         """
@@ -72,13 +71,13 @@ class ImageBuilderTesting(unittest.TestCase):
 
         environ_mock.get.return_value = None
 
-        docker_client_instance = MagicMock()
-        docker_client_instance.build.return_value = [{}]
-        docker_mock.return_value = docker_client_instance
+        docker_client_mock = MagicMock()
+        docker_client_mock.build.return_value = [{}]
 
-        ImageBuilder.build(configuration_mock)
+        builder = ImageBuilder(docker_client_mock)
+        builder.build(configuration_mock)
 
-        docker_client_instance.build.assert_called_once_with(
+        docker_client_mock.build.assert_called_once_with(
             path='.',
             dockerfile='.rigel_config/Dockerfile',
             tag=image,
@@ -93,12 +92,13 @@ class ImageBuilderTesting(unittest.TestCase):
     @patch('rigel.docker.builder.DockerLogPrinter')
     @patch('rigel.docker.builder.MessageLogger')
     def test_docker_build_error(
-        self,
-        logger_mock,
-        printer_mock,
-        environ_mock,
-        configuration_mock,
-        docker_mock) -> None:
+            self,
+            logger_mock: Mock,
+            printer_mock: Mock,
+            environ_mock: Mock,
+            configuration_mock: Mock,
+            docker_mock: Mock
+            ) -> None:
         """
         Test if DockerBuildError is thrown when an error occurs while building a Docker image.
         """
@@ -110,15 +110,15 @@ class ImageBuilderTesting(unittest.TestCase):
 
         environ_mock.get.return_value = None
 
-        docker_client_instance = MagicMock()
-        docker_client_instance.build.return_value = [{'error': error_msg}]
-        docker_mock.return_value = docker_client_instance
+        docker_client_mock = MagicMock()
+        docker_client_mock.build.return_value = [{'error': error_msg}]
 
         with self.assertRaises(DockerBuildError):
 
-            ImageBuilder.build(configuration_mock)
+            builder = ImageBuilder(docker_client_mock)
+            builder.build(configuration_mock)
 
-            docker_client_instance.build.assert_called_once_with(
+            docker_client_mock.build.assert_called_once_with(
                 path='.',
                 dockerfile='.rigel_config/Dockerfile',
                 tag=image,

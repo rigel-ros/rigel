@@ -1,3 +1,6 @@
+from typing import Union
+
+
 class RigelError(Exception):
     """
     The base exception class for all Rigel errors.
@@ -10,7 +13,7 @@ class RigelError(Exception):
     base = 'Undefined Rigel error.'
     code = 1
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Union[str, int, float]):
         Exception.__init__(self, self.base.format(**kwargs))
         self.kwargs = kwargs
 
@@ -84,17 +87,6 @@ class UnsupportedCompilerError(RigelError):
     code = 8
 
 
-class UnknownFieldError(RigelError):
-    """
-    Raised whenever an attempt is made to create an entity using unknown fields.
-
-    :type field: string
-    :ivar field: Name of the unknown field.
-    """
-    base = "Unknown field '{field}' found while parsing Rigelfile."
-    code = 9
-
-
 class MissingRequiredFieldError(RigelError):
     """
     Raised whenever an attempt is made to create an entity with insufficient data.
@@ -103,7 +95,7 @@ class MissingRequiredFieldError(RigelError):
     :ivar field: Name of the missing field.
     """
     base = "Required field '{field}' is missing."
-    code = 10
+    code = 9
 
 
 class UndeclaredGlobalVariable(RigelError):
@@ -116,7 +108,7 @@ class UndeclaredGlobalVariable(RigelError):
     :ivar field: Path for the field referencing the global varialble.
     """
     base = "Field '{field}' set to have the value of undeclared global variable '{var}'."
-    code = 11
+    code = 10
 
 
 class PluginNotFoundError(RigelError):
@@ -127,7 +119,7 @@ class PluginNotFoundError(RigelError):
     :ivar plugin: Name of the plugin.
     """
     base = "Unable to load plugin '{plugin}'. Not installed."
-    code = 12
+    code = 11
 
 
 class DockerBuildError(RigelError):
@@ -138,4 +130,4 @@ class DockerBuildError(RigelError):
     :ivar msg: The error message as provided by the Docker API.
     """
     base = "An error occurred while building Docker image: {msg}."
-    code = 13
+    code = 12

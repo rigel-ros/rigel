@@ -1,11 +1,10 @@
-from dataclasses import dataclass, field
+from pydantic import BaseModel, validator
 from rigel.exceptions import UnsupportedCompilerError
 from rigel.loggers import MessageLogger
-from typing import Dict, List
+from typing import Any, Dict, List
 
 
-@dataclass
-class EnvironmentVariable:
+class EnvironmentVariable(BaseModel):
     """
     Information regarding a given environment variable and its value.
 
@@ -18,8 +17,7 @@ class EnvironmentVariable:
     value: str  # numeric values are also interpreted as text
 
 
-@dataclass
-class SSHKey:
+class SSHKey(BaseModel):
     """
     Information regarding a given private SSH key.
 
@@ -28,16 +26,14 @@ class SSHKey:
     :type hostname: string
     :param hostname: The URL of the host associated with the key (REQUIRED).
     :type file: bool
-    :param file: Whether or not the value of 'value' consists of a path or a environment variable name. Default value is False.
+    :param file: Tell if field 'value' consists of a path or a environment variable name. Default is False.
     """
     value: str
     hostname: str
+    file: bool = False
 
-    file: bool = field(default_factory=lambda: False)
 
-
-@dataclass
-class ImageConfigurationFile:
+class ImageConfigurationFile(BaseModel):
     """
     Information regarding a Docker image.
 
@@ -72,20 +68,33 @@ class ImageConfigurationFile:
     image: str
     package: str
 
-    apt: List[str] = field(default_factory=lambda: [])
-    compiler: str = field(default_factory=lambda: 'catkin_make')
-    entrypoint: List[str] = field(default_factory=lambda: [])
-    env: List[EnvironmentVariable] = field(default_factory=lambda: [])
-    hostname: List[str] = field(default_factory=lambda: [])
-    rosinstall: List[str] = field(default_factory=lambda: [])
-    run: List[str] = field(default_factory=lambda: [])
-    ssh: List[SSHKey] = field(default_factory=lambda: [])
-    vars: Dict[str, any] = field(default_factory=lambda: {})
+    apt: List[str] = []
+    compiler: str = 'catkin_make'
+    entrypoint: List[str] = []
+    env: List[EnvironmentVariable] = []
+    hostname: List[str] = []
+    rosinstall: List[str] = []
+    run: List[str] = []
+    ssh: List[SSHKey] = []
+    vars: Dict[str, Any] = {}
 
-    def __post_init__(self) -> None:
+    def __init__(self, **data):  # type: ignore[no-untyped-def]
+        envs = []
+        if 'env' in data:
+            for env in data['env']:
+                name, value = env.strip().split('=')
+                envs.append({'name': name, 'value': value})
+        data['env'] = envs
+        super().__init__(**data)
 
-        if self.ssh and not self.rosinstall:
-            MessageLogger.warning('SSH keys were provided but no .rosinstall file was declared.')
+    @validator('compiler')
+    def validate_compiler(cls, compiler):  # type: ignore[no-untyped-def]
+        if compiler not in ['catkin_make', 'colcon']:
+            raise UnsupportedCompilerError(compiler=compiler)
+        return compiler
 
-        if self.compiler not in ['catkin_make', 'colcon']:
-            raise UnsupportedCompilerError(compiler=self.compiler)
+    @validator('ssh')
+    def warn_unused_keys(cls, keys, values):  # type: ignore[no-untyped-def]
+        if keys and not values['rosinstall']:
+            MessageLogger().warning('No .rosinstall file was declared. Unused SSH keys.')
+        return keys

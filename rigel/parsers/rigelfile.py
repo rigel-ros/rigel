@@ -1,18 +1,14 @@
 import copy
 from .injector import YAMLInjector
 from importlib import import_module
-from rigel.files import (
-    ImageConfigurationFile,
-    EnvironmentVariable,
-    SSHKey
-)
 from rigel.exceptions import (
     IncompleteRigelfileError,
     MissingRequiredFieldError,
     PluginNotFoundError
 )
+from rigel.files import ImageConfigurationFile
 from rigel.plugins import Plugin
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, Type
 
 YAMLData = Dict[str, Any]
 
@@ -33,7 +29,7 @@ class RigelfileParser:
     registry_plugins: List[Plugin]
     simulation_plugins: List[Plugin]
 
-    def __segment_data(self, yaml_data: YAMLData) -> Tuple[YAMLData, List[YAMLData], List[YAMLData]]:
+    def __segment_data(self, yaml_data: YAMLData) -> Tuple[YAMLData, Any, Any]:
         """
         Segment the data within a Rigelfile into its constituient logic blocks.
 
@@ -69,22 +65,12 @@ class RigelfileParser:
         :rtype: rigel.files.ImageConfigurationFile
         :return: A data aggregator.
         """
-        if 'ssh' in yaml_data:
-            yaml_data['ssh'] = [YAMLInjector.inject(SSHKey, key) for key in yaml_data['ssh']]
 
-        envs = []
-        if 'env' in yaml_data:
-            for env in yaml_data['env']:
-                name, value = env.strip().split('=')
-                envs.append(YAMLInjector.inject(
-                    EnvironmentVariable,
-                    {'name': name, 'value': value}
-                ))
-        yaml_data['env'] = envs
+        injector = YAMLInjector(ImageConfigurationFile)
+        configuration: ImageConfigurationFile = injector.inject(yaml_data)
+        return configuration
 
-        return YAMLInjector.inject(ImageConfigurationFile, yaml_data)
-
-    def __load_plugins(self, yaml_data: YAMLData) -> List[Plugin]:
+    def __load_plugins(self, yaml_data: List[YAMLData]) -> List[Plugin]:
         """
         Parse a list of plugins.
 
@@ -104,11 +90,13 @@ class RigelfileParser:
 
             try:
                 module = import_module(plugin_name)
-                cls = getattr(module, 'Plugin')
+                cls_name = 'Plugin'
+                cls: Type = getattr(module, cls_name)
             except ModuleNotFoundError:
                 raise PluginNotFoundError(plugin=plugin_name)
 
-            plugins.append(YAMLInjector.inject(cls, plugin_data))
+            injector = YAMLInjector(cls)
+            plugins.append(injector.inject(plugin_data))
 
         return plugins
 
@@ -121,9 +109,9 @@ class RigelfileParser:
         :param yaml_data: The data extracted from a Rigelfile.
         """
 
-        data = copy.deepcopy(yaml_data)  # use 'deepcopy' to ensure that original data is unaltered.
+        data: YAMLData = copy.deepcopy(yaml_data)  # use 'deepcopy' to ensure that original data is unaltered.
 
-        build_data, registry_plugins_data, simulation_plugins_data = self.__segment_data((data))
+        build_data, registry_plugins_data, simulation_plugins_data = self.__segment_data(data)
 
         self.dockerfile = self.__build_dockerfile(build_data)
         self.registry_plugins = self.__load_plugins(registry_plugins_data)
