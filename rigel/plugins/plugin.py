@@ -1,6 +1,7 @@
-from typing import Protocol
+from typing import Protocol, runtime_checkable
 
 
+@runtime_checkable
 class Plugin(Protocol):
     """
     This class specifies the interface that all plugins must comply with.
