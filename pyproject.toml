@@ -20,6 +20,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
+click = "^8.0.3"
 docker = "^5.0.3"
 Jinja2 = "^3.0.3"
 pydantic = "^1.9.0"
