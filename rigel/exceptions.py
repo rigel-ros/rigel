@@ -131,3 +131,14 @@ class DockerBuildError(RigelError):
     """
     base = "An error occurred while building Docker image: {msg}."
     code = 12
+
+
+class PluginInstallationError(RigelError):
+    """
+    Raised whenever an error occurs while installing an external plugin.
+
+    :type repository: string
+    :ivar repository: URL for the external plugin's repository.
+    """
+    base = "An error occurred while installing external plugin from: {repository}."
+    code = 13

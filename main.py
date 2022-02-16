@@ -1,10 +1,12 @@
 import click
 import docker
 import os
+import subprocess
 import sys
 from pathlib import Path
 from rigel.docker import ImageBuilder
 from rigel.exceptions import (
+    PluginInstallationError,
     RigelfileAlreadyExistsError,
     RigelError
 )
@@ -169,11 +171,34 @@ def run() -> None:
     run_plugins(configuration_parser.simulation_plugins)
 
 
+@click.command()
+@click.argument('repository', type=str)
+@click.option('--ssh', is_flag=True, default=False, help='Download plugin using SSH instead of HTTPS.')
+def install(repository: str, ssh: bool) -> None:
+    """
+    Install external plugins.
+    """
+
+    url = f"{'ssh' if ssh else 'https'}://{repository}"
+
+    try:
+        msg_logger = MessageLogger()
+        msg_logger.info(f'Downloading external plugin from {url}.')
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', f'git+{url}'])
+        msg_logger.info('External plugin was installed with success.')
+    except subprocess.CalledProcessError:
+        err = PluginInstallationError(repository=url)
+        err_logger = ErrorLogger()
+        err_logger.log(err)
+        sys.exit(err.code)
+
+
 # Add commands to CLI
 cli.add_command(init)
-cli.add_command(create)
 cli.add_command(build)
+cli.add_command(create)
 cli.add_command(deploy)
+cli.add_command(install)
 cli.add_command(run)
 
 

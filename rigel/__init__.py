@@ -6,6 +6,7 @@ from .exceptions import (  # noqa: 401
     EmptyRigelfileError,
     IncompleteRigelfileError,
     MissingRequiredFieldError,
+    PluginInstallationError,
     PluginNotFoundError,
     RigelError,
     RigelfileAlreadyExistsError,
@@ -14,4 +15,5 @@ from .exceptions import (  # noqa: 401
     UndeclaredValueError,
     UnformattedRigelfileError,
     UnsupportedCompilerError
+
 )
