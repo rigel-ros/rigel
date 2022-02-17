@@ -179,12 +179,10 @@ def run() -> None:
     run_plugins(rigelfile.simulation_plugins)
 
 
-# rigel install MisterOwlPT.ecr_rigel_plugin
-# rigel install --host gitlab.inesctec.pt --ssh pedro.m.melo.ecr_rigel_plugin
 @click.command()
 @click.argument('plugin', type=str)
-@click.option('--host', type=str, default='github.com', help='The repository where the plugin is hosted.')
-@click.option('--ssh', is_flag=True, default=False, help='Download plugin using SSH instead of HTTPS.')
+@click.option('--host', default='github.com', help="URL of the hosting platform. Default is 'github.com'.")
+@click.option('--ssh', is_flag=True, default=False, help='Whether the plugin is public or private. Use flag when private.')
 def install(plugin: str, host: str, ssh: bool) -> None:
     """
     Install external plugins.
