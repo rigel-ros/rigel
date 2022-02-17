@@ -21,3 +21,5 @@ from .exceptions import (  # noqa: F401
     UnformattedRigelfileError,
     UnsupportedCompilerError
 )
+
+__version__ = '0.2.0'
