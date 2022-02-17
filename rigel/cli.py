@@ -22,6 +22,17 @@ from typing import Any, List
 from rigel.plugins.loader import PluginLoader
 
 
+def handle_rigel_error(err: RigelError) -> None:
+    """
+    Handler function for errors of type RigelError .
+    :type err: RigelError
+    :param err: The error to be handled
+    """
+    error_logger = ErrorLogger()
+    error_logger.log(err)
+    sys.exit(err.code)
+
+
 def create_folder(path: str) -> None:
     """
     Create a folder in case it does not exist yet.
@@ -88,8 +99,7 @@ def run_plugins(plugins: List[PluginSection]) -> None:
             MessageLogger().warning('No plugin was declared.')
 
     except RigelError as err:
-        ErrorLogger().log(err)
-        sys.exit(err.code)
+        handle_rigel_error(err)
 
 
 @click.group()
@@ -115,9 +125,8 @@ def init(force: bool) -> None:
         rigelfile_creator.create()
         print('Rigelfile created with success.')
 
-    except RigelfileAlreadyExistsError as err:
-        ErrorLogger().log(err)
-        sys.exit(err.code)
+    except RigelError as err:
+        handle_rigel_error(err)
 
 
 @click.command()
@@ -139,8 +148,7 @@ def create() -> None:
             renderer.render('config.j2', 'config')
 
     except RigelError as err:
-        ErrorLogger().log(err)
-        sys.exit(err.code)
+        handle_rigel_error(err)
 
 
 @click.command()
@@ -157,8 +165,7 @@ def build() -> None:
         builder.build(rigelfile.build)
 
     except RigelError as err:
-        ErrorLogger().log(err)
-        sys.exit(err.code)
+        handle_rigel_error(err)
 
 
 @click.command()
@@ -192,8 +199,7 @@ def install(plugin: str, host: str, ssh: bool) -> None:
         installer = PluginInstaller(plugin, host, ssh)
         installer.install()
     except RigelError as err:
-        ErrorLogger().log(err)
-        sys.exit(err.code)
+        handle_rigel_error(err)
 
 
 # Add commands to CLI
