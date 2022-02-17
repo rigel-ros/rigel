@@ -1,12 +1,10 @@
 import click
 import docker
 import os
-import subprocess
 import sys
 from pathlib import Path
 from rigel.docker import ImageBuilder
 from rigel.exceptions import (
-    PluginInstallationError,
     RigelfileAlreadyExistsError,
     RigelError
 )
@@ -18,6 +16,7 @@ from rigel.files import (
 )
 from rigel.loggers import ErrorLogger, MessageLogger
 from rigel.models import ModelBuilder, Rigelfile, PluginSection
+from rigel.plugins import PluginInstaller
 from typing import Any, List
 
 from rigel.plugins.loader import PluginLoader
@@ -180,25 +179,22 @@ def run() -> None:
     run_plugins(rigelfile.simulation_plugins)
 
 
+# rigel install MisterOwlPT.ecr_rigel_plugin
+# rigel install --host gitlab.inesctec.pt --ssh pedro.m.melo.ecr_rigel_plugin
 @click.command()
-@click.argument('repository', type=str)
+@click.argument('plugin', type=str)
+@click.option('--host', type=str, default='github.com', help='The repository where the plugin is hosted.')
 @click.option('--ssh', is_flag=True, default=False, help='Download plugin using SSH instead of HTTPS.')
-def install(repository: str, ssh: bool) -> None:
+def install(plugin: str, host: str, ssh: bool) -> None:
     """
     Install external plugins.
     """
 
-    url = f"{'ssh' if ssh else 'https'}://{repository}"
-
     try:
-        msg_logger = MessageLogger()
-        msg_logger.info(f'Downloading external plugin from {url}.')
-        subprocess.check_call([sys.executable, '-m', 'pip', 'install', f'git+{url}'])
-        msg_logger.info('External plugin was installed with success.')
-    except subprocess.CalledProcessError:
-        err = PluginInstallationError(repository=url)
-        err_logger = ErrorLogger()
-        err_logger.log(err)
+        installer = PluginInstaller(plugin, host, ssh)
+        installer.install()
+    except RigelError as err:
+        ErrorLogger().log(err)
         sys.exit(err.code)
 
 

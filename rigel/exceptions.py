@@ -148,10 +148,10 @@ class PluginInstallationError(RigelError):
     """
     Raised whenever an error occurs while installing an external plugin.
 
-    :type repository: string
-    :ivar repository: URL for the external plugin's repository.
+    :type plugin: string
+    :ivar plugin: Name of the plugin to be installed.
     """
-    base = "An error occurred while installing an external plugin from: {repository}."
+    base = "An error occurred while installing external plugin {plugin}."
     code = 14
 
 
@@ -161,9 +161,9 @@ class PluginNotCompliantError(RigelError):
     the rigel.plugins.Protocol class.
 
     :type plugin: string
-    :param plugin: Name of the plugin
+    :ivar plugin: Name of the plugin
     :type cause: string
-    :param cause: Reason why external plugin is not compliant.
+    :ivar cause: Reason why external plugin is not compliant.
     """
     base = "Plugin '{plugin}' does not comply with Rigel plugin protocol: {cause}"
     code = 15
@@ -175,7 +175,18 @@ class NotAModuleError(RigelError):
     class that is not a subclass of pydantic.BaseModel.
 
     :type instance_type: string
-    :param instance_type: Class being instantiated.
+    :ivar instance_type: Class being instantiated.
     """
     base = "Class '{instance_type}' is not 'pydantic.BaseModel'."
     code = 16
+
+
+class InvalidPluginName(RigelError):
+    """
+    Raised whenever an invalid plugin name is passed.
+
+    :type plugin: string
+    :ivar plugin: The invalid plugin name.
+    """
+    base = "Invalid plugin name '{plugin}'."
+    code = 17

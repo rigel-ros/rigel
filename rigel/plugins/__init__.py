@@ -1,2 +1,3 @@
-from .loader import PluginLoader  # noqa: 401
-from .plugin import Plugin  # noqa: 401
+from .installer import PluginInstaller  # noqa: F401
+from .loader import PluginLoader  # noqa: F401
+from .plugin import Plugin  # noqa: F401
