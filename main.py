@@ -13,12 +13,14 @@ from rigel.exceptions import (
 from rigel.files import (
     Renderer,
     RigelfileCreator,
+    YAMLDataDecoder,
     YAMLDataLoader
 )
 from rigel.loggers import ErrorLogger, MessageLogger
-from rigel.parsers import RigelfileDecoder, RigelfileParser
-from rigel.plugins import Plugin
-from typing import List
+from rigel.models import ModelBuilder, Rigelfile, PluginSection
+from typing import Any, List
+
+from rigel.plugins.loader import PluginLoader
 
 
 def create_folder(path: str) -> None:
@@ -31,16 +33,21 @@ def create_folder(path: str) -> None:
     Path(path).mkdir(parents=True, exist_ok=True)
 
 
-def create_configuration_parser() -> RigelfileParser:
+# TODO: change return type to Rigelfile
+def parse_rigelfile() -> Any:
     """
     Parse information inside local Rigelfile.
 
-    :rtype: rigle.parsers.RigelfileParser
+    :rtype: rigle.models.Rigelfile
     :return: The parsed information.
     """
-    yaml_data = YAMLDataLoader('./Rigelfile').load()
-    decoded = RigelfileDecoder().decode(yaml_data)
-    return RigelfileParser(decoded)
+    loader = YAMLDataLoader('./Rigelfile')
+    decoder = YAMLDataDecoder()
+
+    yaml_data = decoder.decode(loader.load())
+
+    builder = ModelBuilder(Rigelfile)
+    return builder.build([], yaml_data)
 
 
 def create_docker_client() -> docker.api.client.APIClient:
@@ -63,7 +70,7 @@ def rigelfile_exists() -> bool:
     return os.path.isfile('./Rigelfile')
 
 
-def run_plugins(plugins: List[Plugin]) -> None:
+def run_plugins(plugins: List[PluginSection]) -> None:
     """
     Run a set of external plugins.
 
@@ -75,7 +82,9 @@ def run_plugins(plugins: List[Plugin]) -> None:
         if plugins:
             for plugin in plugins:
                 MessageLogger().info(f'Using external plugin {plugin.__class__.__module__}.{plugin.__class__.__name__}')
-                plugin.run()
+                loader = PluginLoader()
+                plugin_instance = loader.load(plugin)
+                plugin_instance.run()
         else:
             MessageLogger().warning('No plugin was declared.')
 
@@ -103,7 +112,8 @@ def init(force: bool) -> None:
         if rigelfile_exists() and not force:
             raise RigelfileAlreadyExistsError()
 
-        RigelfileCreator().create()
+        rigelfile_creator = RigelfileCreator()
+        rigelfile_creator.create()
         print('Rigelfile created with success.')
 
     except RigelfileAlreadyExistsError as err:
@@ -121,13 +131,12 @@ def create() -> None:
 
     try:
 
-        configuration_parser = create_configuration_parser()
+        rigelfile = parse_rigelfile()
 
-        renderer = Renderer(configuration_parser.dockerfile)
-
+        renderer = Renderer(rigelfile.build)
         renderer.render('Dockerfile.j2', 'Dockerfile')
         renderer.render('entrypoint.j2', 'entrypoint.sh')
-        if configuration_parser.dockerfile.ssh:
+        if rigelfile.build.ssh:
             renderer.render('config.j2', 'config')
 
     except RigelError as err:
@@ -141,12 +150,12 @@ def build() -> None:
     Build a Docker image with your ROS application.
     """
 
-    configuration_parser = create_configuration_parser()
+    rigelfile = parse_rigelfile()
     docker_client = create_docker_client()
 
     try:
         builder = ImageBuilder(docker_client)
-        builder.build(configuration_parser.dockerfile)
+        builder.build(rigelfile.build)
 
     except RigelError as err:
         ErrorLogger().log(err)
@@ -158,8 +167,8 @@ def deploy() -> None:
     """
     Push a Docker image to a remote image registry.
     """
-    configuration_parser = create_configuration_parser()
-    run_plugins(configuration_parser.registry_plugins)
+    rigelfile = parse_rigelfile()
+    run_plugins(rigelfile.deploy)
 
 
 @click.command()
@@ -167,8 +176,8 @@ def run() -> None:
     """
     Start your containerized ROS application.
     """
-    configuration_parser = create_configuration_parser()
-    run_plugins(configuration_parser.simulation_plugins)
+    rigelfile = parse_rigelfile()
+    run_plugins(rigelfile.simulation_plugins)
 
 
 @click.command()

@@ -47,7 +47,7 @@ build:
   # Set the value of environment variables using the field 'env'.
   # 
   # env:
-  #   - ENV_EXAMPLE=example
+  #   - ENV_EXAMPLE: example
 
   # Rigel can automatically download for you any external ROS package required to containerize your ROS package.
   # You are required to have at least one .rosinstall file placed at root of yout ROS package folder listing all external ROS packages that your package depends upon.
@@ -78,13 +78,14 @@ build:
 
 # List inside this section which plugins to use to deploy the built Docker image.
 # deploy:
-  # -
-  #  plugin: gitlab
-  #  user: user
-  #  password: GITLAB_PASSWORD
-  #  image: my_image:latest
+#   -
+#    name: gitlab
+#    args:
+#     user: user
+#     password: GITLAB_PASSWORD
+#     image: my_image:latest
 
 # List inside this section which plugins to use to run the containerized ROS application.
 # simulate:
   # -
-  #  plugin: local
+  #  name: local

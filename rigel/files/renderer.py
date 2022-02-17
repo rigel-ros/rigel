@@ -1,7 +1,7 @@
-from .image import ImageConfigurationFile
 from jinja2 import Template
 from pkg_resources import resource_string
 from rigel.loggers import MessageLogger
+from rigel.models import DockerSection
 
 
 class Renderer:
@@ -9,9 +9,9 @@ class Renderer:
     A class that creates Dockerfiles.
     """
 
-    def __init__(self, configuration_file: ImageConfigurationFile) -> None:
+    def __init__(self, configuration_file: DockerSection) -> None:
         """
-        :type configuration_file: rigel.files.ImageConfigurationFile
+        :type configuration_file: rigel.models.DockerSection
         :param configuration_file: An aggregator of information about the containerization of the ROS application.
         """
         self.configuration_file = configuration_file

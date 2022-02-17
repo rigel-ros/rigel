@@ -2,7 +2,7 @@ import docker
 import os
 from rigel.exceptions import DockerBuildError
 from rigel.loggers import DockerLogPrinter, MessageLogger
-from rigel.files import ImageConfigurationFile
+from rigel.models import DockerSection
 
 
 class ImageBuilder:
@@ -17,12 +17,12 @@ class ImageBuilder:
         """
         self.docker_client = docker_client
 
-    def build(self, configuration: ImageConfigurationFile) -> None:
+    def build(self, configuration: DockerSection) -> None:
         """
         Build a Docker image.
 
-        :type configuration: rigel.files.ImageConfigurationFile
-        :param docker_client: Information regarding the Docker build process.
+        :type configuration: rigel.models.DockerSection
+        :param docker_client: Information regarding how to containerize the ROS package.
         """
 
         build_args = {}

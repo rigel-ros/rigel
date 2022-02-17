@@ -1,17 +1,20 @@
-import copy
 from rigel.exceptions import UndeclaredGlobalVariable
 from typing import Any, Dict
 
 
-class RigelfileDecoder:
+class YAMLDataDecoder:
     """
-    A helper class that decodes Rigelfile using a mechanism based on global variable definitions.
+    A class to decode YAML data.
+
+    Decoding is done by iterating through the entire YAML data and
+    replacing all marked variables with the correspondent values based on a
+    mapping of user-defined global variables. Variables can be mark with the
+    special character $.
     """
 
-    def __aux_decode(self, data: Any, vars: Dict[str, Any], path: str = '') -> None:
+    def __aux_decode(self, data: Any, vars: Any, path: str = '') -> None:
         """
         Auxiliary function that recursively looks for fields to decode inside YAML data.
-        Fields to decode have values starting with special char @.
 
         :type data: Any
         :param data: The YAML data to be decoded.
@@ -23,10 +26,10 @@ class RigelfileDecoder:
         elif isinstance(data, list):
             self.__aux_decode_list(data, vars, path)
 
-    def __aux_decode_dict(self, data: Any, vars: Dict[str, Any], path: str = '') -> None:
+    def __aux_decode_dict(self, data: Any, vars: Any, path: str = '') -> None:
         """
         This auxiliary function decodes only list elements inside YAML data.
-        Fields to decode have values starting with special char @.
+        Fields to decode have values starting with special char $.
         This auxiliary function decodes only dict elements.
         # NOTE: do not call this function directly. User '__aux_decode' instead.
 
@@ -37,20 +40,23 @@ class RigelfileDecoder:
         """
 
         for k, v in data.items():
+
+            new_path = f'{path}.{k}' if path else k
+
             if isinstance(v, str):  # in order to contain '$' field must be a string.
                 if v[0] == '$':
                     var = v[1:]
                     try:
                         data[k] = vars[var]
                     except KeyError:
-                        raise UndeclaredGlobalVariable(field=path, var=var)
+                        raise UndeclaredGlobalVariable(field=new_path, var=var)
             else:
-                self.__aux_decode(v, vars, f'{path}.{k}' if path else k)
+                self.__aux_decode(v, vars, new_path)
 
     def __aux_decode_list(self, data: Any, vars: Dict[str, Any], path: str = '') -> None:
         """
         This auxiliary function decodes only list elements inside YAML data.
-        Fields to decode have values starting with special char @.
+        Fields to decode have values starting with special char $.
         # NOTE: do not call this function directly. User '__aux_decode' instead.
 
         :type data: Any
@@ -60,15 +66,18 @@ class RigelfileDecoder:
         """
 
         for idx, elem in enumerate(data):
+
+            new_path = f'{path}[{idx}]'
+
             if isinstance(elem, str):  # in order to contain '$' field must be a string.
                 if elem[0] == '$':
                     var = elem[1:]
                     try:
                         data[idx] = vars[var]
                     except KeyError:
-                        raise UndeclaredGlobalVariable(field=path, var=var)
+                        raise UndeclaredGlobalVariable(field=new_path, var=var)
             else:
-                self.__aux_decode(elem, vars, f'{path}[{idx}]')
+                self.__aux_decode(elem, vars, new_path)
 
     def decode(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -82,7 +91,6 @@ class RigelfileDecoder:
         """
 
         # Function entry point.
-        undecoded_data = copy.deepcopy(data)
-        variables = undecoded_data.pop('vars') if undecoded_data.get('vars') else []
-        self.__aux_decode(undecoded_data, variables)
-        return undecoded_data
+        variables = data.get('vars') or []
+        self.__aux_decode(data, variables)
+        return data

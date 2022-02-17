@@ -9,7 +9,7 @@ class ImageBuilderTesting(unittest.TestCase):
     Test suite for rigel.docker.build.ImageBuilder class.
     """
 
-    @patch('rigel.docker.builder.ImageConfigurationFile')
+    @patch('rigel.docker.builder.DockerSection')
     @patch('rigel.docker.builder.os.environ')
     @patch('rigel.docker.builder.DockerLogPrinter')
     @patch('rigel.docker.builder.MessageLogger')
@@ -50,7 +50,7 @@ class ImageBuilderTesting(unittest.TestCase):
             rm=True,
         )
 
-    @patch('rigel.docker.builder.ImageConfigurationFile')
+    @patch('rigel.docker.builder.DockerSection')
     @patch('rigel.docker.builder.os.environ')
     @patch('rigel.docker.builder.DockerLogPrinter')
     @patch('rigel.docker.builder.MessageLogger')
@@ -87,7 +87,7 @@ class ImageBuilderTesting(unittest.TestCase):
         )
 
     @patch('rigel.docker.builder.docker.APIClient')
-    @patch('rigel.docker.builder.ImageConfigurationFile')
+    @patch('rigel.docker.builder.DockerSection')
     @patch('rigel.docker.builder.os.environ')
     @patch('rigel.docker.builder.DockerLogPrinter')
     @patch('rigel.docker.builder.MessageLogger')
