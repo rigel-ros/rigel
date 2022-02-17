@@ -1,6 +1,5 @@
 from pydantic import BaseModel, validator
 from rigel.exceptions import UnsupportedCompilerError
-from rigel.loggers import MessageLogger
 from typing import Any, Dict, List
 
 
@@ -76,17 +75,3 @@ class DockerSection(BaseModel):
         if compiler not in ['catkin_make', 'colcon']:
             raise UnsupportedCompilerError(compiler=compiler)
         return compiler
-
-    @validator('ssh')
-    def warn_unused_keys(cls, keys, values):  # type: ignore[no-untyped-def]
-        """
-        Inform the user whenever SSH keys declared but nor used.
-
-        :type keys: List[rigel.models.build.SSHKeys]
-        :param keys: The list of declared SSH keys.
-        :type values: Dict[str, Any]
-        :param values: The information contained in the Rigelfile.
-        """
-        if keys and not values['rosinstall']:
-            MessageLogger().warning('No .rosinstall file was declared. Unused SSH keys.')
-        return keys

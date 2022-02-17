@@ -1,7 +1,7 @@
 import docker
 import os
 from rigel.exceptions import DockerBuildError
-from rigel.loggers import DockerLogPrinter, MessageLogger
+from rigel.loggers import DockerLogPrinter
 from rigel.models import DockerSection
 
 
@@ -53,7 +53,4 @@ class ImageBuilder:
             except StopIteration:  # no more log messages
                 if 'error' in log:
                     raise DockerBuildError(msg=log['error'])
-                else:
-                    MessageLogger().info(f'Docker image {configuration.image} was built with success.')
-
                 break

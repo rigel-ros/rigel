@@ -1,6 +1,5 @@
 from jinja2 import Template
 from pkg_resources import resource_string
-from rigel.loggers import MessageLogger
 from rigel.models import DockerSection
 
 
@@ -32,4 +31,3 @@ class Renderer:
 
         with open(f'.rigel_config/{output}', 'w+') as output_file:
             output_file.write(dockerfile_templater.render(configuration=self.configuration_file.dict()))
-            MessageLogger().info(f"Created {output}.")

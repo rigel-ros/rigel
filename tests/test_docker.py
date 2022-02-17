@@ -12,10 +12,8 @@ class ImageBuilderTesting(unittest.TestCase):
     @patch('rigel.docker.builder.DockerSection')
     @patch('rigel.docker.builder.os.environ')
     @patch('rigel.docker.builder.DockerLogPrinter')
-    @patch('rigel.docker.builder.MessageLogger')
     def test_docker_with_buildargs(
             self,
-            logger_mock: Mock,
             printer_mock: Mock,
             environ_mock: Mock,
             configuration_mock: Mock,
@@ -53,10 +51,8 @@ class ImageBuilderTesting(unittest.TestCase):
     @patch('rigel.docker.builder.DockerSection')
     @patch('rigel.docker.builder.os.environ')
     @patch('rigel.docker.builder.DockerLogPrinter')
-    @patch('rigel.docker.builder.MessageLogger')
     def test_docker_without_buildargs(
             self,
-            logger_mock: Mock,
             printer_mock: Mock,
             environ_mock: Mock,
             configuration_mock: Mock,
@@ -90,10 +86,8 @@ class ImageBuilderTesting(unittest.TestCase):
     @patch('rigel.docker.builder.DockerSection')
     @patch('rigel.docker.builder.os.environ')
     @patch('rigel.docker.builder.DockerLogPrinter')
-    @patch('rigel.docker.builder.MessageLogger')
     def test_docker_build_error(
             self,
-            logger_mock: Mock,
             printer_mock: Mock,
             environ_mock: Mock,
             configuration_mock: Mock,
