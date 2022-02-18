@@ -60,9 +60,9 @@ class PluginInstallerTesting(unittest.TestCase):
         self.assertEqual(installer.protocol, 'https')
 
     @patch('rigel.plugins.installer.check_call')
-    def test_check_subprocess_call(self, subprocess_mock: Mock) -> None:
+    def test_check_subprocess_call_https(self, subprocess_mock: Mock) -> None:
         """
-        Test if Pip is called with the correct arguments.
+        Test if Pip is called with the correct arguments when using HTTPS.
         """
         plugin_user = 'test_user'
         plugin_name = 'test_plugin'
@@ -72,6 +72,21 @@ class PluginInstallerTesting(unittest.TestCase):
         installer.install()
 
         url = f"{installer.protocol}://{host}/{plugin_user}/{plugin_name}"
+        subprocess_mock.assert_called_once_with([sys.executable, '-m', 'pip', 'install', f'git+{url}'])
+
+    @patch('rigel.plugins.installer.check_call')
+    def test_check_subprocess_call_ssh(self, subprocess_mock: Mock) -> None:
+        """
+        Test if Pip is called with the correct arguments when using SSH.
+        """
+        plugin_user = 'test_user'
+        plugin_name = 'test_plugin'
+        plugin = f'{plugin_user}/{plugin_name}'
+        host = 'test_host'
+        installer = PluginInstaller(plugin, host, True)
+        installer.install()
+
+        url = f"{installer.protocol}://git@{host}/{plugin_user}/{plugin_name}"
         subprocess_mock.assert_called_once_with([sys.executable, '-m', 'pip', 'install', f'git+{url}'])
 
     @patch('rigel.plugins.installer.check_call')

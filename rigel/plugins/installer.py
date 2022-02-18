@@ -34,7 +34,7 @@ class PluginInstaller:
         """
         Install an external plugin.
         """
-        url = f"{self.protocol}://{self.host}/{self.plugin_user}/{self.plugin_name}"
+        url = f"{self.protocol}://{'git@' if self.protocol == 'ssh' else ''}{self.host}/{self.plugin_user}/{self.plugin_name}"
 
         try:
             check_call([sys.executable, '-m', 'pip', 'install', f'git+{url}'])
