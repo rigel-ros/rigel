@@ -128,7 +128,7 @@ class PluginNotFoundError(RigelError):
     :type plugin: string
     :ivar plugin: Name of the plugin.
     """
-    base = ("Unable to load plugin '{plugin}'. Make sure plugin is installed in your system."
+    base = ("Unable to load plugin '{plugin}'. Make sure plugin is installed in your system.\n"
             "For more information on external plugin installation run command 'rigel install --help'.")
     code = 12
 

@@ -55,10 +55,11 @@ class PluginLoader:
         :rtype: Plugin
         :return: An instance of the specified plugin.
         """
+        _, plugin_name = plugin.name.strip().split('/')
         complete_plugin_name = f'{plugin.name}.{plugin.entrypoint}'
 
         try:
-            module = import_module(plugin.name)
+            module = import_module(plugin_name)
             entrypoint = plugin.entrypoint
             cls: Type = getattr(module, entrypoint)
         except ModuleNotFoundError:

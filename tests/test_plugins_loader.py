@@ -47,7 +47,7 @@ class PluginLoaderTesting(unittest.TestCase):
         """
         Test if PluginNotFoundError is thrown if an unknown plugin is declared.
         """
-        plugin_name = 'user.unknown_plugin'
+        plugin_name = 'user/unknown_plugin'
         plugin_entrypoint = 'TestEntrypoint'
         plugin = PluginSection(**{'name': plugin_name, 'entrypoint': plugin_entrypoint})
 
@@ -68,7 +68,9 @@ class PluginLoaderTesting(unittest.TestCase):
         """
         Test if plugins are properly initialized and correctly passed their data.
         """
-        plugin_name = 'rigel.test'
+        plugin_user = 'rigel'
+        plugin_name = 'test'
+        complete_plugin_name = f'{plugin_user}/{plugin_name}'
         plugin_entrypoint = 'EntrypointClass'
         plugin_args = [1, 2, 3]
         plugin_kwargs = {'test_field': 'test_value'}
@@ -79,7 +81,7 @@ class PluginLoaderTesting(unittest.TestCase):
 
         loader = PluginLoader()
         loader.load(PluginSection(**{
-            'name': plugin_name,
+            'name': complete_plugin_name,
             'entrypoint': plugin_entrypoint,
             'args': plugin_args,
             'kwargs': plugin_kwargs
