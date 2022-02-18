@@ -94,11 +94,11 @@ def run_plugins(plugins: List[PluginSection]) -> None:
         if plugins:
             for plugin in plugins:
 
-                message_logger.info(f"Loading external plugin '{plugin.name}'.")
+                message_logger.warning(f"Loading external plugin '{plugin.name}'.")
                 loader = PluginLoader()
                 plugin_instance = loader.load(plugin)
 
-                message_logger.info(f"Executing external plugin '{plugin.name}'.")
+                message_logger.warning(f"Executing external plugin '{plugin.name}'.")
                 plugin_instance.run()
 
                 message_logger.info(f"Plugin '{plugin.name}' finished execution with success.")
