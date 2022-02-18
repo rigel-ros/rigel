@@ -207,7 +207,7 @@ def run() -> None:
     message_logger = MessageLogger()
     message_logger.info('Starting containerized ROS application.')
     rigelfile = parse_rigelfile()
-    run_plugins(rigelfile.simulation_plugins)
+    run_plugins(rigelfile.simulate)
 
 
 @click.command()

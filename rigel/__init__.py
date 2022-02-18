@@ -7,7 +7,7 @@ from .exceptions import (  # noqa: F401
     EmptyRigelfileError,
     IncompleteRigelfileError,
     InvalidValueError,
-    InvalidPluginName,
+    InvalidPluginNameError,
     MissingRequiredFieldError,
     NotAModuleError,
     PluginInstallationError,
@@ -22,4 +22,4 @@ from .exceptions import (  # noqa: F401
     UnsupportedCompilerError
 )
 
-__version__ = '0.2.2'
+__version__ = '0.2.3'

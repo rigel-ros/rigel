@@ -1,6 +1,6 @@
 import sys
 from rigel.exceptions import (
-    InvalidPluginName,
+    InvalidPluginNameError,
     PluginInstallationError
 )
 from subprocess import CalledProcessError, check_call
@@ -25,8 +25,7 @@ class PluginInstaller:
         try:
             self.plugin_user, self.plugin_name = plugin.strip().split('/')
         except ValueError:
-            raise InvalidPluginName(plugin=plugin)
-
+            raise InvalidPluginNameError(plugin=plugin)
         self.host = host
         self.protocol = 'ssh' if private else 'https'
 

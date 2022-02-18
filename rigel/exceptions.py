@@ -181,7 +181,7 @@ class NotAModuleError(RigelError):
     code = 16
 
 
-class InvalidPluginName(RigelError):
+class InvalidPluginNameError(RigelError):
     """
     Raised whenever an invalid plugin name is passed.
 

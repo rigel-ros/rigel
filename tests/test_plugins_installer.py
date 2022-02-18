@@ -1,7 +1,7 @@
 import sys
 import unittest
 from rigel.exceptions import (
-    InvalidPluginName,
+    InvalidPluginNameError,
     PluginInstallationError
 )
 from rigel.plugins import PluginInstaller
@@ -19,7 +19,7 @@ class PluginInstallerTesting(unittest.TestCase):
         Test if InvalidPluginName is thrown if an invalid plugin name is provided.
         """
         invalid_plugin_name = 'invalid_plugin_name'
-        with self.assertRaises(InvalidPluginName) as context:
+        with self.assertRaises(InvalidPluginNameError) as context:
             installer = PluginInstaller(invalid_plugin_name, 'github.com', False)
             installer.install()
         self.assertEqual(context.exception.kwargs['plugin'], 'invalid_plugin_name')

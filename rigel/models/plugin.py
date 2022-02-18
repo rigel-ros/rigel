@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
+from rigel.exceptions import InvalidPluginNameError
 from typing import Any, Dict, List
 
 
@@ -30,3 +31,14 @@ class PluginSection(BaseModel):
     args: List[Any] = []
     entrypoint: str = 'Plugin'
     kwargs: Dict[str, Any] = {}
+
+    @validator('name')
+    def validate_name(cls, name: str) -> str:
+        """
+        Ensure that the plugin name follows the format <AUTHOR>/<PACKAGE>.
+        :type name: string
+        :param name: Name of the plugin.
+        """
+        if not len(name.strip().split('/')) == 2:
+            raise InvalidPluginNameError(plugin=name)
+        return name
