@@ -80,7 +80,7 @@ build:
 # deploy:
 #   -
 #    name: gitlab
-#    args:
+#    kwargs:
 #     user: user
 #     password: GITLAB_PASSWORD
 #     image: my_image:latest
