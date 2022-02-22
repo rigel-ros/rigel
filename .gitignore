@@ -78,7 +78,6 @@ ignore log files someone is creating
 
 #ignore IDE and code editors
 .idea/
-.mypy_cache/
 .vscode/
 */__pycache__/
 
@@ -89,6 +88,9 @@ Dockerfile
 
 # ignore Python build related
 .coverage
+.mypy_cache
+.nox
+.pytest_cache
 dist/
 *.egg-info/
 *.spec
