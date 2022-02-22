@@ -7,7 +7,6 @@ from .exceptions import (  # noqa: F401
     InvalidPluginNameError,
     InvalidValueError,
     MissingRequiredFieldError,
-    NotAModuleError,
     PluginInstallationError,
     PluginNotCompliantError,
     PluginNotFoundError,

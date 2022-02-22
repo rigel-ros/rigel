@@ -3,15 +3,10 @@ from pydantic import BaseModel
 from rigel.exceptions import (
     InvalidValueError,
     MissingRequiredFieldError,
-    NotAModuleError,
     UndeclaredValueError
 )
 from rigel.models import ModelBuilder
 from unittest.mock import Mock, patch
-
-
-class TestClass:
-    pass
 
 
 class TestModel(BaseModel):
@@ -22,16 +17,6 @@ class ModelBuildingTesting(unittest.TestCase):
     """
     Test suite for rigel.models.ModelBuilding class.
     """
-
-    def test_not_a_module_error(self) -> None:
-        """
-        Test if NotAModuleError is thrown whenever an attempt is made
-        to instantiate a class that is not a subclass of pydantic.BaseModel.
-        """
-        with self.assertRaises(NotAModuleError) as context:
-            builder = ModelBuilder(TestClass)
-            builder.build([], {})
-        self.assertEqual(context.exception.kwargs['instance_type'], TestClass)
 
     def test_missing_required_field_error(self) -> None:
         """

@@ -1,4 +1,3 @@
-from pydantic import BaseModel
 from pydantic.errors import (
     MissingError,
     NoneIsNotAllowedError,
@@ -10,7 +9,6 @@ from pydantic.error_wrappers import (
 from rigel.exceptions import (
     InvalidValueError,
     MissingRequiredFieldError,
-    NotAModuleError,
     UndeclaredValueError
 )
 from typing import Any, Dict, List, Type
@@ -32,16 +30,6 @@ class ModelBuilder:
         """
         self.instance_type = instance_type
 
-    def is_model(self) -> bool:
-        """
-        Ensure that the class being instantiated is a subclass of pydantic.BaseModel.
-
-        :rtype: bool
-        :return: True if the external plugin entrypoint class is a subclass of
-        pydantic.BaseModel. False otherwise.
-        """
-        return issubclass(self.instance_type, BaseModel)
-
     # TODO: change return type from Any to BaseModel.
     def build(self, args: List[Any], kwargs: Dict[str, Any]) -> Any:
         """
@@ -55,11 +43,7 @@ class ModelBuilder:
         :rtype: Any
         :return: An instance of the specified class.
         """
-        if not self.is_model():
-            raise NotAModuleError(instance_type=self.instance_type)
-
         try:
-
             return self.instance_type(*args, **kwargs)
 
         except ValidationError as err:

@@ -5,7 +5,6 @@ from rigel.exceptions import (
     InvalidPluginNameError,
     InvalidValueError,
     MissingRequiredFieldError,
-    NotAModuleError,
     PluginInstallationError,
     PluginNotCompliantError,
     PluginNotFoundError,
@@ -150,22 +149,13 @@ class ExceptionTesting(unittest.TestCase):
         self.assertEqual(err.kwargs['plugin'], test_plugin)
         self.assertEqual(err.kwargs['cause'], test_cause)
 
-    def test_not_a_module_error(self) -> None:
-        """
-        Ensure that instances of NotAModuleError are thrown as expected.
-        """
-        test_instance_type = str
-        err = NotAModuleError(instance_type=test_instance_type)
-        self.assertEqual(err.code, 20)
-        self.assertEqual(err.kwargs['instance_type'], test_instance_type)
-
     def invalid_plugin_name_error(self) -> None:
         """
         Ensure that instances of InvalidPluginNameError are thrown as expected.
         """
         test_plugin = 'test_plugin'
         err = InvalidPluginNameError(plugin=test_plugin)
-        self.assertEqual(err.code, 21)
+        self.assertEqual(err.code, 20)
         self.assertEqual(err.kwargs['plugin'], test_plugin)
 
 

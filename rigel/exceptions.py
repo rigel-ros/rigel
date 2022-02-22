@@ -155,18 +155,6 @@ class PluginNotCompliantError(RigelError):
     code = 19
 
 
-class NotAModuleError(RigelError):
-    """
-    Raised whenever an attempt is made to use a model builder to instantiate a
-    class that is not a subclass of pydantic.BaseModel.
-
-    :type instance_type: string
-    :ivar instance_type: Class being instantiated.
-    """
-    base = "Class '{instance_type}' is not 'pydantic.BaseModel'."
-    code = 20
-
-
 class InvalidPluginNameError(RigelError):
     """
     Raised whenever an invalid plugin name is passed.
@@ -175,4 +163,4 @@ class InvalidPluginNameError(RigelError):
     :ivar plugin: The invalid plugin name.
     """
     base = "Invalid plugin name '{plugin}'."
-    code = 21
+    code = 20
