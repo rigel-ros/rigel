@@ -71,7 +71,7 @@ build:
   #   -
   #     value: keys/gitlab_key
   #     hostname: gitlab.com
-  #       file: True
+  #     file: True
   #   -
   #     value: BITBUCKET_SSH_KEY
   #     hostname: bitbucket.com

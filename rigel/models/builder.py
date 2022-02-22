@@ -59,6 +59,7 @@ class ModelBuilder:
             raise NotAModuleError(instance_type=self.instance_type)
 
         try:
+
             return self.instance_type(*args, **kwargs)
 
         except ValidationError as err:

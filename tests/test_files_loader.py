@@ -1,7 +1,7 @@
 import unittest
 from rigel.exceptions import (
     EmptyRigelfileError,
-    RigelfileNotFound,
+    RigelfileNotFoundError,
     UnformattedRigelfileError
 )
 from rigel.files import YAMLDataLoader
@@ -15,9 +15,9 @@ class YAMLDataLoaderTesting(unittest.TestCase):
 
     def test_rigelfile_not_found_error(self) -> None:
         """
-        Test if RigelfileNotFound is thrown if an Rigelfile does not exist.
+        Test if RigelfileNotFoundError is thrown if an Rigelfile does not exist.
         """
-        with self.assertRaises(RigelfileNotFound):
+        with self.assertRaises(RigelfileNotFoundError):
             loader = YAMLDataLoader('./unexistent_file')
             loader.load()
 

@@ -1,4 +1,4 @@
-from rigel.exceptions import UndeclaredGlobalVariable
+from rigel.exceptions import UndeclaredGlobalVariableError
 from typing import Any, Dict
 
 
@@ -49,7 +49,7 @@ class YAMLDataDecoder:
                     try:
                         data[k] = vars[var]
                     except KeyError:
-                        raise UndeclaredGlobalVariable(field=new_path, var=var)
+                        raise UndeclaredGlobalVariableError(field=new_path, var=var)
             else:
                 self.__aux_decode(v, vars, new_path)
 
@@ -75,7 +75,7 @@ class YAMLDataDecoder:
                     try:
                         data[idx] = vars[var]
                     except KeyError:
-                        raise UndeclaredGlobalVariable(field=new_path, var=var)
+                        raise UndeclaredGlobalVariableError(field=new_path, var=var)
             else:
                 self.__aux_decode(elem, vars, new_path)
 

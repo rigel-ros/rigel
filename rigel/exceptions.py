@@ -1,29 +1,12 @@
-from typing import Type, Union
+from rigelcore.exceptions import RigelError
 
 
-class RigelError(Exception):
-    """
-    The base exception class for all Rigel errors.
-
-    :type base: string
-    :var base: The error message.
-    :type code: int
-    :cvar code: The error code.
-    """
-    base = 'Undefined Rigel error.'
-    code = 1
-
-    def __init__(self, **kwargs: Union[str, int, float, Type]):
-        Exception.__init__(self, self.base.format(**kwargs))
-        self.kwargs = kwargs
-
-
-class RigelfileNotFound(RigelError):
+class RigelfileNotFoundError(RigelError):
     """
     Raised whenever a Rigelfile is required but is not found.
     """
     base = "Rigelfile was not found. Use 'rigel init' to create one."
-    code = 2
+    code = 6
 
 
 class RigelfileAlreadyExistsError(RigelError):
@@ -32,7 +15,7 @@ class RigelfileAlreadyExistsError(RigelError):
     that already contains a Rigelfile.
     """
     base = "A Rigelfile already exists. Use '--force' flag to write over existing Rigelfile."
-    code = 3
+    code = 7
 
 
 class UnformattedRigelfileError(RigelError):
@@ -43,7 +26,7 @@ class UnformattedRigelfileError(RigelError):
     :ivar trace: A message detailing what format error was found and where.
     """
     base = "Rigelfile is not properly formatted: {trace}."
-    code = 4
+    code = 8
 
 
 class IncompleteRigelfileError(RigelError):
@@ -54,7 +37,7 @@ class IncompleteRigelfileError(RigelError):
     :ivar block: The required block that is missing.
     """
     base = "Incomplete Rigelfile. Missing required block '{block}'."
-    code = 5
+    code = 9
 
 
 class UndeclaredValueError(RigelError):
@@ -65,7 +48,7 @@ class UndeclaredValueError(RigelError):
     :ivar field: The field that was left undefined.
     """
     base = "Invalid Rigelfile. Field '{field}' was declared but left undefined."
-    code = 6
+    code = 10
 
 
 class InvalidValueError(RigelError):
@@ -78,7 +61,7 @@ class InvalidValueError(RigelError):
     :ivar field: The field whose specified value is invalid.
     """
     base = "Unable to create of instance of class '{instance_type}': invalid value for field '{field}'."
-    code = 7
+    code = 11
 
 
 class EmptyRigelfileError(RigelError):
@@ -86,7 +69,7 @@ class EmptyRigelfileError(RigelError):
     Raised whenever an empty Rigelfile is found.
     """
     base = "Provided Rigelfile is empty."
-    code = 8
+    code = 12
 
 
 class UnsupportedCompilerError(RigelError):
@@ -97,7 +80,7 @@ class UnsupportedCompilerError(RigelError):
     :ivar compiler: The name of the unsupported compiler.
     """
     base = "Unsupported compiler '{compiler}'."
-    code = 9
+    code = 13
 
 
 class MissingRequiredFieldError(RigelError):
@@ -108,17 +91,31 @@ class MissingRequiredFieldError(RigelError):
     :ivar field: Name of the missing field.
     """
     base = "Required field '{field}' is missing."
-    code = 10
+    code = 14
 
 
-class UndeclaredGlobalVariable(RigelError):
+class UndeclaredEnvironmentVariableError(RigelError):
     """
-  class DockerBuildError(RigelError):  :ivar var: Name of the undeclared global variable.
+    Raised whenever an attempt is made to use the value of an undeclared environment variable.
+
+    :type env: string
+    :ivar env: The undeclared environment variable.
+    """
+    base = "Environment variable {env} is not declared."
+    code = 15
+
+
+class UndeclaredGlobalVariableError(RigelError):
+    """
+    Raised whenever an undeclared global variable is referenced.
+
     :type field: string
     :ivar field: Path for the field referencing the global varialble.
+    :type var: string
+    :ivar var: Global variable identifier.
     """
     base = "Field '{field}' set to have the value of undeclared global variable '{var}'."
-    code = 11
+    code = 16
 
 
 class PluginNotFoundError(RigelError):
@@ -130,18 +127,7 @@ class PluginNotFoundError(RigelError):
     """
     base = ("Unable to load plugin '{plugin}'. Make sure plugin is installed in your system.\n"
             "For more information on external plugin installation run command 'rigel install --help'.")
-    code = 12
-
-
-class DockerBuildError(RigelError):
-    """
-    Raised whenever an error occurs while building a Docker image.
-
-    :type msg: string
-    :ivar msg: The error message as provided by the Docker API.
-    """
-    base = "An error occurred while building Docker image: {msg}."
-    code = 13
+    code = 17
 
 
 class PluginInstallationError(RigelError):
@@ -152,7 +138,7 @@ class PluginInstallationError(RigelError):
     :ivar plugin: Name of the plugin to be installed.
     """
     base = "An error occurred while installing external plugin {plugin}."
-    code = 14
+    code = 18
 
 
 class PluginNotCompliantError(RigelError):
@@ -166,7 +152,7 @@ class PluginNotCompliantError(RigelError):
     :ivar cause: Reason why external plugin is not compliant.
     """
     base = "Plugin '{plugin}' does not comply with Rigel plugin protocol: {cause}"
-    code = 15
+    code = 19
 
 
 class NotAModuleError(RigelError):
@@ -178,7 +164,7 @@ class NotAModuleError(RigelError):
     :ivar instance_type: Class being instantiated.
     """
     base = "Class '{instance_type}' is not 'pydantic.BaseModel'."
-    code = 16
+    code = 20
 
 
 class InvalidPluginNameError(RigelError):
@@ -189,4 +175,4 @@ class InvalidPluginNameError(RigelError):
     :ivar plugin: The invalid plugin name.
     """
     base = "Invalid plugin name '{plugin}'."
-    code = 17
+    code = 21

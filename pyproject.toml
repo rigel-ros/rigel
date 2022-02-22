@@ -21,12 +21,12 @@ classifiers = [
 
 [tool.poetry.dependencies]
 click = "^8.0.3"
-docker = "^5.0.3"
 Jinja2 = "^3.0.3"
 pydantic = "^1.9.0"
 python = "^3.8"
 PyYAML = "^6.0"
 rich = "^11.2.0"
+rigelcore = {git = "ssh://git@gitlab.inesctec.pt/pedro.m.melo/rigelcore"}
 
 [tool.poetry.dev-dependencies]
 coverage = {extras = ["toml"], version = "^6.3.1"}

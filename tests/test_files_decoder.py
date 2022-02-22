@@ -1,5 +1,5 @@
 import unittest
-from rigel.exceptions import UndeclaredGlobalVariable
+from rigel.exceptions import UndeclaredGlobalVariableError
 from rigel.files import YAMLDataDecoder
 
 
@@ -10,11 +10,11 @@ class YAMLDataDecoderTesting(unittest.TestCase):
 
     def test_undeclared_variable_error_dict(self) -> None:
         """
-        Test if UndeclaredGlobalVariable is thrown if references
+        Test if UndeclaredGlobalVariableError is thrown if references
         to unknown global variables are made inside an element of type dict.
         """
         test_data = {'test_key': '$unknown', 'vars': {'template_var': 'test_value'}}
-        with self.assertRaises(UndeclaredGlobalVariable) as context:
+        with self.assertRaises(UndeclaredGlobalVariableError) as context:
             decoder = YAMLDataDecoder()
             decoder.decode(test_data)
         self.assertEqual(context.exception.kwargs['field'], 'test_key')
@@ -26,7 +26,7 @@ class YAMLDataDecoderTesting(unittest.TestCase):
         to unknown global variables are made inside an element of type list.
         """
         test_data = {'test_key': ['$unknown'], 'vars': {'template_var': 'test_value'}}
-        with self.assertRaises(UndeclaredGlobalVariable) as context:
+        with self.assertRaises(UndeclaredGlobalVariableError) as context:
             decoder = YAMLDataDecoder()
             decoder.decode(test_data)
         self.assertEqual(context.exception.kwargs['field'], 'test_key[0]')

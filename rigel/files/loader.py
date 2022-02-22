@@ -1,7 +1,7 @@
 import yaml
 from rigel.exceptions import (
     EmptyRigelfileError,
-    RigelfileNotFound,
+    RigelfileNotFoundError,
     UnformattedRigelfileError
 )
 from typing import Any
@@ -39,7 +39,7 @@ class YAMLDataLoader:
             return yaml_data
 
         except FileNotFoundError:
-            raise RigelfileNotFound()
+            raise RigelfileNotFoundError()
 
         except yaml.YAMLError as err:
 
