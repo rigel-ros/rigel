@@ -2,7 +2,7 @@ import click
 import os
 import sys
 from pathlib import Path
-from rigelcore.docker import DockerClient
+from rigelcore.clients import DockerClient
 from rigelcore.exceptions import RigelError
 from rigelcore.loggers import ErrorLogger, MessageLogger
 from rigel.exceptions import RigelfileAlreadyExistsError
@@ -12,7 +12,8 @@ from rigel.files import (
     YAMLDataDecoder,
     YAMLDataLoader
 )
-from rigel.models import ModelBuilder, Rigelfile, PluginSection
+from rigelcore.models import ModelBuilder
+from rigel.models import Rigelfile, PluginSection
 from rigel.plugins import PluginInstaller
 from typing import Any, Dict, List
 

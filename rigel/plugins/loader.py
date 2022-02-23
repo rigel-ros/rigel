@@ -4,7 +4,8 @@ from rigel.exceptions import (
     PluginNotCompliantError,
     PluginNotFoundError,
 )
-from rigel.models import ModelBuilder, PluginSection
+from rigelcore.models import ModelBuilder
+from rigel.models import PluginSection
 from .plugin import Plugin
 from typing import Any, Type
 
