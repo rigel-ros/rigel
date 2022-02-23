@@ -1,4 +1,4 @@
-from rigel.exceptions import UndeclaredGlobalVariableError
+from rigelcore.exceptions import UndeclaredGlobalVariableError
 from typing import Any, Dict
 
 

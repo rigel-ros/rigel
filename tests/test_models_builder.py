@@ -1,6 +1,6 @@
 import unittest
 from pydantic import BaseModel
-from rigel.exceptions import (
+from rigelcore.exceptions import (
     InvalidValueError,
     MissingRequiredFieldError,
     UndeclaredValueError

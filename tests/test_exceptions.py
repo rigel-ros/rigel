@@ -3,16 +3,11 @@ from rigel.exceptions import (
     EmptyRigelfileError,
     IncompleteRigelfileError,
     InvalidPluginNameError,
-    InvalidValueError,
-    MissingRequiredFieldError,
     PluginInstallationError,
     PluginNotCompliantError,
     PluginNotFoundError,
     RigelfileAlreadyExistsError,
     RigelfileNotFoundError,
-    UndeclaredEnvironmentVariableError,
-    UndeclaredGlobalVariableError,
-    UndeclaredValueError,
     UnformattedRigelfileError,
     UnsupportedCompilerError
 )
@@ -55,26 +50,6 @@ class ExceptionTesting(unittest.TestCase):
         self.assertEqual(err.code, 9)
         self.assertEqual(err.kwargs['block'], test_block)
 
-    def test_undeclared_value_error(self) -> None:
-        """
-        Ensure that instances of UndeclaredValueError are thrown as expected.
-        """
-        test_field = 'test_field'
-        err = UndeclaredValueError(field=test_field)
-        self.assertEqual(err.code, 10)
-        self.assertEqual(err.kwargs['field'], test_field)
-
-    def test_invalid_value_error(self) -> None:
-        """
-        Ensure that instances of InvalidValueError are thrown as expected.
-        """
-        test_instance_type = str
-        test_field = 'test_field'
-        err = InvalidValueError(instance_type=test_instance_type, field=test_field)
-        self.assertEqual(err.code, 11)
-        self.assertEqual(err.kwargs['instance_type'], test_instance_type)
-        self.assertEqual(err.kwargs['field'], test_field)
-
     def test_empty_rigelfile_error(self) -> None:
         """
         Ensure that instances of EmptyRigelfileError are thrown as expected.
@@ -90,35 +65,6 @@ class ExceptionTesting(unittest.TestCase):
         err = UnsupportedCompilerError(compiler=test_compiler)
         self.assertEqual(err.code, 13)
         self.assertEqual(err.kwargs['compiler'], test_compiler)
-
-    def test_missing_required_field_error(self) -> None:
-        """
-        Ensure that instances of MissingRequiredFieldError are thrown as expected.
-        """
-        test_field = 'test_field'
-        err = MissingRequiredFieldError(field=test_field)
-        self.assertEqual(err.code, 14)
-        self.assertEqual(err.kwargs['field'], test_field)
-
-    def test_undeclared_environment_variable_error(self) -> None:
-        """
-        Ensure that instances of UndeclaredEnvironmentVariableError are thrown as expected.
-        """
-        test_env = 'TEST_ENV'
-        err = UndeclaredEnvironmentVariableError(env=test_env)
-        self.assertEqual(err.code, 15)
-        self.assertEqual(err.kwargs['env'], test_env)
-
-    def test_undeclared_global_variable_error(self) -> None:
-        """
-        Ensure that instances of UndeclaredGlobalVariableError are thrown as expected.
-        """
-        test_field = 'test_field'
-        test_var = 'test_var'
-        err = UndeclaredGlobalVariableError(field=test_field, var=test_var)
-        self.assertEqual(err.code, 16)
-        self.assertEqual(err.kwargs['field'], test_field)
-        self.assertEqual(err.kwargs['var'], test_var)
 
     def test_plugin_not_found_error(self) -> None:
         """

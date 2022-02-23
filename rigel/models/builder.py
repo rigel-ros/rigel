@@ -6,7 +6,7 @@ from pydantic.errors import (
 from pydantic.error_wrappers import (
     ValidationError
 )
-from rigel.exceptions import (
+from rigelcore.exceptions import (
     InvalidValueError,
     MissingRequiredFieldError,
     UndeclaredValueError

@@ -234,7 +234,7 @@ dev = ["coverage", "hypothesis", "hypothesmith (>=0.2)", "pre-commit"]
 
 [[package]]
 name = "identify"
-version = "2.4.10"
+version = "2.4.11"
 description = "File identification library for Python"
 category = "dev"
 optional = false
@@ -633,7 +633,7 @@ jupyter = ["ipywidgets (>=7.5.1,<8.0.0)"]
 
 [[package]]
 name = "rigelcore"
-version = "0.1.1"
+version = "0.1.2"
 description = "A common interface for Rigel and all its plugins."
 category = "main"
 optional = false
@@ -648,7 +648,7 @@ rich = "^11.2.0"
 type = "git"
 url = "ssh://git@gitlab.inesctec.pt/pedro.m.melo/rigelcore"
 reference = "master"
-resolved_reference = "70430c7d8693974febc8cbe930e369a2bfa847e3"
+resolved_reference = "8175a20805ae4380735c78a6272b1e9fcd8826c2"
 
 [[package]]
 name = "secretstorage"
@@ -1018,8 +1018,8 @@ flake8-bugbear = [
     {file = "flake8_bugbear-22.1.11-py3-none-any.whl", hash = "sha256:ce7ae44aaaf67ef192b8a6de94a5ac617144e1675ad0654fdea556f48dc18d9b"},
 ]
 identify = [
-    {file = "identify-2.4.10-py2.py3-none-any.whl", hash = "sha256:7d10baf6ba6f1912a0a49f4c1c2c49fa1718765c3a37d72d13b07779567c5b85"},
-    {file = "identify-2.4.10.tar.gz", hash = "sha256:e12b2aea3cf108de73ae055c2260783bde6601de09718f6768cf8e9f6f6322a6"},
+    {file = "identify-2.4.11-py2.py3-none-any.whl", hash = "sha256:fd906823ed1db23c7a48f9b176a1d71cb8abede1e21ebe614bac7bdd688d9213"},
+    {file = "identify-2.4.11.tar.gz", hash = "sha256:2986942d3974c8f2e5019a190523b0b0e2a07cb8e89bf236727fb4b26f27f8fd"},
 ]
 idna = [
     {file = "idna-3.3-py3-none-any.whl", hash = "sha256:84d9dd047ffa80596e0f246e2eab0b391788b0503584e8945f2368256d2735ff"},

@@ -5,16 +5,11 @@ from .exceptions import (  # noqa: F401
     EmptyRigelfileError,
     IncompleteRigelfileError,
     InvalidPluginNameError,
-    InvalidValueError,
-    MissingRequiredFieldError,
     PluginInstallationError,
     PluginNotCompliantError,
     PluginNotFoundError,
     RigelfileAlreadyExistsError,
     RigelfileNotFoundError,
-    UndeclaredEnvironmentVariableError,
-    UndeclaredGlobalVariableError,
-    UndeclaredValueError,
     UnformattedRigelfileError,
     UnsupportedCompilerError
 )

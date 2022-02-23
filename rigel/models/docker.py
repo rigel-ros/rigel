@@ -1,7 +1,9 @@
 import os
 from pydantic import BaseModel, validator
+from rigelcore.exceptions import (
+    UndeclaredEnvironmentVariableError
+)
 from rigel.exceptions import (
-    UndeclaredEnvironmentVariableError,
     UnsupportedCompilerError
 )
 from typing import Any, Dict, List
