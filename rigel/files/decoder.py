@@ -38,7 +38,6 @@ class YAMLDataDecoder:
         :type vars: Dicŧ[str, Any]
         :param vars: The value of global variables.
         """
-
         for k, v in data.items():
 
             new_path = f'{path}.{k}' if path else k
@@ -48,7 +47,7 @@ class YAMLDataDecoder:
                     var = v[1:]
                     try:
                         data[k] = vars[var]
-                    except KeyError:
+                    except (KeyError, TypeError):
                         raise UndeclaredGlobalVariableError(field=new_path, var=var)
             else:
                 self.__aux_decode(v, vars, new_path)

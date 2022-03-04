@@ -108,7 +108,7 @@ def cli() -> None:
 
 
 @click.command()
-@click.option('--force', is_flag=True, default=False, help='Write over an existing Rigelfile.',)
+@click.option('--force', is_flag=True, default=False, help='Write over an existing Rigelfile.')
 def init(force: bool) -> None:
     """
     Create an empty Rigelfile.
@@ -131,21 +131,31 @@ def create() -> None:
     """
     Create all files required to containerize your ROS application.
     """
-    create_folder('.rigel_config')
     try:
 
         rigelfile = parse_rigelfile()
-        renderer = Renderer(rigelfile.build)
+        for package in rigelfile.packages:
 
-        renderer.render('Dockerfile.j2', 'Dockerfile')
-        MESSAGE_LOGGER.info("Created file '.rigel_config/Dockerfile'.")
+            MESSAGE_LOGGER.warning(f"Creating build files for package {package.package}.")
 
-        renderer.render('entrypoint.j2', 'entrypoint.sh')
-        MESSAGE_LOGGER.info("Created file '.rigel_config/entrypoint.sh'.")
+            if package.dir:
+                path = os.path.abspath(f'{package.dir}/.rigel_config')
+            else:
+                path = os.path.abspath(f'.rigel_config/{package.package}')
 
-        if rigelfile.build.ssh:
-            renderer.render('config.j2', 'config')
-            MESSAGE_LOGGER.info("Created file '.rigel_config/config'.")
+            create_folder(path)
+
+            renderer = Renderer(package)
+
+            renderer.render('Dockerfile.j2', f'{path}/Dockerfile')
+            MESSAGE_LOGGER.info(f"Created file {path}/Dockerfile.")
+
+            renderer.render('entrypoint.j2', f'{path}/entrypoint.sh')
+            MESSAGE_LOGGER.info(f"Created file {path}/entrypoint.sh.")
+
+            if package.ssh:
+                renderer.render('config.j2', f'{path}/config')
+                MESSAGE_LOGGER.info(f"Created file {path}/config.")
 
     except RigelError as err:
         handle_rigel_error(err)
@@ -157,22 +167,31 @@ def build() -> None:
     Build a Docker image with your ROS application.
     """
     rigelfile = parse_rigelfile()
-    if rigelfile.build.keys and not rigelfile.build.rosinstall:
-        MESSAGE_LOGGER.warning('No .rosinstall file was declared. Recommended to remove unused SSH keys from Dockerfile.')
+    for package in rigelfile.packages:
 
-    buildargs: Dict[str, str] = {}
-    for key in rigelfile.build.ssh:
-        if not key.file:
-            value = os.environ[key.value]  # NOTE: SSHKey model ensures that environment variable is declared.
-            buildargs[key.value] = value
+        MESSAGE_LOGGER.warning(f"Containerizing package {package.package}.")
 
-    try:
-        MESSAGE_LOGGER.info(f"Building Docker image '{rigelfile.build.image}'.")
-        builder = DockerClient()
-        builder.build('.rigel_config/Dockerfile', rigelfile.build.image, buildargs)
-        MESSAGE_LOGGER.info(f"Docker image '{rigelfile.build.image}' built with success.")
-    except RigelError as err:
-        handle_rigel_error(err)
+        if package.ssh and not package.rosinstall:
+            MESSAGE_LOGGER.warning('No .rosinstall file was declared. Recommended to remove unused SSH keys from Dockerfile.')
+
+        buildargs: Dict[str, str] = {}
+        for key in package.ssh:
+            if not key.file:
+                value = os.environ[key.value]  # NOTE: SSHKey model ensures that environment variable is declared.
+                buildargs[key.value] = value
+
+        if package.dir:
+            path = os.path.abspath(package.dir)
+        else:
+            path = os.path.abspath(f'.rigel_config/{package.package}')
+
+        try:
+            MESSAGE_LOGGER.info(f"Building Docker image '{package.image}'.")
+            builder = DockerClient()
+            builder.build(path, f'{path}/Dockerfile', package.image, buildargs)
+            MESSAGE_LOGGER.info(f"Docker image '{package.image}' built with success.")
+        except RigelError as err:
+            handle_rigel_error(err)
 
 
 @click.command()

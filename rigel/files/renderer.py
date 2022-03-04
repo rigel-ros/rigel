@@ -29,5 +29,5 @@ class Renderer:
         dockerfile_template = resource_string(__name__, f'assets/templates/{template}').decode('utf-8')
         dockerfile_templater = Template(dockerfile_template)
 
-        with open(f'.rigel_config/{output}', 'w+') as output_file:
+        with open(output, 'w+') as output_file:
             output_file.write(dockerfile_templater.render(configuration=self.configuration_file.dict()))

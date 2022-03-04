@@ -63,6 +63,8 @@ class DockerSection(BaseModel):
     :cvar apt: The name of dependencies to be installed using APT.
     :type compiler: string
     :cvar compiler: The tool with which to compile the containerized ROS workspace. Default value is 'catkin_make'.
+    :type dir: string
+    :cvar dir: The folder containing the ROS package source code, if required.
     :type entrypoint: List[string]
     :cvar entrypoint: A list of commands to be run while executing the entrypoint script.
     :type env: List[Dict[str, Any]]
@@ -74,6 +76,8 @@ class DockerSection(BaseModel):
     :cvar run: A list of commands to be executed while building the Docker image.
     :type ssh: List[rigel.files.SSHKey]
     :cvar ssh: A list of all required private SSH keys.
+    :type username: string
+    :cvar username: The desired username. Defaults to 'user'.
     """
     # Required fields.
     command: str
@@ -84,12 +88,14 @@ class DockerSection(BaseModel):
     # Optional fields.
     apt: List[str] = []
     compiler: str = 'catkin_make'
+    dir: str = ''
     entrypoint: List[str] = []
     env: List[Dict[str, Any]] = []
     hostname: List[str] = []
     rosinstall: List[str] = []
     run: List[str] = []
     ssh: List[SSHKey] = []
+    username: str = 'rigeluser'
 
     @validator('compiler')
     def validate_compiler(cls, compiler: str) -> str:

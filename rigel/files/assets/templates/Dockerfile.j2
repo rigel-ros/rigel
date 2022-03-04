@@ -11,9 +11,10 @@ RUN apt clean && apt update && apt install -y \
     python-vcstool \
     ssh
 
+RUN mkdir -p /root/.ssh/
+
 {% if configuration.ssh is defined and configuration.ssh|length > 0 -%}
 # Add SSH keys and set their permissions.
-RUN mkdir -p /root/.ssh/
 {% for key in configuration.ssh -%}
 {%- if key.file == False -%}
 ARG {{ key.value }}
@@ -28,7 +29,12 @@ RUN echo "${{ key.value }}" > /root/.ssh/{{ key.value }} && chmod 600 /root/.ssh
 {%- endfor %}
 
 # Copy SSH configuration file and set its permissions.
+
+{% if configuration.dir is defined and configuration.dir|length -%}
 COPY .rigel_config/config /root/.ssh/config
+{%- else -%}
+COPY config /root/.ssh/config
+{%- endif %}
 RUN chmod 600 /root/.ssh/config
 {%- endif %}
 
@@ -95,34 +101,41 @@ RUN {{ cmd }}
 {% endfor -%}
 {%- endif %}
 
-# Create default user 'robomaker'.
-ARG USERNAME=robomaker
+# Create default user '{{ configuration.username }}'.
+ARG USERNAME={{ configuration.username }}
 RUN groupadd $USERNAME
 RUN useradd -ms /bin/bash -g $USERNAME $USERNAME
 RUN sh -c 'echo "$USERNAME ALL=(root) NOPASSWD:ALL" >> /etc/sudoers'
 USER $USERNAME
 
 # Create ROS workspace folder
-RUN mkdir -p /home/robomaker/ros_workspace/src
+RUN mkdir -p /home/{{ configuration.username }}/ros_workspace/src
 
-{% if configuration.rosinstall is defined and configuration.rosinstall|length > 0 -%}
+{%- if configuration.rosinstall is defined and configuration.rosinstall|length > 0 -%}
 # Copy dependencies from intermediate stage.
-COPY --from=intermediate /ros_workspace/src /home/robomaker/ros_workspace/src/
+COPY --from=intermediate /ros_workspace/src /home/{{ configuration.username }}/ros_workspace/src/
 
 # Give workspace permissions to user
-RUN sh -c 'sudo chmod -R +x /home/robomaker/ros_workspace'
-RUN sh -c 'sudo chown -R robomaker:robomaker /home/robomaker/ros_workspace'
+RUN sh -c 'sudo chmod -R +x /home/{{ configuration.username }}/ros_workspace'
+RUN sh -c 'sudo chown -R {{ configuration.username }}:{{ configuration.username }} /home/{{ configuration.username }}/ros_workspace'
 {%- endif %}
 
+{% if configuration.dir is defined and configuration.dir|length -%}
 # Copy this repository into the ROS workspace.
-COPY . /home/robomaker/ros_workspace/src/{{ configuration.package }}
+COPY . /home/{{ configuration.username }}/ros_workspace/src/{{ configuration.package }}
+{%- endif %}
 
 # Copy bringup script.
-COPY .rigel_config/entrypoint.sh /home/robomaker/robot-entrypoint.sh
+{% if configuration.dir is defined and configuration.dir|length -%}
+COPY .rigel_config/entrypoint.sh /home/{{ configuration.username }}/robot-entrypoint.sh
+{%- else -%}
+COPY entrypoint.sh /home/{{ configuration.username }}/robot-entrypoint.sh
+{%- endif %}
+
 
 # Compile ROS workspace.
 RUN /bin/bash -c "source /opt/ros/{{ configuration.distro }}/setup.bash \ 
-    && cd /home/robomaker/ros_workspace \
+    && cd /home/{{ configuration.username }}/ros_workspace \
     && sudo rosdep fix-permissions \
     && rosdep update \
     && rosdep install --rosdistro {{ configuration.distro }} --from-paths src --ignore-src -r -y \
@@ -133,9 +146,9 @@ RUN /bin/bash -c "source /opt/ros/{{ configuration.distro }}/setup.bash \
     {%- endif %}
 
 # Give permissions to user
-RUN sh -c 'sudo chmod +x /home/robomaker/robot-entrypoint.sh'
-RUN sh -c 'sudo chown robomaker:robomaker /home/robomaker/robot-entrypoint.sh'
+RUN sh -c 'sudo chmod +x /home/{{ configuration.username }}/robot-entrypoint.sh'
+RUN sh -c 'sudo chown {{ configuration.username }}:{{ configuration.username }} /home/{{ configuration.username }}/robot-entrypoint.sh'
 
 # Launch ROS application.
 CMD {{ configuration.command }}
-ENTRYPOINT [ "/home/robomaker/robot-entrypoint.sh" ]
+ENTRYPOINT [ "/home/{{ configuration.username }}/robot-entrypoint.sh" ]

@@ -14,11 +14,11 @@ class Rigelfile(BaseModel):
 
     Each Rigelfile is divided into several sections.
 
-    :type build: DockerSection
-    :cvar build: Section containing information regarding how to containerize a ROS package using Docker.
     :type deploy: List[PluginSection]
     :cvar deploy: Section containing information regarding which external plugins to use when
     deploying Docker images of containerized ROS packages.
+    :type packages: List[DockerSection]
+    :cvar packages: Section containing information regarding how to containerize the ROS packages using Docker.
     :type simulate: List[PluginSection]
     :cvar simulate: Section containing information regarding which external plugins to use when
     executing the containerized ROS application.
@@ -26,7 +26,7 @@ class Rigelfile(BaseModel):
     :cvar vars: Section containing the values of user-defined global variables.
     """
     # Required sections.
-    build: DockerSection
+    packages: List[DockerSection]  # at least one package is required
 
     # Optional sections.
     deploy: List[PluginSection] = []

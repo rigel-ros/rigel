@@ -47,6 +47,6 @@ class RendererTesting(unittest.TestCase):
 
         resources_mock.assert_called_once_with('rigel.files.renderer', f'assets/templates/{input_file}')
         template_mock.assert_called_once_with(filepath.decode())
-        open_mock.assert_called_once_with(f'.rigel_config/{output_file}', 'w+')
+        open_mock.assert_called_once_with(output_file, 'w+')
         template_instance.render.assert_called_once_with(configuration=test_configuration.dict())
         open_mock.return_value.__enter__().write.assert_called_once_with(template_data)
