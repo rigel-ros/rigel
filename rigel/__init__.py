@@ -11,6 +11,7 @@ from .exceptions import (  # noqa: F401
     RigelfileAlreadyExistsError,
     RigelfileNotFoundError,
     UnformattedRigelfileError,
+    UnknownROSPackagesError,
     UnsupportedCompilerError
 )
 

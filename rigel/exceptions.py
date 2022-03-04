@@ -105,3 +105,14 @@ class InvalidPluginNameError(RigelError):
     """
     base = "Invalid plugin name '{plugin}'."
     code = 20
+
+
+class UnknownROSPackagesError(RigelError):
+    """
+    Raised whenever unlisted ROS package are referenced.
+
+    :type packages: List[string]
+    :ivar packages: List of unknown ROS packages.
+    """
+    base = "The following packages were not declared in the Rigelfile: {packages}."
+    code = 21

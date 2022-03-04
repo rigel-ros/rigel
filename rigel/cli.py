@@ -5,7 +5,7 @@ from pathlib import Path
 from rigelcore.clients import DockerClient
 from rigelcore.exceptions import RigelError
 from rigelcore.loggers import ErrorLogger, MessageLogger
-from rigel.exceptions import RigelfileAlreadyExistsError
+from rigel.exceptions import RigelfileAlreadyExistsError, UnknownROSPackagesError
 from rigel.files import (
     Renderer,
     RigelfileCreator,
@@ -13,9 +13,9 @@ from rigel.files import (
     YAMLDataLoader
 )
 from rigelcore.models import ModelBuilder
-from rigel.models import Rigelfile, PluginSection
+from rigel.models import DockerSection, Rigelfile, PluginSection
 from rigel.plugins import PluginInstaller
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 from rigel.plugins.loader import PluginLoader
 
@@ -126,72 +126,119 @@ def init(force: bool) -> None:
         handle_rigel_error(err)
 
 
+def create_package_files(package: DockerSection) -> None:
+    """
+    Create all the files required to containerize a given ROS package.
+
+    :type package: rigel.models.DockerSection
+    :param package: The ROS package whose Dockerfile is to be created.
+    """
+    MESSAGE_LOGGER.warning(f"Creating build files for package {package.package}.")
+
+    if package.dir:
+        path = os.path.abspath(f'{package.dir}/.rigel_config')
+    else:
+        path = os.path.abspath(f'.rigel_config/{package.package}')
+
+    create_folder(path)
+
+    renderer = Renderer(package)
+
+    renderer.render('Dockerfile.j2', f'{path}/Dockerfile')
+    MESSAGE_LOGGER.info(f"Created file {path}/Dockerfile.")
+
+    renderer.render('entrypoint.j2', f'{path}/entrypoint.sh')
+    MESSAGE_LOGGER.info(f"Created file {path}/entrypoint.sh.")
+
+    if package.ssh:
+        renderer.render('config.j2', f'{path}/config')
+        MESSAGE_LOGGER.info(f"Created file {path}/config.")
+
+
 @click.command()
-def create() -> None:
+@click.option('--pkg', multiple=True, help='A list of desired packages.')
+def create(pkg: Tuple[str]) -> None:
     """
-    Create all files required to containerize your ROS application.
+    Create all files required to containerize your ROS packages.
     """
+    list_packages = list(pkg)
     try:
-
         rigelfile = parse_rigelfile()
-        for package in rigelfile.packages:
+        if not list_packages:  # consider all declared packages
+            desired_packages = rigelfile.packages
+        else:
+            desired_packages = []
+            for package in rigelfile.packages:
+                if package.package in list_packages:
+                    desired_packages.append(package)
+                    list_packages.remove(package.package)
+            if list_packages:  # check if an unknown package was referenced
+                raise UnknownROSPackagesError(packages=', '.join(list_packages))
 
-            MESSAGE_LOGGER.warning(f"Creating build files for package {package.package}.")
-
-            if package.dir:
-                path = os.path.abspath(f'{package.dir}/.rigel_config')
-            else:
-                path = os.path.abspath(f'.rigel_config/{package.package}')
-
-            create_folder(path)
-
-            renderer = Renderer(package)
-
-            renderer.render('Dockerfile.j2', f'{path}/Dockerfile')
-            MESSAGE_LOGGER.info(f"Created file {path}/Dockerfile.")
-
-            renderer.render('entrypoint.j2', f'{path}/entrypoint.sh')
-            MESSAGE_LOGGER.info(f"Created file {path}/entrypoint.sh.")
-
-            if package.ssh:
-                renderer.render('config.j2', f'{path}/config')
-                MESSAGE_LOGGER.info(f"Created file {path}/config.")
+        for package in desired_packages:
+            create_package_files(package)
 
     except RigelError as err:
         handle_rigel_error(err)
 
 
+def containerize_package(package: DockerSection) -> None:
+    """
+    Containerize a given ROS package.
+
+    :type package: rigel.models.DockerSection
+    :param package: The ROS package whose Dockerfile is to be created.
+    """
+    MESSAGE_LOGGER.warning(f"Containerizing package {package.package}.")
+
+    if package.ssh and not package.rosinstall:
+        MESSAGE_LOGGER.warning('No .rosinstall file was declared. Recommended to remove unused SSH keys from Dockerfile.')
+
+    buildargs: Dict[str, str] = {}
+    for key in package.ssh:
+        if not key.file:
+            value = os.environ[key.value]  # NOTE: SSHKey model ensures that environment variable is declared.
+            buildargs[key.value] = value
+
+    if package.dir:
+        path = os.path.abspath(package.dir)
+    else:
+        path = os.path.abspath(f'.rigel_config/{package.package}')
+
+    MESSAGE_LOGGER.info(f"Building Docker image '{package.image}'.")
+    builder = DockerClient()
+    builder.build(path, f'{path}/Dockerfile', package.image, buildargs)
+    MESSAGE_LOGGER.info(f"Docker image '{package.image}' built with success.")
+
+
 @click.command()
-def build() -> None:
+@click.option('--pkg', multiple=True, help='A list of desired packages.')
+def build(pkg: Tuple[str]) -> None:
     """
-    Build a Docker image with your ROS application.
+    Build a Docker image of your ROS packages.
+
+    :type package: rigel.models.DockerSection
+    :param package: The ROS package to be containerized.
     """
+    list_packages = list(pkg)
     rigelfile = parse_rigelfile()
-    for package in rigelfile.packages:
-
-        MESSAGE_LOGGER.warning(f"Containerizing package {package.package}.")
-
-        if package.ssh and not package.rosinstall:
-            MESSAGE_LOGGER.warning('No .rosinstall file was declared. Recommended to remove unused SSH keys from Dockerfile.')
-
-        buildargs: Dict[str, str] = {}
-        for key in package.ssh:
-            if not key.file:
-                value = os.environ[key.value]  # NOTE: SSHKey model ensures that environment variable is declared.
-                buildargs[key.value] = value
-
-        if package.dir:
-            path = os.path.abspath(package.dir)
+    try:
+        if not list_packages:  # consider all declared packages
+            desired_packages = rigelfile.packages
         else:
-            path = os.path.abspath(f'.rigel_config/{package.package}')
+            desired_packages = []
+            for package in rigelfile.packages:
+                if package.package in list_packages:
+                    desired_packages.append(package)
+                    list_packages.remove(package.package)
+            if list_packages:  # check if an unknown package was referenced
+                raise UnknownROSPackagesError(packages=', '.join(list_packages))
 
-        try:
-            MESSAGE_LOGGER.info(f"Building Docker image '{package.image}'.")
-            builder = DockerClient()
-            builder.build(path, f'{path}/Dockerfile', package.image, buildargs)
-            MESSAGE_LOGGER.info(f"Docker image '{package.image}' built with success.")
-        except RigelError as err:
-            handle_rigel_error(err)
+        for package in desired_packages:
+            containerize_package(package)
+
+    except RigelError as err:
+        handle_rigel_error(err)
 
 
 @click.command()

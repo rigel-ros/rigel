@@ -9,6 +9,7 @@ from rigel.exceptions import (
     RigelfileAlreadyExistsError,
     RigelfileNotFoundError,
     UnformattedRigelfileError,
+    UnknownROSPackagesError,
     UnsupportedCompilerError
 )
 
@@ -95,7 +96,7 @@ class ExceptionTesting(unittest.TestCase):
         self.assertEqual(err.kwargs['plugin'], test_plugin)
         self.assertEqual(err.kwargs['cause'], test_cause)
 
-    def invalid_plugin_name_error(self) -> None:
+    def test_invalid_plugin_name_error(self) -> None:
         """
         Ensure that instances of InvalidPluginNameError are thrown as expected.
         """
@@ -103,6 +104,15 @@ class ExceptionTesting(unittest.TestCase):
         err = InvalidPluginNameError(plugin=test_plugin)
         self.assertEqual(err.code, 20)
         self.assertEqual(err.kwargs['plugin'], test_plugin)
+
+    def test_unknown_ros_packages_error(self) -> None:
+        """
+        Ensure that instances of UnknownROSPackagesError are thrown as expected.
+        """
+        test_packages = ', '.join(['unknown_test_package_a', 'unknown_test_package_b'])
+        err = UnknownROSPackagesError(packages=test_packages)
+        self.assertEqual(err.code, 21)
+        self.assertEqual(err.kwargs['packages'], test_packages)
 
 
 if __name__ == '__main__':
