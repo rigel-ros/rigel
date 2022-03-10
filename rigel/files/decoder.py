@@ -1,3 +1,4 @@
+import re
 from rigelcore.exceptions import UndeclaredGlobalVariableError
 from typing import Any, Dict
 
@@ -11,6 +12,23 @@ class YAMLDataDecoder:
     mapping of user-defined global variables. Variables can be mark with the
     special character $.
     """
+
+    def __extract_variable_name(self, match: str) -> str:
+        """
+        Auxiliary function that extracts template variables from pattern matches.
+        Names of template variables are enclosed between delimiters '{{' and '}}'.
+
+        :type match: string
+        :param match: The pattern match.
+
+        :rtype: string
+        :return: The name of the variable referred by the pattern match.
+        """
+        chars_to_remove = ['{', '}', ' ']
+        variable_name = match
+        for c in chars_to_remove:
+            variable_name = variable_name.replace(c, '')
+        return variable_name
 
     def __aux_decode(self, data: Any, vars: Any, path: str = '') -> None:
         """
@@ -42,13 +60,14 @@ class YAMLDataDecoder:
 
             new_path = f'{path}.{k}' if path else k
 
-            if isinstance(v, str):  # in order to contain '$' field must be a string.
-                if v[0] == '$':
-                    var = v[1:]
+            if isinstance(v, str):  # in order to contain delimiters the field must be of type str
+                matches = re.findall(r'{{[a-zA-Z0-9_\s\-\!\?]+}}', v)
+                for match in matches:
+                    variable_name = self.__extract_variable_name(match)
                     try:
-                        data[k] = vars[var]
+                        data[k] = data[k].replace(match, vars[variable_name])
                     except (KeyError, TypeError):
-                        raise UndeclaredGlobalVariableError(field=new_path, var=var)
+                        raise UndeclaredGlobalVariableError(field=new_path, var=variable_name)
             else:
                 self.__aux_decode(v, vars, new_path)
 
@@ -68,13 +87,14 @@ class YAMLDataDecoder:
 
             new_path = f'{path}[{idx}]'
 
-            if isinstance(elem, str):  # in order to contain '$' field must be a string.
-                if elem[0] == '$':
-                    var = elem[1:]
+            if isinstance(elem, str):  # in order to contain delimiters the field must be of type str
+                matches = re.findall(r'{{[a-zA-Z0-9_\s\-\!\?]+}}', elem)
+                for match in matches:
+                    variable_name = self.__extract_variable_name(match)
                     try:
-                        data[idx] = vars[var]
+                        data[idx] = data[idx].replace(match, vars[variable_name])
                     except KeyError:
-                        raise UndeclaredGlobalVariableError(field=new_path, var=var)
+                        raise UndeclaredGlobalVariableError(field=new_path, var=variable_name)
             else:
                 self.__aux_decode(elem, vars, new_path)
 

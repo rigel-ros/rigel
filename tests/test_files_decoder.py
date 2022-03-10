@@ -13,7 +13,7 @@ class YAMLDataDecoderTesting(unittest.TestCase):
         Test if UndeclaredGlobalVariableError is thrown if references
         to unknown global variables are made inside an element of type dict.
         """
-        test_data = {'test_key': '$unknown', 'vars': {'template_var': 'test_value'}}
+        test_data = {'test_key': '{{ unknown }}', 'vars': {'template_var': 'test_value'}}
         with self.assertRaises(UndeclaredGlobalVariableError) as context:
             decoder = YAMLDataDecoder()
             decoder.decode(test_data)
@@ -25,7 +25,7 @@ class YAMLDataDecoderTesting(unittest.TestCase):
         Test if UndeclaredGlobalVariable is thrown if references
         to unknown global variables are made inside an element of type list.
         """
-        test_data = {'test_key': ['$unknown'], 'vars': {'template_var': 'test_value'}}
+        test_data = {'test_key': ['{{ unknown }}'], 'vars': {'template_var': 'test_value'}}
         with self.assertRaises(UndeclaredGlobalVariableError) as context:
             decoder = YAMLDataDecoder()
             decoder.decode(test_data)
@@ -41,7 +41,7 @@ class YAMLDataDecoderTesting(unittest.TestCase):
         unchanged_value = 'unchanged_value'
         test_data = {
             'vars': {'template_var': template_value},
-            'test_key': '$template_var',
+            'test_key': '{{ template_var }}',
             'unchanged_key': unchanged_value
         }
         decoder = YAMLDataDecoder()
@@ -58,7 +58,7 @@ class YAMLDataDecoderTesting(unittest.TestCase):
         unchanged_value = 'unchanged_value'
         test_data = {
             'vars': {'template_var': template_value},
-            'test_key': ['$template_var', unchanged_value]
+            'test_key': ['{{ template_var }}', unchanged_value]
         }
         decoder = YAMLDataDecoder()
         decoded_test_data = decoder.decode(test_data)
