@@ -633,7 +633,7 @@ jupyter = ["ipywidgets (>=7.5.1,<8.0.0)"]
 
 [[package]]
 name = "rigelcore"
-version = "0.1.10"
+version = "0.1.11"
 description = "A common interface for Rigel and all its plugins."
 category = "main"
 optional = false
@@ -649,7 +649,7 @@ rich = "^11.2.0"
 type = "git"
 url = "ssh://git@gitlab.inesctec.pt/pedro.m.melo/rigelcore"
 reference = "master"
-resolved_reference = "b1be570344841988e300fc5a2293c44052354467"
+resolved_reference = "220900b3d012096e9f6636d81b9c0cca4a82453f"
 
 [[package]]
 name = "secretstorage"

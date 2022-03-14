@@ -1,3 +1,4 @@
+import os
 import re
 from rigelcore.exceptions import UndeclaredGlobalVariableError
 from typing import Any, Dict
@@ -8,9 +9,11 @@ class YAMLDataDecoder:
     A class to decode YAML data.
 
     Decoding is done by iterating through the entire YAML data and
-    replacing all marked variables with the correspondent values based on a
-    mapping of user-defined global variables. Variables can be mark with the
-    special character $.
+    replacing all marked variables with the correspondent values. Variables are
+    marked by delimiters {{ and }}. Values can be stored either inside a mapping of
+    user-defined variables on the Rigelfile and on environment variables. Values
+    declares inside the mapping of user-defined variables has precedence over values
+    stored as environment variables.
     """
 
     def __extract_variable_name(self, match: str) -> str:
@@ -47,7 +50,7 @@ class YAMLDataDecoder:
     def __aux_decode_dict(self, data: Any, vars: Any, path: str = '') -> None:
         """
         This auxiliary function decodes only list elements inside YAML data.
-        Fields to decode have values starting with special char $.
+        Fields to decode have values delimited by {{ and }}.
         This auxiliary function decodes only dict elements.
         # NOTE: do not call this function directly. User '__aux_decode' instead.
 
@@ -64,9 +67,11 @@ class YAMLDataDecoder:
                 matches = re.findall(r'{{[a-zA-Z0-9_\s\-\!\?]+}}', v)
                 for match in matches:
                     variable_name = self.__extract_variable_name(match)
-                    try:
+                    if variable_name in vars:
                         data[k] = data[k].replace(match, vars[variable_name])
-                    except (KeyError, TypeError):
+                    elif variable_name in os.environ:
+                        data[k] = data[k].replace(match, os.environ[variable_name])
+                    else:
                         raise UndeclaredGlobalVariableError(field=new_path, var=variable_name)
             else:
                 self.__aux_decode(v, vars, new_path)
@@ -74,7 +79,7 @@ class YAMLDataDecoder:
     def __aux_decode_list(self, data: Any, vars: Dict[str, Any], path: str = '') -> None:
         """
         This auxiliary function decodes only list elements inside YAML data.
-        Fields to decode have values starting with special char $.
+        Fields to decode have values dlimited by {{ and }}.
         # NOTE: do not call this function directly. User '__aux_decode' instead.
 
         :type data: Any
@@ -91,9 +96,11 @@ class YAMLDataDecoder:
                 matches = re.findall(r'{{[a-zA-Z0-9_\s\-\!\?]+}}', elem)
                 for match in matches:
                     variable_name = self.__extract_variable_name(match)
-                    try:
+                    if variable_name in vars:
                         data[idx] = data[idx].replace(match, vars[variable_name])
-                    except KeyError:
+                    elif variable_name in os.environ:
+                        data[idx] = data[idx].replace(match, os.environ[variable_name])
+                    else:
                         raise UndeclaredGlobalVariableError(field=new_path, var=variable_name)
             else:
                 self.__aux_decode(elem, vars, new_path)

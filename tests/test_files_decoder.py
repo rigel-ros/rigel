@@ -8,10 +8,10 @@ class YAMLDataDecoderTesting(unittest.TestCase):
     Test suite for rigel.fields.YAMLDataDecoder class.
     """
 
-    def test_undeclared_variable_error_dict(self) -> None:
+    def test_undeclared_variable_error_dict_rigelfile(self) -> None:
         """
         Test if UndeclaredGlobalVariableError is thrown if references
-        to unknown global variables are made inside an element of type dict.
+        to unknown Rigelfile variables are made inside an element of type dict.
         """
         test_data = {'test_key': '{{ unknown }}', 'vars': {'template_var': 'test_value'}}
         with self.assertRaises(UndeclaredGlobalVariableError) as context:
