@@ -207,7 +207,7 @@ def containerize_package(package: DockerSection) -> None:
 
     MESSAGE_LOGGER.info(f"Building Docker image '{package.image}'.")
     builder = DockerClient()
-    builder.build_image(path, f'{path}/Dockerfile', package.image, buildargs)
+    builder.build_image(path, '.rigel_config/Dockerfile', package.image, buildargs)
     MESSAGE_LOGGER.info(f"Docker image '{package.image}' built with success.")
 
 

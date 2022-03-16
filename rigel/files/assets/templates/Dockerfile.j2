@@ -53,7 +53,8 @@ RUN ssh-keyscan {{ hostname }} >> /root/.ssh/known_hosts
 
 RUN mkdir -p /ros_workspace/src
 
-{% if configuration.rosinstall is defined and configuration.rosinstall|length > 0 -%}
+{% if configuration.rosinstall is defined and configuration.rosinstall|length > 0 %}
+
 # Copy .rosinstall files
 {%- for file in configuration.rosinstall %}
 COPY {{ file}} /ros_workspace/src/{{ file }}
@@ -111,7 +112,8 @@ USER $USERNAME
 # Create ROS workspace folder
 RUN mkdir -p /home/{{ configuration.username }}/ros_workspace/src
 
-{%- if configuration.rosinstall is defined and configuration.rosinstall|length > 0 -%}
+{%- if configuration.rosinstall is defined and configuration.rosinstall|length > 0 %}
+
 # Copy dependencies from intermediate stage.
 COPY --from=intermediate /ros_workspace/src /home/{{ configuration.username }}/ros_workspace/src/
 
