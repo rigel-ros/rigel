@@ -1,5 +1,6 @@
 import click
 import os
+import signal
 import sys
 from pathlib import Path
 from rigelcore.clients import DockerClient
@@ -88,8 +89,17 @@ def run_plugins(plugins: List[PluginSection]) -> None:
                 plugin_instance = loader.load(plugin)
 
                 MESSAGE_LOGGER.warning(f"Executing external plugin '{plugin.name}'.")
+
+                def stop_plugin(*args: Any) -> None:
+                    plugin_instance.stop()
+                    MESSAGE_LOGGER.info(f"Plugin '{plugin.name}' stopped executing gracefully.")
+                    sys.exit(0)
+
+                signal.signal(signal.SIGINT, stop_plugin)
+                signal.signal(signal.SIGTSTP, stop_plugin)
                 plugin_instance.run()
 
+                plugin_instance.stop()
                 MESSAGE_LOGGER.info(f"Plugin '{plugin.name}' finished execution with success.")
 
         else:

@@ -19,7 +19,7 @@ class PluginLoader:
         """
         Ensure that a given plugin entrypoint class is compliant with the
         rigel.plugins.Plugin protocol. All compliant entrypoint classes have
-        a 'run' function.
+        a 'run' and 'stop' functions.
 
         :type entrypoint: Type
         :param entrypoint: The external plugin entrypoint class.
@@ -32,7 +32,7 @@ class PluginLoader:
 
     def is_run_compliant(self, entrypoint: Type) -> bool:
         """
-        Ensure that the 'run' function declare inside an external plugin's entrypoint class
+        Ensure that the 'run' function declared inside an external plugin's entrypoint class
         is not expecting any parameters (except for self).
 
         :type entrypoint: Type
@@ -43,6 +43,21 @@ class PluginLoader:
         exoects no arguments. False otherwise.
         """
         signature = inspect.signature(entrypoint.run)
+        return not len(signature.parameters) != 1  # allows for no parameter besides self
+
+    def is_stop_compliant(self, entrypoint: Type) -> bool:
+        """
+        Ensure that the 'stop' function declared inside an external plugin's entrypoint class
+        is not expecting any parameters (except for self).
+
+        :type entrypoint: Type
+        :param entrypoint: The external plugin entrypoint class.
+
+        :rtype: bool
+        :return: True if the 'stop' function inside the external plugin's entrypoint class
+        exoects no arguments. False otherwise.
+        """
+        signature = inspect.signature(entrypoint.stop)
         return not len(signature.parameters) != 1  # allows for no parameter besides self
 
     # TODO: set return type to Plugin
@@ -69,13 +84,19 @@ class PluginLoader:
         if not self.is_plugin_compliant(cls):
             raise PluginNotCompliantError(
                 plugin=plugin.name,
-                cause="entrypoint class misses attribute function 'run'."
+                cause="entrypoint class must implement functions 'run' and 'stop'."
             )
 
         if not self.is_run_compliant(cls):
             raise PluginNotCompliantError(
                 plugin=plugin.name,
                 cause=f"attribute function '{complete_plugin_name}.run' must not receive any parameters."
+            )
+
+        if not self.is_stop_compliant(cls):
+            raise PluginNotCompliantError(
+                plugin=plugin.name,
+                cause=f"attribute function '{complete_plugin_name}.stop' must not receive any parameters."
             )
 
         builder = ModelBuilder(cls)

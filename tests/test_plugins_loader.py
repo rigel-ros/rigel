@@ -8,7 +8,7 @@ from rigel.plugins import PluginLoader
 from unittest.mock import Mock, patch
 
 
-class TestPluginWithoutRun(BaseModel):
+class TestPluginIncomplete(BaseModel):
     pass
 
 
@@ -16,9 +16,23 @@ class TestPluginInvalidRun(BaseModel):
     def run(self, text: str) -> None:
         pass
 
+    def stop(self) -> None:
+        pass
+
+
+class TestPluginInvalidStop(BaseModel):
+    def run(self) -> None:
+        pass
+
+    def stop(self, text: str) -> None:
+        pass
+
 
 class TestPlugin(BaseModel):
     def run(self) -> None:
+        pass
+
+    def stop(self) -> None:
         pass
 
 
@@ -33,7 +47,7 @@ class PluginLoaderTesting(unittest.TestCase):
         """
         loader = PluginLoader()
         self.assertTrue(loader.is_plugin_compliant(TestPlugin))
-        self.assertFalse(loader.is_plugin_compliant(TestPluginWithoutRun))
+        self.assertFalse(loader.is_plugin_compliant(TestPluginIncomplete))
 
     def test_run_signature_checker(self) -> None:
         """
@@ -41,7 +55,19 @@ class PluginLoaderTesting(unittest.TestCase):
         """
         loader = PluginLoader()
         self.assertTrue(loader.is_run_compliant(TestPlugin))
+
         self.assertFalse(loader.is_run_compliant(TestPluginInvalidRun))
+        self.assertTrue(loader.is_run_compliant(TestPluginInvalidStop))
+
+    def test_stop_signature_checker(self) -> None:
+        """
+        Test if function 'is_stop_compliant' works as expected.
+        """
+        loader = PluginLoader()
+        self.assertTrue(loader.is_stop_compliant(TestPlugin))
+
+        self.assertTrue(loader.is_stop_compliant(TestPluginInvalidRun))
+        self.assertFalse(loader.is_stop_compliant(TestPluginInvalidStop))
 
     def test_plugin_not_found_error(self) -> None:
         """

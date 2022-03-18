@@ -12,3 +12,9 @@ class Plugin(Protocol):
         Use this function as an entry point for your plugin.
         """
         ...
+
+    def stop(self) -> None:
+        """
+        Use this function to gracefully clean plugin resources.
+        """
+        ...
