@@ -21,6 +21,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 click = "^8.0.3"
+hpl-specs = {git = "git@gitlab.inesctec.pt:pedro.m.melo/hpl.git"}
 Jinja2 = "^3.0.3"
 pydantic = "^1.9.0"
 python = "^3.8"
