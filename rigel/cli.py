@@ -103,8 +103,12 @@ def load_plugin(
 
         loader = PluginLoader()
 
-        plugin.args = application_args + plugin.args
-        plugin.kwargs = plugin.kwargs.update(application_kwargs)  # type: ignore[assignment]
+        if application_args:
+            plugin.args = application_args + plugin.args
+
+        if application_kwargs:
+            plugin.kwargs.update(application_kwargs)
+
         plugin_instance = loader.load(plugin)
 
     except RigelError as err:
@@ -375,7 +379,7 @@ def run() -> None:
                     requirements_manager.add_simulation_requirement(requirement)
 
             # Run external simulation plugins.
-            plugin = load_plugin(plugin_section, [requirements_parser], {})
+            plugin = load_plugin(plugin_section, [requirements_manager], {})
             run_simulation_plugin(plugin, requirements_manager, rigelfile.simulate.timeout)
 
     else:
