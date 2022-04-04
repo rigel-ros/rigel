@@ -2,20 +2,28 @@ import click
 import os
 import signal
 import sys
+import time
 from pathlib import Path
 from rigelcore.clients import DockerClient
 from rigelcore.exceptions import RigelError
 from rigelcore.loggers import ErrorLogger, MessageLogger
-from rigel.exceptions import RigelfileAlreadyExistsError, UnknownROSPackagesError
+from rigel.exceptions import (
+    RigelfileAlreadyExistsError,
+    UnknownROSPackagesError
+)
 from rigel.files import (
     Renderer,
     RigelfileCreator,
     YAMLDataDecoder,
     YAMLDataLoader
 )
-from rigelcore.models import ModelBuilder
 from rigel.models import DockerSection, Rigelfile, PluginSection
-from rigel.plugins import PluginInstaller
+from rigel.plugins import Plugin, PluginInstaller
+from rigel.simulations import (
+    SimulationRequirementsManager,
+    SimulationRequirementsParser
+)
+from rigelcore.models import ModelBuilder
 from typing import Any, Dict, List, Tuple
 
 from rigel.plugins.loader import PluginLoader
@@ -72,38 +80,113 @@ def rigelfile_exists() -> bool:
     return os.path.isfile('./Rigelfile')
 
 
-def run_plugins(plugins: List[PluginSection]) -> None:
+def load_plugin(
+        plugin: PluginSection,
+        application_args: List[Any],
+        application_kwargs: Dict[str, Any]
+        ) -> Tuple[str, Plugin]:
     """
-    Run a set of external plugins.
+    Load an external plugin.
 
-    :rtype plugins: List[rigel.plugin.Plugin]
-    :return plugins: List of external plugins to be run.
+    :type plugin: rigel.models.PluginSection
+    :param plugin: Metadata about the external plugin.
+    :type application_args: List[Any]
+    :param application_args: Additional positional arguments to be passed the plugin.
+    :type application_kwargs: Dict[str, Any]
+    :param application_kwargs: Additional keyword arguments to be passed the plugin.
+
+    :rtype: Tuple[str, rigel.plugin.Plugin]
+    :return: An instance of the external plugin.
+    """
+    MESSAGE_LOGGER.warning(f"Loading external plugin '{plugin.name}'.")
+    try:
+
+        loader = PluginLoader()
+
+        plugin.args = application_args + plugin.args
+        plugin.kwargs = plugin.kwargs.update(application_kwargs)  # type: ignore[assignment]
+        plugin_instance = loader.load(plugin)
+
+    except RigelError as err:
+        handle_rigel_error(err)
+
+    return (plugin.name, plugin_instance)
+
+
+def run_plugin(plugin: Tuple[str, Plugin]) -> None:
+    """
+    Run an external plugin.
+
+    :type plugin: Tuple[str, rigel.plugin.Plugin]
+    :param plugin: An external plugin to be run.
     """
     try:
 
-        if plugins:
-            for plugin in plugins:
+        plugin_name, plugin_instance = plugin
 
-                MESSAGE_LOGGER.warning(f"Loading external plugin '{plugin.name}'.")
-                loader = PluginLoader()
-                plugin_instance = loader.load(plugin)
+        def stop_plugin(*args: Any) -> None:
+            plugin_instance.stop()
+            MESSAGE_LOGGER.info(f"Plugin '{plugin_name}' stopped executing gracefully.")
+            sys.exit(0)
 
-                MESSAGE_LOGGER.warning(f"Executing external plugin '{plugin.name}'.")
+        signal.signal(signal.SIGINT, stop_plugin)
+        signal.signal(signal.SIGTSTP, stop_plugin)
 
-                def stop_plugin(*args: Any) -> None:
-                    plugin_instance.stop()
-                    MESSAGE_LOGGER.info(f"Plugin '{plugin.name}' stopped executing gracefully.")
-                    sys.exit(0)
+        MESSAGE_LOGGER.warning(f"Executing external plugin '{plugin_name}'.")
+        plugin_instance.run()
 
-                signal.signal(signal.SIGINT, stop_plugin)
-                signal.signal(signal.SIGTSTP, stop_plugin)
-                plugin_instance.run()
+        plugin_instance.stop()
+        MESSAGE_LOGGER.info(f"Plugin '{plugin_name}' finished execution with success.")
 
-                plugin_instance.stop()
-                MESSAGE_LOGGER.info(f"Plugin '{plugin.name}' finished execution with success.")
+    except RigelError as err:
+        handle_rigel_error(err)
 
-        else:
-            MESSAGE_LOGGER.warning('No plugin was declared.')
+
+def run_simulation_plugin(
+    plugin: Tuple[str, Plugin],
+    manager: SimulationRequirementsManager,
+    timeout: int
+) -> None:
+    """
+    Run an external simulation plugin.
+
+    :type plugin: Tuple[str, rigel.plugin.Plugin]
+    :param plugin: An external plugin to be run.
+    :type manager: SimulationRequirementsManager
+    :param manager: The simulation requirements associated with the external plugin.
+    :type manager: SimulationRequirementsManager
+    :param manager: The simulation requirements associated with the external plugin.
+    :type timeout: int
+    :param timeout: The simulation timeout in seconds.
+    """
+    try:
+
+        plugin_name, plugin_instance = plugin
+
+        def stop_plugin(*args: Any) -> None:
+            plugin_instance.stop()
+            MESSAGE_LOGGER.info(f"Plugin '{plugin_name}' stopped executing gracefully.")
+            sys.exit(0)
+
+        signal.signal(signal.SIGINT, stop_plugin)
+        signal.signal(signal.SIGTSTP, stop_plugin)
+
+        MESSAGE_LOGGER.warning(f"Executing external plugin '{plugin_name}'.")
+        plugin_instance.run()
+        MESSAGE_LOGGER.warning("Simulation started.")
+
+        initial_time = time.time()
+        while True:  # implement timeout mechanism
+            passed_time = time.time() - initial_time
+            if passed_time > timeout:
+                MESSAGE_LOGGER.error(f"Timeout ({passed_time}s). Simulation requirements were not satisfied on time.")
+                break
+            elif manager.requirements_satisfied:
+                MESSAGE_LOGGER.info(f"All simulation requirements were satisfied on {passed_time}s.")
+                break
+
+        plugin_instance.stop()
+        MESSAGE_LOGGER.info(f"Plugin '{plugin_name}' finished executing.")
 
     except RigelError as err:
         handle_rigel_error(err)
@@ -257,8 +340,17 @@ def deploy() -> None:
     Push a Docker image to a remote image registry.
     """
     MESSAGE_LOGGER.info('Deploying containerized ROS package.')
+
     rigelfile = parse_rigelfile()
-    run_plugins(rigelfile.deploy)
+    if rigelfile.deploy:
+
+        # Run external deployment plugins.
+        for plugin_section in rigelfile.deploy:
+            plugin = load_plugin(plugin_section, [], {})
+            run_plugin(plugin)
+
+    else:
+        MESSAGE_LOGGER.warning('No deployment plugin declared inside Rigelfile.')
 
 
 @click.command()
@@ -267,8 +359,27 @@ def run() -> None:
     Start your containerized ROS application.
     """
     MESSAGE_LOGGER.info('Starting containerized ROS application.')
+
     rigelfile = parse_rigelfile()
-    run_plugins(rigelfile.simulate)
+    if rigelfile.simulate:
+
+        for plugin_section in rigelfile.simulate.plugins:
+
+            requirements_manager = SimulationRequirementsManager()
+
+            # Parse simulation requirements.
+            requirements_parser = SimulationRequirementsParser()
+            for hpl_statement in rigelfile.simulate.introspection:
+                requirements = requirements_parser.parse(hpl_statement)
+                for requirement in requirements:
+                    requirements_manager.add_simulation_requirement(requirement)
+
+            # Run external simulation plugins.
+            plugin = load_plugin(plugin_section, [requirements_parser], {})
+            run_simulation_plugin(plugin, requirements_manager, rigelfile.simulate.timeout)
+
+    else:
+        MESSAGE_LOGGER.warning('No simulation plugin declared inside Rigelfile.')
 
 
 @click.command()

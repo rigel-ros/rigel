@@ -1,7 +1,8 @@
 from pydantic import BaseModel
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from .docker import DockerSection
 from .plugin import PluginSection
+from .simulation import SimulationSection
 
 
 class Rigelfile(BaseModel):
@@ -30,5 +31,5 @@ class Rigelfile(BaseModel):
 
     # Optional sections.
     deploy: List[PluginSection] = []
-    simulate: List[PluginSection] = []
+    simulate: Optional[SimulationSection] = None
     vars: Dict[str, Any] = {}
