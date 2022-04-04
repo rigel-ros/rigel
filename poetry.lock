@@ -744,7 +744,7 @@ jupyter = ["ipywidgets (>=7.5.1,<8.0.0)"]
 
 [[package]]
 name = "rigelcore"
-version = "0.1.12"
+version = "0.1.14"
 description = "A common interface for Rigel and all its plugins."
 category = "main"
 optional = false
@@ -753,6 +753,7 @@ develop = false
 
 [package.dependencies]
 docker = "^5.0.3"
+hpl-specs = {git = "git@gitlab.inesctec.pt:pedro.m.melo/hpl.git", branch = "master"}
 pydantic = "^1.9.0"
 rich = "^11.2.0"
 roslibpy = "^1.3.0"
@@ -761,7 +762,7 @@ roslibpy = "^1.3.0"
 type = "git"
 url = "ssh://git@gitlab.inesctec.pt/pedro.m.melo/rigelcore"
 reference = "master"
-resolved_reference = "65871a499c7c446a64598770df59c3f98adc5b4e"
+resolved_reference = "25976431b11c3586abf6bd62b26b5e0ff884605b"
 
 [[package]]
 name = "roslibpy"
@@ -1021,7 +1022,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "af9b3b9890c820476b785f97ff66fe7ed8a4746a9d48e13cfab6019b01554b02"
+content-hash = "419bd092c6949c8320993e8cec14e523fbe156f704928eb36a4d7a08baf50f83"
 
 [metadata.files]
 argcomplete = [

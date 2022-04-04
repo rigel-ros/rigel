@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rigel"
-version = "0.2.13"
+version = "0.2.14"
 description = "Containerize and deploy your ROS application using Docker."
 homepage = "https://gitlab.inesctec.pt/pedro.m.melo/rigel"
 keywords = ["docker", "ros", "cloud", "robotics"]
@@ -21,7 +21,6 @@ classifiers = [
 
 [tool.poetry.dependencies]
 click = "^8.0.3"
-hpl-specs = {git = "git@gitlab.inesctec.pt:pedro.m.melo/hpl.git"}
 Jinja2 = "^3.0.3"
 pydantic = "^1.9.0"
 python = "^3.8"

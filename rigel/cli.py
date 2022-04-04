@@ -7,6 +7,10 @@ from pathlib import Path
 from rigelcore.clients import DockerClient
 from rigelcore.exceptions import RigelError
 from rigelcore.loggers import ErrorLogger, MessageLogger
+from rigelcore.simulations import (
+    SimulationRequirementsManager,
+    SimulationRequirementsParser
+)
 from rigel.exceptions import (
     RigelfileAlreadyExistsError,
     UnknownROSPackagesError
@@ -19,10 +23,6 @@ from rigel.files import (
 )
 from rigel.models import DockerSection, Rigelfile, PluginSection
 from rigel.plugins import Plugin, PluginInstaller
-from rigel.simulations import (
-    SimulationRequirementsManager,
-    SimulationRequirementsParser
-)
 from rigelcore.models import ModelBuilder
 from typing import Any, Dict, List, Tuple
 
@@ -152,9 +152,9 @@ def run_simulation_plugin(
 
     :type plugin: Tuple[str, rigel.plugin.Plugin]
     :param plugin: An external plugin to be run.
-    :type manager: SimulationRequirementsManager
+    :type manager: rigelcore.simulations.SimulationRequirementsManager
     :param manager: The simulation requirements associated with the external plugin.
-    :type manager: SimulationRequirementsManager
+    :type manager: rigelcore.simulations.SimulationRequirementsManager
     :param manager: The simulation requirements associated with the external plugin.
     :type timeout: int
     :param timeout: The simulation timeout in seconds.
