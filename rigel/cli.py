@@ -233,7 +233,7 @@ def create_package_files(package: DockerSection) -> None:
     MESSAGE_LOGGER.warning(f"Creating build files for package {package.package}.")
 
     if package.dir:
-        path = os.path.abspath(f'{package.dir}/.rigel_config')
+        path = os.path.abspath(f'{package.dir}/{package.package}/.rigel_config')
     else:
         path = os.path.abspath(f'.rigel_config/{package.package}')
 
@@ -242,14 +242,14 @@ def create_package_files(package: DockerSection) -> None:
     renderer = Renderer(package)
 
     renderer.render('Dockerfile.j2', f'{path}/Dockerfile')
-    MESSAGE_LOGGER.info(f"Created file {path}/Dockerfile.")
+    MESSAGE_LOGGER.info(f"Created file {path}/Dockerfile")
 
     renderer.render('entrypoint.j2', f'{path}/entrypoint.sh')
-    MESSAGE_LOGGER.info(f"Created file {path}/entrypoint.sh.")
+    MESSAGE_LOGGER.info(f"Created file {path}/entrypoint.sh")
 
     if package.ssh:
         renderer.render('config.j2', f'{path}/config')
-        MESSAGE_LOGGER.info(f"Created file {path}/config.")
+        MESSAGE_LOGGER.info(f"Created file {path}/config")
 
 
 @click.command()

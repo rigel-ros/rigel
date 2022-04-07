@@ -7,8 +7,13 @@ FROM ros:{{ configuration.distro }} as intermediate
 
 RUN apt clean && apt update && apt install -y \
     git \
+{%- if 'melodic' == configuration.distro %}
     python-rosinstall \
     python-vcstool \
+{%- else %}
+    python3-rosinstall \
+    python3-vcstool \
+{%- endif %}
     ssh
 
 RUN mkdir -p /root/.ssh/
@@ -87,13 +92,10 @@ RUN sudo apt clean && sudo apt update && sudo apt install -y \
         {{ package }} \
     {% endfor -%}
     {% endif -%}
-    devilspie \
-    lsb \
     {% if configuration.compiler == 'colcon' -%}
         python3-colcon-common-extensions \
     {% endif -%}
-    ssh \
-    xfce4-terminal
+    ssh
 
 {% if configuration.run is defined and configuration.run|length > 0 -%}
 # Execute additional commands.
