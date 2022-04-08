@@ -72,6 +72,8 @@ class DockerSection(BaseModel):
     :type hostname: List[string]
     :type rosinstall: List[string]
     :cvar rosinstall: A list of all required .rosinstall files.
+    :type ros_image: string
+    :cvar ros_image: The official ROS Docker image to use as a base for the new Docker image.
     :type run: List[string]
     :cvar run: A list of commands to be executed while building the Docker image.
     :type ssh: List[rigel.files.SSHKey]
@@ -86,6 +88,7 @@ class DockerSection(BaseModel):
     package: str
 
     # Optional fields.
+    ros_image: str
     apt: List[str] = []
     compiler: str = 'catkin_make'
     dir: str = ''
@@ -96,6 +99,11 @@ class DockerSection(BaseModel):
     run: List[str] = []
     ssh: List[SSHKey] = []
     username: str = 'rigeluser'
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        if not kwargs.get('ros_image') and kwargs.get('distro'):
+            kwargs['ros_image'] = kwargs['distro']
+        super().__init__(*args, **kwargs)
 
     @validator('compiler')
     def validate_compiler(cls, compiler: str) -> str:

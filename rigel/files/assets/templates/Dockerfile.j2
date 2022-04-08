@@ -76,7 +76,7 @@ RUN cd /ros_workspace \
 
 ############################################################################
 
-FROM ros:{{ configuration.distro }}
+FROM ros:{{ configuration.ros_image }}
 
 {% if configuration.env is defined and configuration.env|length > 0 -%}
 # Set required environment variables.

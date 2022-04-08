@@ -233,7 +233,7 @@ def create_package_files(package: DockerSection) -> None:
     MESSAGE_LOGGER.warning(f"Creating build files for package {package.package}.")
 
     if package.dir:
-        path = os.path.abspath(f'{package.dir}/{package.package}/.rigel_config')
+        path = os.path.abspath(f'{package.dir}/.rigel_config')
     else:
         path = os.path.abspath(f'.rigel_config/{package.package}')
 
