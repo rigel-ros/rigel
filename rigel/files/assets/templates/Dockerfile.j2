@@ -136,10 +136,12 @@ COPY .rigel_config/entrypoint.sh /home/{{ configuration.username }}/robot-entryp
 COPY entrypoint.sh /home/{{ configuration.username }}/robot-entrypoint.sh
 {%- endif %}
 
-
 # Compile ROS workspace.
 RUN /bin/bash -c "source /opt/ros/{{ configuration.distro }}/setup.bash \ 
     && cd /home/{{ configuration.username }}/ros_workspace \
+    {% if 'core' in configuration.ros_image -%}
+        && sudo rosdep init \
+    {%- endif %}
     && sudo rosdep fix-permissions \
     && rosdep update \
     && rosdep install --rosdistro {{ configuration.distro }} --from-paths src --ignore-src -r -y \

@@ -22,6 +22,7 @@ from rigel.files import (
     YAMLDataLoader
 )
 from rigel.models import DockerSection, Rigelfile, PluginSection
+from rigel.models.docker import DockerfileSection
 from rigel.plugins import Plugin, PluginInstaller
 from rigelcore.models import ModelBuilder
 from typing import Any, Dict, List, Tuple
@@ -273,7 +274,8 @@ def create(pkg: Tuple[str]) -> None:
                 raise UnknownROSPackagesError(packages=', '.join(list_packages))
 
         for package in desired_packages:
-            create_package_files(package)
+            if isinstance(package, DockerSection):
+                create_package_files(package)
 
     except RigelError as err:
         handle_rigel_error(err)
@@ -302,9 +304,26 @@ def containerize_package(package: DockerSection) -> None:
     else:
         path = os.path.abspath(f'.rigel_config/{package.package}')
 
-    MESSAGE_LOGGER.info(f"Building Docker image '{package.image}'.")
+    MESSAGE_LOGGER.info(f"Building Docker image {package.image}")
     builder = DockerClient()
     builder.build_image(path, '.rigel_config/Dockerfile', package.image, buildargs)
+    MESSAGE_LOGGER.info(f"Docker image '{package.image}' built with success.")
+
+
+def build_image(package: DockerfileSection) -> None:
+    """
+    Containerize a given ROS package (existing Dockerfile).
+
+    :type package: rigel.models.DockerfileSection
+    :param package: The Dockerfile to use to containerize.
+    """
+    MESSAGE_LOGGER.warning(f"Creating Docker image using provided Dockerfile at {package.dockerfile}")
+
+    path = os.path.abspath(package.dockerfile)
+
+    MESSAGE_LOGGER.info(f"Building Docker image {package.image}")
+    builder = DockerClient()
+    builder.build_image(path, 'Dockerfile', package.image, {})
     MESSAGE_LOGGER.info(f"Docker image '{package.image}' built with success.")
 
 
@@ -332,7 +351,10 @@ def build(pkg: Tuple[str]) -> None:
                 raise UnknownROSPackagesError(packages=', '.join(list_packages))
 
         for package in desired_packages:
-            containerize_package(package)
+            if isinstance(package, DockerSection):
+                containerize_package(package)
+            else:  # DockerfileSection
+                build_image(package)
 
     except RigelError as err:
         handle_rigel_error(err)

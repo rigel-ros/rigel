@@ -117,3 +117,20 @@ class DockerSection(BaseModel):
         if compiler not in ['catkin_make', 'colcon']:
             raise UnsupportedCompilerError(compiler=compiler)
         return compiler
+
+
+class DockerfileSection(BaseModel):
+    """
+    A placeholder for information regarding building Docker images using an existing Dockerfile.
+
+    :type dockerfile: str
+    :cvar dockerfile: The path to a Dockerfile.
+    :type image: str
+    :cvar image: The name for the final Docker image.
+    :type package: str
+    :cvar package: The name of the package ROS to be containerized.
+    """
+    # Required fields.
+    dockerfile: str
+    image: str
+    package: str

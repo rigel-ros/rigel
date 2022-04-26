@@ -1,6 +1,6 @@
 from pydantic import BaseModel
-from typing import Any, Dict, List, Optional
-from .docker import DockerSection
+from typing import Any, Dict, List, Optional, Union
+from .docker import DockerSection, DockerfileSection
 from .plugin import PluginSection
 from .simulation import SimulationSection
 
@@ -18,7 +18,7 @@ class Rigelfile(BaseModel):
     :type deploy: List[PluginSection]
     :cvar deploy: Section containing information regarding which external plugins to use when
     deploying Docker images of containerized ROS packages.
-    :type packages: List[DockerSection]
+    :type packages: List[Union[DockerSection, DockerfileSection]
     :cvar packages: Section containing information regarding how to containerize the ROS packages using Docker.
     :type simulate: List[PluginSection]
     :cvar simulate: Section containing information regarding which external plugins to use when
@@ -27,7 +27,7 @@ class Rigelfile(BaseModel):
     :cvar vars: Section containing the values of user-defined global variables.
     """
     # Required sections.
-    packages: List[DockerSection]  # at least one package is required
+    packages: List[Union[DockerSection, DockerfileSection]]  # at least one package declaration is required
 
     # Optional sections.
     deploy: List[PluginSection] = []
