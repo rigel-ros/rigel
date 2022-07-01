@@ -3,7 +3,7 @@ name = "rigel"
 version = "0.2.18"
 description = "Containerize and deploy your ROS application using Docker."
 homepage = "https://gitlab.inesctec.pt/pedro.m.melo/rigel"
-keywords = ["docker", "ros", "cloud", "robotics"]
+keywords = ["docker", "ros", "cloud", "robotics"] 
 authors = ["Pedro Miguel Melo <pedro.m.melo@inesctec.pt>"]
 maintainers = ["Pedro Miguel Melo <pedro.m.melo@inesctec.pt>"]
 readme = "README.md"
@@ -13,7 +13,6 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Intended Audience :: Developers",
     "Operating System :: POSIX",
-    "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",

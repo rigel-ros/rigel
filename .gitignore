@@ -88,9 +88,10 @@ Dockerfile
 
 # ignore Python build related
 .coverage
-.mypy_cache
-.nox
-.pytest_cache
+.mypy_cache/
+.nox/
+.pytest_cache/
+.venv/
 dist/
 *.egg-info/
 *.spec

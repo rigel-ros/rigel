@@ -5,7 +5,8 @@ exclude = [
     .git,
     .nox,
     .pytest_cache,
-    .mypy_cache
+    .mypy_cache,
+    .venv,
     __pycache__,
     *.egg-info,
     build,
