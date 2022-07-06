@@ -1,0 +1,61 @@
+name: Publish rigel to PyPI
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+
+  publish:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8"]
+  
+    runs-on: ubuntu-latest
+  
+    steps:
+
+      - uses: actions/checkout@master
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2.0.0
+
+      - name: Cache Poetry virtualenv
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: ~/.virtualenvs
+          key: poetry-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            poetry-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Set Poetry config
+        run: |
+          poetry config virtualenvs.in-project false
+          poetry config virtualenvs.path ~/.virtualenvs
+
+      - name: Install rigelcore Dependencies
+        run: poetry install
+        if: steps.cache.outputs.cache-hit != 'true'
+
+      - name: Run linter (flake8)
+        run: poetry run flake8
+
+      - name: Run type checker (mypy)
+        run: poetry run mypy .
+
+      - name: Test rigel (pytest)
+        run: poetry run coverage run -m pytest
+
+      - name: Build and publish rigel to PyPI
+        uses: JRubics/poetry-publish@v1.11
+        with:
+          pypi_token: ${{ secrets.PYPI_API_TOKEN }}
