@@ -2,12 +2,12 @@
 name = "rigel"
 version = "0.2.18"
 description = "Containerize and deploy your ROS application using Docker."
-homepage = "https://gitlab.inesctec.pt/pedro.m.melo/rigel"
+homepage = "https://github.com/rigel-ros/rigel"
 keywords = ["docker", "ros", "cloud", "robotics"] 
 authors = ["Pedro Miguel Melo <pedro.m.melo@inesctec.pt>"]
 maintainers = ["Pedro Miguel Melo <pedro.m.melo@inesctec.pt>"]
 readme = "README.md"
-repository = "https://gitlab.inesctec.pt/pedro.m.melo/rigel"
+repository = "https://github.com/rigel-ros/rigel"
 license = "MIT"
 classifiers = [
     "License :: OSI Approved :: MIT License",
