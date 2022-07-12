@@ -2,15 +2,12 @@ import click
 import os
 import signal
 import sys
-import time
 from pathlib import Path
 from rigelcore.clients import DockerClient
 from rigelcore.exceptions import RigelError
 from rigelcore.loggers import ErrorLogger, MessageLogger
-from rigelcore.simulations import (
-    SimulationRequirementsManager,
-    SimulationRequirementsParser
-)
+from rigelcore.simulations import SimulationRequirementsParser
+from rigelcore.simulations.requirements import SimulationRequirementsManager
 from rigel.exceptions import (
     RigelfileAlreadyExistsError,
     UnknownROSPackagesError
@@ -150,7 +147,6 @@ def run_plugin(plugin: Tuple[str, Plugin]) -> None:
 def run_simulation_plugin(
     plugin: Tuple[str, Plugin],
     manager: SimulationRequirementsManager,
-    timeout: int
 ) -> None:
     """
     Run an external simulation plugin.
@@ -161,8 +157,6 @@ def run_simulation_plugin(
     :param manager: The simulation requirements associated with the external plugin.
     :type manager: rigelcore.simulations.SimulationRequirementsManager
     :param manager: The simulation requirements associated with the external plugin.
-    :type timeout: int
-    :param timeout: The simulation timeout in seconds.
     """
     try:
 
@@ -180,16 +174,11 @@ def run_simulation_plugin(
         plugin_instance.run()
         MESSAGE_LOGGER.warning("Simulation started.")
 
-        initial_time = time.time()
-        while True:  # implement timeout mechanism
-            passed_time = time.time() - initial_time
-            if passed_time > timeout:
-                MESSAGE_LOGGER.error(f"Timeout ({passed_time}s). Simulation requirements were not satisfied on time.")
-                break
-            elif manager.requirements_satisfied:
-                MESSAGE_LOGGER.info(f"All simulation requirements were satisfied on {passed_time}s.")
+        while True:  # wait for test stage to finish
+            if manager.finished:
                 break
 
+        print(manager)
         plugin_instance.stop()
         MESSAGE_LOGGER.info(f"Plugin '{plugin_name}' finished executing.")
 
@@ -332,9 +321,6 @@ def build_image(package: DockerfileSection) -> None:
 def build(pkg: Tuple[str]) -> None:
     """
     Build a Docker image of your ROS packages.
-
-    :type package: rigel.models.DockerSection
-    :param package: The ROS package to be containerized.
     """
     list_packages = list(pkg)
     rigelfile = parse_rigelfile()
@@ -391,18 +377,18 @@ def run() -> None:
 
         for plugin_section in rigelfile.simulate.plugins:
 
-            requirements_manager = SimulationRequirementsManager()
+            requirements_manager = SimulationRequirementsManager(rigelfile.simulate.timeout)
 
             # Parse simulation requirements.
             requirements_parser = SimulationRequirementsParser()
             for hpl_statement in rigelfile.simulate.introspection:
-                requirements = requirements_parser.parse(hpl_statement)
-                for requirement in requirements:
-                    requirements_manager.add_simulation_requirement(requirement)
+                requirement = requirements_parser.parse(hpl_statement)
+                requirement.father = requirements_manager
+                requirements_manager.children.append(requirement)
 
             # Run external simulation plugins.
             plugin = load_plugin(plugin_section, [requirements_manager], {})
-            run_simulation_plugin(plugin, requirements_manager, rigelfile.simulate.timeout)
+            run_simulation_plugin(plugin, requirements_manager)
 
     else:
         MESSAGE_LOGGER.warning('No simulation plugin declared inside Rigelfile.')

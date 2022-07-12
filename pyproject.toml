@@ -26,8 +26,8 @@ python = "^3.8"
 PyYAML = "^6.0"
 rich = "^11.2.0"
 rigelcore = "^0.1.16"
-rigel-local-simulation-plugin = "^0.1.0"
 rigel-registry-plugin = "^0.1.6"
+rigel-local-simulation-plugin = "^0.1.0"
 
 [tool.poetry.dev-dependencies]
 coverage = {extras = ["toml"], version = "^6.3.1"}
