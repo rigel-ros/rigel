@@ -4,8 +4,11 @@ from rigelcore.exceptions import (
     UndeclaredEnvironmentVariableError
 )
 from rigel.exceptions import (
-    UnsupportedCompilerError
+    InvalidPlatformError,
+    UnsupportedCompilerError,
+    UnsupportedPlatformError
 )
+from rigelcore.clients.docker import DockerClient
 from typing import Any, Dict, List
 
 
@@ -70,6 +73,8 @@ class DockerSection(BaseModel):
     :type env: List[Dict[str, Any]]
     :cvar env: A list of environment variables to be set inside the Docker image.
     :type hostname: List[string]
+    :type platforms: List[str]
+    :cvar platforms: A list of architectures for which to build the Docker image.
     :type rosinstall: List[string]
     :cvar rosinstall: A list of all required .rosinstall files.
     :type ros_image: string
@@ -95,6 +100,7 @@ class DockerSection(BaseModel):
     entrypoint: List[str] = []
     env: List[Dict[str, Any]] = []
     hostname: List[str] = []
+    platforms: List[str] = []
     rosinstall: List[str] = []
     run: List[str] = []
     ssh: List[SSHKey] = []
@@ -117,6 +123,26 @@ class DockerSection(BaseModel):
         if compiler not in ['catkin_make', 'colcon']:
             raise UnsupportedCompilerError(compiler=compiler)
         return compiler
+
+    @validator('platforms')
+    def validate_platforms(cls, platforms: List[str]) -> List[str]:
+        """
+        Ensure that all listed platforms are supported by the current default builder.
+
+        :param platforms: A list of architectures candidates for which to build the Docker image.
+        :type platforms: List[str]
+        :return: A list of supported architectures for which to build the Docker image.
+        :rtype: List[str]
+        """
+        client = DockerClient()
+        default_builder = client.get_builder('default')
+        print(f'IEI: platforms: {default_builder.platforms}')
+        for platform in platforms:
+            if not platform:
+                raise InvalidPlatformError(platform=platform)
+            if platform not in default_builder.platforms:
+                raise UnsupportedPlatformError(platform=platform)
+        return platforms
 
 
 class DockerfileSection(BaseModel):

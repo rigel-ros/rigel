@@ -59,6 +59,28 @@ class UnsupportedCompilerError(RigelError):
     code = 13
 
 
+class UnsupportedPlatformError(RigelError):
+    """
+    Raised whenever an attempt is build an image for an unsupported platform.
+
+    :type compiler: platform
+    :ivar compiler: The unsupported platform.
+    """
+    base = "Unsupported platform '{platform}'."
+    code = 14
+
+
+class InvalidPlatformError(RigelError):
+    """
+    Raised whenever an attemp to use an invalid platform is made.
+
+    :param RigelError: platform
+    :type RigelError: The invalid platform.
+    """
+    base = "An invalid platform was used: '{platform}'."
+    code = 15
+
+
 class PluginNotFoundError(RigelError):
     """
     Raised whenever an attempt is made to load a plugin that is not installed.

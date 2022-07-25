@@ -3,10 +3,12 @@ from rigelcore.exceptions import (
     UndeclaredEnvironmentVariableError
 )
 from rigel.exceptions import (
-    UnsupportedCompilerError
+    InvalidPlatformError,
+    UnsupportedCompilerError,
+    UnsupportedPlatformError
 )
 from rigel.models import DockerSection, SSHKey
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, MagicMock, patch
 
 
 class SSHKeyModelTesting(unittest.TestCase):
@@ -88,6 +90,45 @@ class DockerSectionTesting(unittest.TestCase):
         with self.assertRaises(UnsupportedCompilerError) as context:
             DockerSection(**data)
         self.assertEqual(context.exception.kwargs['compiler'], compiler)
+
+    @patch('rigel.models.docker.DockerClient')
+    def test_invalid_platform_error(self, docker_mock: Mock) -> None:
+        """
+        Test if InvalidPlatformError is thrown if an invalid platform is declated.
+        """
+        platform = ''
+        data = {
+            'command': 'test-command',
+            'distro': 'test-distro',
+            'image': 'test-image',
+            'package': 'test-package',
+            'platforms': [platform]
+        }
+
+        with self.assertRaises(InvalidPlatformError) as context:
+            DockerSection(**data)
+        self.assertEqual(context.exception.kwargs['platform'], platform)
+
+    @patch('rigel.models.docker.DockerClient')
+    def test_unsupported_platform_error(self, docker_mock: Mock) -> None:
+        """
+        Test if UnsupportedPlatformError is thrown if an invalid platform is declared.
+        """
+        platform = 'test_unsupported_platform'
+        data = {
+            'command': 'test-command',
+            'distro': 'test-distro',
+            'image': 'test-image',
+            'package': 'test-package',
+            'platforms': [platform]
+        }
+
+        builder_mock = MagicMock()
+        builder_mock.platforms = ['test_platform']
+        docker_mock.get_builder.return_value = builder_mock
+        with self.assertRaises(UnsupportedPlatformError) as context:
+            DockerSection(**data)
+        self.assertEqual(context.exception.kwargs['platform'], platform)
 
 
 if __name__ == '__main__':

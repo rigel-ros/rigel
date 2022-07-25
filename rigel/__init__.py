@@ -1,6 +1,7 @@
 from .exceptions import (  # noqa: F401
     EmptyRigelfileError,
     IncompleteRigelfileError,
+    InvalidPlatformError,
     InvalidPluginNameError,
     PluginInstallationError,
     PluginNotCompliantError,
@@ -9,7 +10,8 @@ from .exceptions import (  # noqa: F401
     RigelfileNotFoundError,
     UnformattedRigelfileError,
     UnknownROSPackagesError,
-    UnsupportedCompilerError
+    UnsupportedCompilerError,
+    UnsupportedPlatformError
 )
 from . import files  # noqa: F401
 from . import models  # noqa: F401

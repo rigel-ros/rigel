@@ -25,7 +25,7 @@ pydantic = "^1.9.0"
 python = "^3.8"
 PyYAML = "^6.0"
 rich = "^11.2.0"
-rigelcore = "^0.1.16"
+rigelcore = {git = "https://github.com/rigel-ros/rigelcore"}
 rigel-registry-plugin = "^0.1.6"
 rigel-local-simulation-plugin = "^0.1.0"
 
