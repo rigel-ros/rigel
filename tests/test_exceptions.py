@@ -1,9 +1,7 @@
-from platform import platform
 import unittest
 from rigel.exceptions import (
     EmptyRigelfileError,
     IncompleteRigelfileError,
-    InvalidPlatformError,
     InvalidPluginNameError,
     PluginInstallationError,
     PluginNotCompliantError,
@@ -78,15 +76,6 @@ class ExceptionTesting(unittest.TestCase):
         err = UnsupportedPlatformError(platform=test_unsupported_platform)
         self.assertEqual(err.code, 14)
         self.assertEqual(err.kwargs['platform'], test_unsupported_platform)
-
-    def test_invalid_platform_error(self) -> None:
-        """
-        Ensure that instances of InvalidPlatformError are thrown as expected.
-        """
-        test_invalid_platform = 'test_platform'
-        err = InvalidPlatformError(platform=test_invalid_platform)
-        self.assertEqual(err.code, 15)
-        self.assertEqual(err.kwargs['platform'], test_invalid_platform)
 
     def test_plugin_not_found_error(self) -> None:
         """

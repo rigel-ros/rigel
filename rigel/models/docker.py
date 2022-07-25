@@ -4,12 +4,19 @@ from rigelcore.exceptions import (
     UndeclaredEnvironmentVariableError
 )
 from rigel.exceptions import (
-    InvalidPlatformError,
     UnsupportedCompilerError,
     UnsupportedPlatformError
 )
-from rigelcore.clients.docker import DockerClient
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
+
+
+SUPPORTED_PLATFORMS: List[Tuple[str, str, str]] = [
+    # (docker_platform_name, qus_argument, qemu_file_name)
+    ('linux/amd64', 'x86_64', ''),
+    ('linux/arm64', 'arm', 'qemu-aarch64')
+]
+
+SUPPORTED_PLATFORMS: List[Tuple[str, str, str]] = [('linux/amd64', 'x86_64', ''), ('linux/arm64', 'arm', 'qemu-aarch64')]
 
 
 class SSHKey(BaseModel):
@@ -134,13 +141,9 @@ class DockerSection(BaseModel):
         :return: A list of supported architectures for which to build the Docker image.
         :rtype: List[str]
         """
-        client = DockerClient()
-        default_builder = client.get_builder('default')
-        print(f'IEI: platforms: {default_builder.platforms}')
+        supported_platforms = [p[0] for p in SUPPORTED_PLATFORMS]
         for platform in platforms:
-            if not platform:
-                raise InvalidPlatformError(platform=platform)
-            if platform not in default_builder.platforms:
+            if platform not in supported_platforms:
                 raise UnsupportedPlatformError(platform=platform)
         return platforms
 

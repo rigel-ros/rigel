@@ -1,7 +1,6 @@
 from .exceptions import (  # noqa: F401
     EmptyRigelfileError,
     IncompleteRigelfileError,
-    InvalidPlatformError,
     InvalidPluginNameError,
     PluginInstallationError,
     PluginNotCompliantError,
