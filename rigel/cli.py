@@ -298,6 +298,19 @@ def login_registry(package: DockerSection) -> None:
             handle_rigel_error(err)
 
 
+def generate_paths(package: DockerSection) -> Tuple[str, str]:
+    if package.dir:
+        return (
+            os.path.abspath(f'{package.dir}'),                      # package root
+            os.path.abspath(f'{package.dir}/.rigel_config')         # Dockerfile folder
+        )
+    else:
+        return (
+            os.path.abspath(f'.rigel_config/{package.package}'),    # package root
+            os.path.abspath(f'.rigel_config/{package.package}')     # Dockerfile folder
+        )
+
+
 def containerize_package(package: DockerSection, load: bool, push: bool) -> None:
     """
     Containerize a given ROS package.
@@ -319,16 +332,7 @@ def containerize_package(package: DockerSection, load: bool, push: bool) -> None
             value = os.environ[key.value]  # NOTE: SSHKey model ensures that environment variable is declared.
             buildargs[key.value] = value
 
-    if package.dir:
-        path = (
-            os.path.abspath(f'{package.dir}'),                      # package root
-            os.path.abspath(f'{package.dir}/.rigel_config')         # Dockerfile folder
-        )
-    else:
-        path = (
-            os.path.abspath(f'.rigel_config/{package.package}'),    # package root
-            os.path.abspath(f'.rigel_config/{package.package}')     # Dockerfile folder
-        )
+    path = generate_paths(package)
 
     docker = DockerClient()
 
@@ -400,12 +404,13 @@ def build_image(package: DockerfileSection, load: bool, push: bool) -> None:
 
     MESSAGE_LOGGER.info(f"Building Docker image {package.image}")
     builder = DockerClient()
-    builder.build_image(
-        path,
-        package.image,
-        load=load,
-        push=push
-    )
+    kwargs = {
+        "tags": package.image,
+        "load": load,
+        "push": push
+    }
+    builder.build_image(path, **kwargs)
+
     MESSAGE_LOGGER.info(f"Docker image '{package.image}' built with success.")
 
 
@@ -413,7 +418,7 @@ def build_image(package: DockerfileSection, load: bool, push: bool) -> None:
 @click.option('--pkg', multiple=True, help='A list of desired packages.')
 @click.option("--load", is_flag=True, show_default=True, default=False, help="Store built image locally.")
 @click.option("--push", is_flag=True, show_default=True, default=False, help="Store built image in a remote registry.")
-def build(pkg: Tuple[str], load, push) -> None:
+def build(pkg: Tuple[str], load: bool, push: bool) -> None:
     """
     Build a Docker image of your ROS packages.
     """

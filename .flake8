@@ -1,6 +1,6 @@
 [flake8]
 max-line-length = 130
-max-complexity = 10
+max-complexity = 11
 exclude = [
     .git,
     .nox,
