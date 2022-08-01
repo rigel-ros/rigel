@@ -16,4 +16,4 @@ from . import files  # noqa: F401
 from . import models  # noqa: F401
 from . import plugins  # noqa: F401
 
-__version__ = '0.2.19'
+__version__ = '0.2.20'

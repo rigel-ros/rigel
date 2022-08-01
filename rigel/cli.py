@@ -269,7 +269,7 @@ def create(pkg: Tuple[str]) -> None:
         handle_rigel_error(err)
 
 
-def login_registry(package: DockerSection) -> bool:
+def login_registry(package: DockerSection) -> None:
     """
     Login to a Docker image registry.
 
@@ -286,25 +286,28 @@ def login_registry(package: DockerSection) -> bool:
         password = package.registry.password
 
         try:
+
             MESSAGE_LOGGER.info(f'Authenticating with registry {server}')
             docker.login(
                 server,
                 username,
                 password
             )
-            return True
+
         except RigelError as err:
             handle_rigel_error(err)
 
-    return False
 
-
-def containerize_package(package: DockerSection) -> None:
+def containerize_package(package: DockerSection, load: bool, push: bool) -> None:
     """
     Containerize a given ROS package.
 
     :type package: rigel.models.DockerSection
     :param package: The ROS package whose Dockerfile is to be created.
+    :type load: bool
+    :param package: Store built image locally.
+    :type push: bool
+    :param package: Store built image in a remote registry.
     """
     MESSAGE_LOGGER.warning(f"Containerizing package {package.package}.")
     if package.ssh and not package.rosinstall:
@@ -317,13 +320,19 @@ def containerize_package(package: DockerSection) -> None:
             buildargs[key.value] = value
 
     if package.dir:
-        path = os.path.abspath(package.dir)
+        path = (
+            os.path.abspath(f'{package.dir}'),                      # package root
+            os.path.abspath(f'{package.dir}/.rigel_config')         # Dockerfile folder
+        )
     else:
-        path = os.path.abspath(f'.rigel_config/{package.package}')
+        path = (
+            os.path.abspath(f'.rigel_config/{package.package}'),    # package root
+            os.path.abspath(f'.rigel_config/{package.package}')     # Dockerfile folder
+        )
 
     docker = DockerClient()
 
-    push = login_registry(package)
+    login_registry(package)
 
     platforms = package.platforms or None
 
@@ -345,31 +354,45 @@ def containerize_package(package: DockerSection) -> None:
     # Build the Docker image.
     MESSAGE_LOGGER.info(f"Building Docker image '{package.image}'")
     try:
-        docker.build_image(
-            path,
-            package.image,
-            buildargs,
-            platforms,
-            push
-        )
+
+        kwargs = {
+            "file": f'{path[1]}/Dockerfile',
+            "tags": package.image,
+            "load": load,
+            "push": push
+        }
+
+        if buildargs:
+            kwargs["build_args"] = buildargs
+
+        if platforms:
+            kwargs["platforms"] = platforms
+
+        docker.build_image(path[0], **kwargs)
+
         MESSAGE_LOGGER.info(f"Docker image '{package.image}' built with success.")
         if push:
             MESSAGE_LOGGER.info(f"Docker image '{package.image}' pushed with success.")
+
     except RigelError as err:
         handle_rigel_error(err)
+
     finally:
         # In all situations make sure to remove the builder if existent
         docker.remove_builder('rigel-builder')
         MESSAGE_LOGGER.info("Removed builder 'rigel-builder'")
 
 
-# TODO: refactor to support new rigelcore API
-def build_image(package: DockerfileSection) -> None:
+def build_image(package: DockerfileSection, load: bool, push: bool) -> None:
     """
     Containerize a given ROS package (existing Dockerfile).
 
     :type package: rigel.models.DockerfileSection
     :param package: The Dockerfile to use to containerize.
+    :type load: bool
+    :param package: Store built image locally.
+    :type push: bool
+    :param package: Store built image in a remote registry.
     """
     MESSAGE_LOGGER.warning(f"Creating Docker image using provided Dockerfile at {package.dockerfile}")
 
@@ -377,13 +400,20 @@ def build_image(package: DockerfileSection) -> None:
 
     MESSAGE_LOGGER.info(f"Building Docker image {package.image}")
     builder = DockerClient()
-    builder.build_image(path, package.image, {}, [], push=True)
+    builder.build_image(
+        path,
+        package.image,
+        load=load,
+        push=push
+    )
     MESSAGE_LOGGER.info(f"Docker image '{package.image}' built with success.")
 
 
 @click.command()
 @click.option('--pkg', multiple=True, help='A list of desired packages.')
-def build(pkg: Tuple[str]) -> None:
+@click.option("--load", is_flag=True, show_default=True, default=False, help="Store built image locally.")
+@click.option("--push", is_flag=True, show_default=True, default=False, help="Store built image in a remote registry.")
+def build(pkg: Tuple[str], load, push) -> None:
     """
     Build a Docker image of your ROS packages.
     """
@@ -403,9 +433,9 @@ def build(pkg: Tuple[str]) -> None:
 
         for package in desired_packages:
             if isinstance(package, DockerSection):
-                containerize_package(package)
+                containerize_package(package, load, push)
             else:  # DockerfileSection
-                build_image(package)
+                build_image(package, load, push)
 
     except RigelError as err:
         handle_rigel_error(err)
