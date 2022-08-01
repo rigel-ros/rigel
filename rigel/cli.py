@@ -19,12 +19,11 @@ from rigel.files import (
     YAMLDataLoader
 )
 from rigel.models import DockerSection, Rigelfile, PluginSection
-from rigel.models.docker import DockerfileSection
+from rigel.models.docker import SUPPORTED_PLATFORMS, DockerfileSection
 from rigel.plugins import Plugin, PluginInstaller
+from rigel.plugins.loader import PluginLoader
 from rigelcore.models import ModelBuilder
 from typing import Any, Dict, List, Tuple
-
-from rigel.plugins.loader import PluginLoader
 
 
 MESSAGE_LOGGER = MessageLogger()
@@ -270,6 +269,36 @@ def create(pkg: Tuple[str]) -> None:
         handle_rigel_error(err)
 
 
+def login_registry(package: DockerSection) -> bool:
+    """
+    Login to a Docker image registry.
+
+    :param package: The ROS package to be containerized and deployed.
+    :type package: DockerSection
+    """
+    docker = DockerClient()
+
+    # Authenticate with registry
+    if package.registry:
+
+        server = package.registry.server
+        username = package.registry.username
+        password = package.registry.password
+
+        try:
+            MESSAGE_LOGGER.info(f'Authenticating with registry {server}')
+            docker.login(
+                server,
+                username,
+                password
+            )
+            return True
+        except RigelError as err:
+            handle_rigel_error(err)
+
+    return False
+
+
 def containerize_package(package: DockerSection) -> None:
     """
     Containerize a given ROS package.
@@ -278,7 +307,6 @@ def containerize_package(package: DockerSection) -> None:
     :param package: The ROS package whose Dockerfile is to be created.
     """
     MESSAGE_LOGGER.warning(f"Containerizing package {package.package}.")
-
     if package.ssh and not package.rosinstall:
         MESSAGE_LOGGER.warning('No .rosinstall file was declared. Recommended to remove unused SSH keys from Dockerfile.')
 
@@ -293,12 +321,49 @@ def containerize_package(package: DockerSection) -> None:
     else:
         path = os.path.abspath(f'.rigel_config/{package.package}')
 
-    MESSAGE_LOGGER.info(f"Building Docker image {package.image}")
-    builder = DockerClient()
-    builder.build_image(path, '.rigel_config/Dockerfile', package.image, buildargs)
-    MESSAGE_LOGGER.info(f"Docker image '{package.image}' built with success.")
+    docker = DockerClient()
+
+    push = login_registry(package)
+
+    platforms = package.platforms or None
+
+    docker.create_builder('rigel-builder', use=True)
+    MESSAGE_LOGGER.info("Created builder 'rigel-builder'")
+
+    # Ensure that QEMU is properly configured before building an image.
+    for docker_platform, _, qemu_config_file in SUPPORTED_PLATFORMS:
+        if not os.path.exists(f'/proc/sys/fs/binfmt_misc/{qemu_config_file}'):
+            docker.run_container(
+                'qus',
+                'aptman/qus',
+                command=['-s -- -c -p'],
+                privileged=True,
+                remove=True,
+            )
+            MESSAGE_LOGGER.info(f"Created QEMU configuration file for '{docker_platform}'")
+
+    # Build the Docker image.
+    MESSAGE_LOGGER.info(f"Building Docker image '{package.image}'")
+    try:
+        docker.build_image(
+            path,
+            package.image,
+            buildargs,
+            platforms,
+            push
+        )
+        MESSAGE_LOGGER.info(f"Docker image '{package.image}' built with success.")
+        if push:
+            MESSAGE_LOGGER.info(f"Docker image '{package.image}' pushed with success.")
+    except RigelError as err:
+        handle_rigel_error(err)
+    finally:
+        # In all situations make sure to remove the builder if existent
+        docker.remove_builder('rigel-builder')
+        MESSAGE_LOGGER.info("Removed builder 'rigel-builder'")
 
 
+# TODO: refactor to support new rigelcore API
 def build_image(package: DockerfileSection) -> None:
     """
     Containerize a given ROS package (existing Dockerfile).
@@ -312,7 +377,7 @@ def build_image(package: DockerfileSection) -> None:
 
     MESSAGE_LOGGER.info(f"Building Docker image {package.image}")
     builder = DockerClient()
-    builder.build_image(path, 'Dockerfile', package.image, {})
+    builder.build_image(path, package.image, {}, [], push=True)
     MESSAGE_LOGGER.info(f"Docker image '{package.image}' built with success.")
 
 

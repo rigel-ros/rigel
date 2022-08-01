@@ -4,9 +4,17 @@ from rigelcore.exceptions import (
     UndeclaredEnvironmentVariableError
 )
 from rigel.exceptions import (
-    UnsupportedCompilerError
+    UnsupportedCompilerError,
+    UnsupportedPlatformError
 )
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, Tuple
+
+
+SUPPORTED_PLATFORMS: List[Tuple[str, str, str]] = [
+    # (docker_platform_name, qus_argument, qemu_file_name)
+    ('linux/amd64', 'x86_64', ''),
+    ('linux/arm64', 'arm', 'qemu-arm')
+]
 
 
 class SSHKey(BaseModel):
@@ -47,6 +55,22 @@ class SSHKey(BaseModel):
         return v
 
 
+class Registry(BaseModel):
+    """
+    Information about an image registry.
+
+    :type password: string
+    :cvar password: The password for authentication.
+    :type server: string
+    :cvar server: The image registry to authenticate with.
+    :type username: string
+    :cvar username: The username to authenticate.
+    """
+    password: str
+    server: str
+    username: str
+
+
 class DockerSection(BaseModel):
     """
     A placeholder for information regarding how to containerize a ROS application using Docker.
@@ -70,6 +94,10 @@ class DockerSection(BaseModel):
     :type env: List[Dict[str, Any]]
     :cvar env: A list of environment variables to be set inside the Docker image.
     :type hostname: List[string]
+    :type platforms: List[str]
+    :cvar platforms: A list of architectures for which to build the Docker image.
+    :type registry: Optional[rigel.files.Registry]
+    :cvar registry: Information about the image registry for the Docker image. Default value is None.
     :type rosinstall: List[string]
     :cvar rosinstall: A list of all required .rosinstall files.
     :type ros_image: string
@@ -95,7 +123,9 @@ class DockerSection(BaseModel):
     entrypoint: List[str] = []
     env: List[Dict[str, Any]] = []
     hostname: List[str] = []
+    platforms: List[str] = []
     rosinstall: List[str] = []
+    registry: Optional[Registry] = None
     run: List[str] = []
     ssh: List[SSHKey] = []
     username: str = 'rigeluser'
@@ -117,6 +147,22 @@ class DockerSection(BaseModel):
         if compiler not in ['catkin_make', 'colcon']:
             raise UnsupportedCompilerError(compiler=compiler)
         return compiler
+
+    @validator('platforms')
+    def validate_platforms(cls, platforms: List[str]) -> List[str]:
+        """
+        Ensure that all listed platforms are supported by the current default builder.
+
+        :param platforms: A list of architectures candidates for which to build the Docker image.
+        :type platforms: List[str]
+        :return: A list of supported architectures for which to build the Docker image.
+        :rtype: List[str]
+        """
+        supported_platforms = [p[0] for p in SUPPORTED_PLATFORMS]
+        for platform in platforms:
+            if platform not in supported_platforms:
+                raise UnsupportedPlatformError(platform=platform)
+        return platforms
 
 
 class DockerfileSection(BaseModel):

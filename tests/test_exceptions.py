@@ -10,7 +10,8 @@ from rigel.exceptions import (
     RigelfileNotFoundError,
     UnformattedRigelfileError,
     UnknownROSPackagesError,
-    UnsupportedCompilerError
+    UnsupportedCompilerError,
+    UnsupportedPlatformError
 )
 
 
@@ -66,6 +67,15 @@ class ExceptionTesting(unittest.TestCase):
         err = UnsupportedCompilerError(compiler=test_compiler)
         self.assertEqual(err.code, 13)
         self.assertEqual(err.kwargs['compiler'], test_compiler)
+
+    def test_unsupported_platform_error(self) -> None:
+        """
+        Ensure that instances of UnsupportedPlatformError are thrown as expected.
+        """
+        test_unsupported_platform = 'test_platform'
+        err = UnsupportedPlatformError(platform=test_unsupported_platform)
+        self.assertEqual(err.code, 14)
+        self.assertEqual(err.kwargs['platform'], test_unsupported_platform)
 
     def test_plugin_not_found_error(self) -> None:
         """

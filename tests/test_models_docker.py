@@ -3,7 +3,8 @@ from rigelcore.exceptions import (
     UndeclaredEnvironmentVariableError
 )
 from rigel.exceptions import (
-    UnsupportedCompilerError
+    UnsupportedCompilerError,
+    UnsupportedPlatformError
 )
 from rigel.models import DockerSection, SSHKey
 from unittest.mock import Mock, patch
@@ -88,6 +89,23 @@ class DockerSectionTesting(unittest.TestCase):
         with self.assertRaises(UnsupportedCompilerError) as context:
             DockerSection(**data)
         self.assertEqual(context.exception.kwargs['compiler'], compiler)
+
+    def test_unsupported_platform_error(self) -> None:
+        """
+        Test if UnsupportedPlatformError is thrown if an invalid platform is declared.
+        """
+        platform = 'test_unsupported_platform'
+        data = {
+            'command': 'test-command',
+            'distro': 'test-distro',
+            'image': 'test-image',
+            'package': 'test-package',
+            'platforms': [platform]
+        }
+
+        with self.assertRaises(UnsupportedPlatformError) as context:
+            DockerSection(**data)
+        self.assertEqual(context.exception.kwargs['platform'], platform)
 
 
 if __name__ == '__main__':
