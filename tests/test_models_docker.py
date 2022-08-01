@@ -3,12 +3,11 @@ from rigelcore.exceptions import (
     UndeclaredEnvironmentVariableError
 )
 from rigel.exceptions import (
-    InvalidPlatformError,
     UnsupportedCompilerError,
     UnsupportedPlatformError
 )
 from rigel.models import DockerSection, SSHKey
-from unittest.mock import Mock, MagicMock, patch
+from unittest.mock import Mock, patch
 
 
 class SSHKeyModelTesting(unittest.TestCase):
