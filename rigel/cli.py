@@ -23,7 +23,7 @@ from rigel.models.docker import SUPPORTED_PLATFORMS, DockerfileSection
 from rigel.plugins import Plugin, PluginInstaller
 from rigel.plugins.loader import PluginLoader
 from rigelcore.models import ModelBuilder
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, Union
 
 
 MESSAGE_LOGGER = MessageLogger()
@@ -269,7 +269,7 @@ def create(pkg: Tuple[str]) -> None:
         handle_rigel_error(err)
 
 
-def login_registry(package: DockerSection) -> None:
+def login_registry(package: Union[DockerSection, DockerfileSection]) -> None:
     """
     Login to a Docker image registry.
 
@@ -399,6 +399,8 @@ def build_image(package: DockerfileSection, load: bool, push: bool) -> None:
     :param package: Store built image in a remote registry.
     """
     MESSAGE_LOGGER.warning(f"Creating Docker image using provided Dockerfile at {package.dockerfile}")
+
+    login_registry(package)
 
     path = os.path.abspath(package.dockerfile)
 
