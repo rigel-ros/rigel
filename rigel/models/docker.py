@@ -175,8 +175,13 @@ class DockerfileSection(BaseModel):
     :cvar image: The name for the final Docker image.
     :type package: str
     :cvar package: The name of the package ROS to be containerized.
+    :type registry: Optional[rigel.files.Registry]
+    :cvar registry: Information about the image registry for the Docker image. Default value is None.
     """
     # Required fields.
     dockerfile: str
     image: str
     package: str
+
+    # Optional fields.
+    registry: Optional[Registry] = None
