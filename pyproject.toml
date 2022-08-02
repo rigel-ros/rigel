@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rigel"
-version = "0.2.21"
+version = "0.2.22"
 description = "Containerize and deploy your ROS application using Docker."
 homepage = "https://github.com/rigel-ros/rigel"
 keywords = ["docker", "ros", "cloud", "robotics"] 
