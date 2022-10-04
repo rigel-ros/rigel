@@ -43,7 +43,7 @@ types-pkg-resources = "^0.1.3"
 types-PyYAML = "^6.0.4"
 
 [tool.poetry.scripts]
-rigel = 'rigel.cli:main'
+rigel = 'rigel.main:main'
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

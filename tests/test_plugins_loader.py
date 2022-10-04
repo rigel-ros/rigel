@@ -79,7 +79,7 @@ class PluginLoaderTesting(unittest.TestCase):
 
         with self.assertRaises(PluginNotFoundError) as context:
             loader = PluginLoader()
-            loader.load(plugin)
+            loader.load(plugin, [], {})
         self.assertEqual(context.exception.kwargs['plugin'], f'{plugin_name}.{plugin_entrypoint}')
 
     @patch('rigel.plugins.loader.getattr')
@@ -105,13 +105,13 @@ class PluginLoaderTesting(unittest.TestCase):
         getattr_mock.return_value = TestPlugin
         builder_mock.return_value = 'PluginInstance'
 
-        loader = PluginLoader()
-        loader.load(PluginSection(**{
+        plugin = PluginSection(**{
             'name': complete_plugin_name,
-            'entrypoint': plugin_entrypoint,
-            'args': plugin_args,
-            'kwargs': plugin_kwargs
-        }))
+            'entrypoint': plugin_entrypoint
+        })
+
+        loader = PluginLoader()
+        loader.load(plugin, plugin_args, plugin_kwargs)
 
         importlib_mock.assert_called_once_with(plugin_name)
         getattr_mock.assert_called_once_with('PluginModule', plugin_entrypoint)

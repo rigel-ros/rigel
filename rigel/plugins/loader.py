@@ -7,7 +7,7 @@ from rigel.exceptions import (
 from rigelcore.models import ModelBuilder
 from rigel.models import PluginSection
 from .plugin import Plugin
-from typing import Any, Type
+from typing import Any, Dict, List, Type
 
 
 class PluginLoader:
@@ -61,7 +61,12 @@ class PluginLoader:
         return not len(signature.parameters) != 1  # allows for no parameter besides self
 
     # TODO: set return type to Plugin
-    def load(self, plugin: PluginSection) -> Any:
+    def load(
+        self,
+        plugin: PluginSection,
+        plugin_args: List[Any],
+        plugin_kwargs: Dict[str, Any]
+    ) -> Any:
         """
         Parse a list of plugins.
 
@@ -100,4 +105,11 @@ class PluginLoader:
             )
 
         builder = ModelBuilder(cls)
+
+        if plugin_args:
+            plugin.args = plugin_args + plugin.args
+
+        if plugin_kwargs:
+            plugin.kwargs.update(plugin_kwargs)
+
         return builder.build(plugin.args, plugin.kwargs)
