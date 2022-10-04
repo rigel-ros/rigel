@@ -1,12 +1,18 @@
 from .exceptions import (  # noqa: F401
+    RigelError,
+    #
     EmptyRigelfileError,
     IncompleteRigelfileError,
+    InvalidDockerClientInstanceError,
     InvalidPluginNameError,
     PluginInstallationError,
     PluginNotCompliantError,
     PluginNotFoundError,
+    PydanticValidationError,
     RigelfileAlreadyExistsError,
     RigelfileNotFoundError,
+    UndeclaredEnvironmentVariableError,
+    UndeclaredGlobalVariableError,
     UnformattedRigelfileError,
     UnknownROSPackagesError,
     UnsupportedCompilerError,

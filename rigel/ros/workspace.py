@@ -1,8 +1,8 @@
 import os
 import yaml
-from rigelcore.clients import DockerClient
-from rigelcore.exceptions import RigelError
-from rigelcore.loggers import get_logger
+from rigel.clients import DockerClient
+from rigel.exceptions import RigelError
+from rigel.loggers import get_logger
 from typing import Dict
 
 ROS_WORKSPACE_FILE = '.rigel_workspace'

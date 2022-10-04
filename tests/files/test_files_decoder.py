@@ -1,5 +1,5 @@
 import unittest
-from rigelcore.exceptions import UndeclaredGlobalVariableError
+from rigel.exceptions import UndeclaredGlobalVariableError
 from rigel.files import YAMLDataDecoder
 
 

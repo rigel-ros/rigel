@@ -23,11 +23,13 @@ click = "^8.0.3"
 Jinja2 = "^3.0.3"
 pydantic = "^1.9.0"
 python = "^3.8"
+python-on-whales = "^0.52.0"
 PyYAML = "^6.0"
 rich = "^11.2.0"
-rigel-registry-plugin = "^0.1.6"
+rigel-hpl = "^0.1.0"
 rigel-local-simulation-plugin = "^0.1.0"
-rigelcore = "^0.1.19"
+rigel-registry-plugin = "^0.1.6"
+roslibpy = "^1.3.0"
 
 [tool.poetry.dev-dependencies]
 coverage = {extras = ["toml"], version = "^6.3.1"}

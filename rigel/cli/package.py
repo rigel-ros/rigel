@@ -1,12 +1,12 @@
 import click
 from rigel.exceptions import RigelError, UnknownROSPackagesError
 from rigel.files import RigelfileParser
+from rigel.loggers import get_logger
 from rigel.models import DockerSection
 from rigel.plugins import PluginLoader, PluginRunner
 from rigel.ros import ROSPackage
-from rigelcore.loggers import get_logger
-from rigelcore.simulations import SimulationRequirementsParser
-from rigelcore.simulations.requirements import SimulationRequirementsManager
+from rigel.simulations import SimulationRequirementsParser
+from rigel.simulations.requirements import SimulationRequirementsManager
 from sys import exit
 from typing import Tuple
 

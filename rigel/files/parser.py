@@ -3,8 +3,7 @@ from rigel.files import (
     YAMLDataDecoder,
     YAMLDataLoader
 )
-from rigel.models import Rigelfile
-from rigelcore.models import ModelBuilder
+from rigel.models import ModelBuilder, Rigelfile
 
 
 class RigelfileParser:

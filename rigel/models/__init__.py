@@ -1,3 +1,4 @@
+from .builder import ModelBuilder  # noqa: F401
 from .docker import (  # noqa: F401
     DockerfileSection,
     DockerSection,

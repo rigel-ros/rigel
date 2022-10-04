@@ -1,7 +1,7 @@
 import click
+from rigel.exceptions import RigelError
+from rigel.loggers import get_logger
 from rigel.plugins import PluginInstaller
-from rigelcore.exceptions import RigelError
-from rigelcore.loggers import get_logger
 from sys import exit
 
 LOGGER = get_logger()

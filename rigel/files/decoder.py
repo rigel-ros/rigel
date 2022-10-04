@@ -1,6 +1,6 @@
 import os
 import re
-from rigelcore.exceptions import UndeclaredGlobalVariableError
+from rigel.exceptions import UndeclaredGlobalVariableError
 from typing import Any, Dict
 
 

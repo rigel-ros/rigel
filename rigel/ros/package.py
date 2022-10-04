@@ -1,10 +1,10 @@
 import os
 from pathlib import Path
+from rigel.clients import DockerClient
+from rigel.exceptions import RigelError
 from rigel.files import Renderer
+from rigel.loggers import get_logger
 from rigel.models import DockerSection, DockerfileSection, SUPPORTED_PLATFORMS
-from rigelcore.clients import DockerClient
-from rigelcore.exceptions import RigelError
-from rigelcore.loggers import get_logger
 from sys import exit
 from typing import Dict, Tuple
 

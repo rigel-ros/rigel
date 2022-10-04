@@ -1,4 +1,4 @@
-name: Publish rigel to PyPI
+name: Publish Rigel to PyPI
 
 on:
   push:
@@ -42,7 +42,7 @@ jobs:
           poetry config virtualenvs.in-project false
           poetry config virtualenvs.path ~/.virtualenvs
 
-      - name: Install rigelcore Dependencies
+      - name: Install Rigel Dependencies
         run: poetry install
         if: steps.cache.outputs.cache-hit != 'true'
 
@@ -52,10 +52,10 @@ jobs:
       - name: Run type checker (mypy)
         run: poetry run mypy .
 
-      - name: Test rigel (pytest)
+      - name: Test Rigel (pytest)
         run: poetry run coverage run -m pytest
 
-      - name: Build and publish rigel to PyPI
+      - name: Build and publish Rigel to PyPI
         uses: JRubics/poetry-publish@v1.11
         with:
           pypi_token: ${{ secrets.PYPI_API_TOKEN }}

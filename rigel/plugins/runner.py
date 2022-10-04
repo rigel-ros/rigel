@@ -1,7 +1,7 @@
 import signal
 from .plugin import Plugin
-from rigelcore.exceptions import RigelError
-from rigelcore.loggers import get_logger
+from rigel.exceptions import RigelError
+from rigel.loggers import get_logger
 from typing import Any, Callable, Optional, Tuple
 
 LOGGER = get_logger()

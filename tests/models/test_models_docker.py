@@ -1,8 +1,6 @@
 import unittest
-from rigelcore.exceptions import (
-    UndeclaredEnvironmentVariableError
-)
 from rigel.exceptions import (
+    UndeclaredEnvironmentVariableError,
     UnsupportedCompilerError,
     UnsupportedPlatformError
 )

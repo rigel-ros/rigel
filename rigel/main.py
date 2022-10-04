@@ -1,15 +1,14 @@
 import click
 import os
 
-from rigelcore.exceptions import RigelError
-from rigelcore.loggers import get_logger
 from rigel.cli import (
     PackageCommand,
     PluginCommand,
     WorkspaceCommand
 )
-from rigel.exceptions import RigelfileAlreadyExistsError
+from rigel.exceptions import RigelError, RigelfileAlreadyExistsError
 from rigel.files import RigelfileCreator
+from rigel.loggers import get_logger
 from sys import exit
 
 
