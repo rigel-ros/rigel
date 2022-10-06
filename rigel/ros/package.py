@@ -6,7 +6,7 @@ from rigel.files import Renderer
 from rigel.loggers import get_logger
 from rigel.models import DockerSection, DockerfileSection, SUPPORTED_PLATFORMS
 from sys import exit
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Union
 
 LOGGER = get_logger()
 
@@ -14,12 +14,12 @@ LOGGER = get_logger()
 class ROSPackage:
 
     @staticmethod
-    def login(self, package: DockerSection) -> None:
+    def login(package: Union[DockerSection, DockerfileSection]) -> None:
         """
         Login to a Docker image registry.
 
         :param package: The ROS package to be containerized and deployed.
-        :type package: DockerSection
+        :type package: Union[DockerSection, DockerfileSection]
         """
         docker = DockerClient()
 
@@ -34,9 +34,9 @@ class ROSPackage:
 
                 LOGGER.info(f'Authenticating with registry {server}')
                 docker.login(
-                    server=server,
-                    username=username,
-                    password=password
+                    server,
+                    username,
+                    password
                 )
 
             except RigelError as err:

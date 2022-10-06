@@ -13,6 +13,7 @@ class PluginRunner:
     """
 
     def run(
+        self,
         plugin: Tuple[str, Plugin],
         introspection: Optional[Callable] = None
     ) -> None:

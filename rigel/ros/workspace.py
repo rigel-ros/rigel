@@ -3,7 +3,7 @@ import yaml
 from rigel.clients import DockerClient
 from rigel.exceptions import RigelError
 from rigel.loggers import get_logger
-from typing import Dict
+from typing import Any
 
 ROS_WORKSPACE_FILE = '.rigel_workspace'
 ROS_WORKSPACE_PATH = f"{os.environ.get('HOME')}/.rigel"
@@ -89,7 +89,7 @@ class ROSWorkspace:
         )
 
     @staticmethod
-    def info(identifier: str) -> Dict[str, str]:
+    def info(identifier: str) -> Any:
         """Retrieve information about a Rigel-ROS workspace.
 
         :param identifier: the unique Rigel-ROS workspace identifier.
