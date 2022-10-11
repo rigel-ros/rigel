@@ -2,10 +2,12 @@ import click
 import os
 
 from rigel.cli import (
+    ConfigCommand,
     PackageCommand,
     PluginCommand,
     WorkspaceCommand
 )
+from rigel.config import RIGEL_FOLDER, SettingsManager
 from rigel.exceptions import RigelError, RigelfileAlreadyExistsError
 from rigel.files import RigelfileCreator
 from rigel.loggers import get_logger
@@ -61,9 +63,21 @@ def main() -> None:
     """
     Rigel application entry point.
     """
+
+    ConfigCommand.add_command(cli)
     PackageCommand.add_command(cli)
     PluginCommand.add_command(cli)
     WorkspaceCommand.add_command(cli)
+
+    # Ensure that Rigel folder is always created
+    # and that a settings file is always present.
+    if not os.path.exists(RIGEL_FOLDER):
+
+        os.makedirs(RIGEL_FOLDER)
+
+        manager = SettingsManager()
+        manager.reset_settings_file()
+
     cli()
 
 

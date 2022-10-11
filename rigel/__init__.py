@@ -18,8 +18,9 @@ from .exceptions import (  # noqa: F401
     UnsupportedCompilerError,
     UnsupportedPlatformError
 )
-from . import main  # noqa: F401
+from . import config  # noqa: F401
 from . import files  # noqa: F401
+from . import main  # noqa: F401
 from . import models  # noqa: F401
 from . import plugins  # noqa: F401
 from . import ros  # noqa: F401
