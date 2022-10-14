@@ -1,7 +1,7 @@
 import os
 import yaml
 from rigel.loggers import get_logger
-from typing import Any
+from typing import Any, Optional
 from .defaults import RIGEL_FOLDER, Settings
 
 LOGGER = get_logger()
@@ -14,7 +14,6 @@ class SettingsManager:
     def __init__(self) -> None:
 
         if not os.path.exists(SETTINGS_FILE_PATH):
-            self.settings = self.load_default_settings()
             self.reset_settings_file()
         else:
             self.settings = self.load_settings()
@@ -61,16 +60,20 @@ class SettingsManager:
         """
         LOGGER.info(self.settings)
 
-    def get_setting(self, settings: Settings, setting: str) -> Any:
+    def get_setting(self, setting: str, settings: Optional[Settings] = None) -> Any:
         """Obtain the value of an individual applicaton setting.
 
-        :param settings: The desired group of settings from which to retrieve the value.
-        :type settings: Settings
         :param setting: The setting whose value is to be retrieved.
         :type setting: str
+        :param settings: The desired group of settings from which to retrieve the value.
+        If None then the active group of settings is used.
+        :type settings: Optional[Settings]
         :return: The setting value
         :rtype: Any
         """
+        if not settings:
+            settings = self.settings
+
         path = setting.split('.')
         try:
             elem = settings.__getattribute__(path[0])
@@ -90,7 +93,7 @@ class SettingsManager:
         """
         path = setting.rsplit('.', 1)
         setattr(
-            self.get_setting(self.settings, path[0]),
+            self.get_setting(path[0]),
             path[-1],
             value
         )
@@ -104,5 +107,5 @@ class SettingsManager:
         """
         self.update_setting(
             setting,
-            self.get_setting(self.load_default_settings(), setting)
+            self.get_setting(setting, settings=self.load_default_settings())
         )
