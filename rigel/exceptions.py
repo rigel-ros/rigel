@@ -164,30 +164,30 @@ class PluginNotFoundError(RigelError):
     :ivar plugin: Name of the plugin.
     """
     base = ("Unable to load plugin '{plugin}'. Make sure plugin is installed in your system.\n"
-            "For more information on external plugin installation run command 'rigel install --help'.")
+            "For more information on plugin installation run command 'rigel install --help'.")
     code = 17
 
 
 class PluginInstallationError(RigelError):
     """
-    Raised whenever an error occurs while installing an external plugin.
+    Raised whenever an error occurs while installing an plugin.
 
     :type plugin: string
     :ivar plugin: Name of the plugin to be installed.
     """
-    base = "An error occurred while installing external plugin {plugin}."
+    base = "An error occurred while installing plugin {plugin}."
     code = 18
 
 
 class PluginNotCompliantError(RigelError):
     """
-    Raised whenever an external plugin is loaded that is not compliant with
+    Raised whenever an plugin is loaded that is not compliant with
     the rigel.plugins.Protocol class.
 
     :type plugin: string
     :ivar plugin: Name of the plugin
     :type cause: string
-    :ivar cause: Reason why external plugin is not compliant.
+    :ivar cause: Reason why plugin is not compliant.
     """
     base = "Plugin '{plugin}' does not comply with Rigel plugin protocol: {cause}"
     code = 19

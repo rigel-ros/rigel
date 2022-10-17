@@ -19,7 +19,7 @@ from .exceptions import (  # noqa: F401
     UnsupportedPlatformError
 )
 from . import config  # noqa: F401
-from . import files  # noqa: F401
+# from . import files  # noqa: F401
 from . import main  # noqa: F401
 from . import models  # noqa: F401
 from . import plugins  # noqa: F401

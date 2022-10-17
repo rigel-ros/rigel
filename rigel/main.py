@@ -2,12 +2,14 @@ import click
 import os
 
 from rigel.cli.config import ConfigCommand
+from rigel.cli.run import RunJobCommand
 from rigel.cli.workspace import WorkspaceCommand
 
 # PackageCommand,
 # PluginCommand,
 from rigel.config import RIGEL_FOLDER, SettingsManager
 from rigel.loggers import get_logger
+from rigel.ros.manager import WorkspaceManager
 
 
 LOGGER = get_logger()
@@ -31,11 +33,11 @@ def main() -> None:
         os.makedirs(RIGEL_FOLDER)
 
     settings = SettingsManager()
+    workspace_manager = WorkspaceManager(settings)
 
     ConfigCommand(settings).add_to_group(cli)
-    # PackageCommand.add_command(cli)
-    # PluginCommand.add_command(cli)
-    WorkspaceCommand(settings).add_to_group(cli)
+    RunJobCommand(workspace_manager).add_to_group(cli)
+    WorkspaceCommand(workspace_manager).add_to_group(cli)
 
     cli()
 

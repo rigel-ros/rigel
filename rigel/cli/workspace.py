@@ -1,8 +1,7 @@
 import click
-from rigel.config import SettingsManager
 from rigel.exceptions import RigelError
 from rigel.loggers import get_logger
-from rigel.ros import WorkspaceManager
+from rigel.ros.manager import WorkspaceManager
 from sys import exit
 from .command import CLICommand
 
@@ -13,9 +12,9 @@ class WorkspaceCommand(CLICommand):
     """Manage Rigel-ROS workspaces
     """
 
-    def __init__(self, settings: SettingsManager) -> None:
+    def __init__(self, manager: WorkspaceManager) -> None:
         super().__init__(command='workspace')
-        self.manager = WorkspaceManager(settings)
+        self.manager = manager
 
     @click.command()
     @click.argument('distro', type=str)
@@ -29,23 +28,23 @@ class WorkspaceCommand(CLICommand):
             LOGGER.error(err)
             exit(err.code)
 
-    # TODO: implement this
-    # @click.command()
-    # @click.argument('path', type=str)
-    # def init(self, path: str) -> None:
-    #     """Create new Rigel-ROS workspace from pre-existing ROS workspace
-    #     """
-    #     try:
-    #         pass
-    #     except RigelError as err:
-    #         LOGGER.error(err)
-    #         exit(err.code)
-
     @click.command()
     def list(self) -> None:
         """List existing Rigel-ROS workspaces
         """
         self.manager.list()
+
+    @click.command()
+    @click.argument('name', type=str)
+    def info(self, name: str) -> None:
+        """Display detailed information on a Rigel-ROS workspace.
+        """
+        try:
+            workspace = self.manager.get_ws(name)
+            LOGGER.info(workspace)
+        except RigelError as err:
+            LOGGER.error(err)
+            exit(err.code)
 
     @click.command()
     @click.argument('name', type=str)
@@ -58,16 +57,3 @@ class WorkspaceCommand(CLICommand):
         except RigelError as err:
             LOGGER.error(err)
             exit(err.code)
-
-    # TODO: implement this as an alias
-    # @click.command()
-    # @click.argument('identifier', type=str)
-    # def tty(self, identifier: str) -> None:
-    #     """
-    #     Open a terminal session inside a Rigel-ROS workspace
-    #     """
-    #     try:
-    #         ROSWorkspace.tty(identifier)
-    #     except RigelError as err:
-    #         LOGGER.error(err)
-    #         exit(err.code)

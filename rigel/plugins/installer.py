@@ -8,7 +8,7 @@ from subprocess import CalledProcessError, check_call
 
 class PluginInstaller:
     """
-    A class to install external plugins from both public and private sources.
+    A class to install plugins from both public and private sources.
     """
 
     def __init__(self, plugin: str, host: str, private: bool) -> None:
@@ -31,7 +31,7 @@ class PluginInstaller:
 
     def install(self) -> None:
         """
-        Install an external plugin.
+        Install a plugin.
         """
         url = f"{self.protocol}://{'git@' if self.protocol == 'ssh' else ''}{self.host}/{self.plugin_user}/{self.plugin_name}"
 

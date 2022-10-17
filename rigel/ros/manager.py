@@ -1,27 +1,12 @@
 import os
 import yaml
-from pydantic import BaseModel
 from rigel.config import SettingsManager
 from rigel.exceptions import RigelError
+from rigel.models.ros import Workspace
 from rigel.loggers import get_logger
-from typing import Any, Dict, List
+from typing import Dict
 
 LOGGER = get_logger()
-
-
-class Job(BaseModel):
-
-    entrypoint: str
-    args: List[Any] = []
-    kwargs: Dict[str, Any] = {}
-
-
-class Workspace(BaseModel):
-
-    name: str
-    distro: str
-    packages: List[str] = []
-    jobs: Dict[str, Job] = {}
 
 
 class WorkspaceManager:
@@ -49,6 +34,7 @@ class WorkspaceManager:
                     workspace_data = yaml.safe_load(configuration_file)
                 workspace = Workspace(**workspace_data)
                 self.workspaces[workspace.name] = workspace
+                LOGGER.debug(f"Loaded workspace {workspace.name}")
 
     def generate_ws(self, distro: str, name: str) -> None:
         """Generate a new Rigel-ROS workspace.
@@ -62,7 +48,7 @@ class WorkspaceManager:
             raise RigelError(msg=f"A Rigel-ROS workspace already exists with name '{name}'")
 
         workspace_root = f'{self.__root}/{name}'
-        os.makedirs(workspace_root)
+        os.makedirs(f'{workspace_root}/src')  # automatically create a 'src' folder
 
         workspace = Workspace(name=name, distro=distro)
         with open(f'{workspace_root}/{self.__file}', 'w+') as workspace_file:
@@ -111,16 +97,3 @@ class WorkspaceManager:
         """
         self.get_ws(name)
         return f'{self.__root}/{name}'
-
-    # def create_ws_image(self, name: str) -> None:
-    #     """Prepare dedicated image for a given Rigel-ROS workspace.
-
-    #     :param name: Unique Rigel-ROS workspace name.
-    #     :type name: str
-    #     """
-    #     workspace = self.get_ws(name)
-    #     workspace_image_name = f'{name}:latest'
-    #     if not self.__docker.image.exists(workspace_image_name):
-    #         LOGGER.info(f"Dedicated image for Rigel-ROS workspace '{name}' was not found. Creating a new one.")
-    #         self.__docker.image.pull(f'{self.__base_image}:{workspace.distro}')
-    #         self.__docker.image.tag(self.__base_image)
