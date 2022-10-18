@@ -5,8 +5,7 @@ from typing import Any, Dict
 
 
 class YAMLDataDecoder:
-    """
-    A class to decode YAML data.
+    """A class to decode YAML data.
 
     Decoding is done by iterating through the entire YAML data and
     replacing all marked variables with the correspondent values. Variables are
@@ -17,8 +16,8 @@ class YAMLDataDecoder:
     """
 
     def __extract_variable_name(self, match: str) -> str:
-        """
-        Auxiliary function that extracts template variables from pattern matches.
+        """Auxiliary function that extracts template variables from pattern matches.
+
         Names of template variables are enclosed between delimiters '{{' and '}}'.
 
         :type match: string
@@ -33,31 +32,50 @@ class YAMLDataDecoder:
             variable_name = variable_name.replace(c, '')
         return variable_name
 
-    def __aux_decode(self, data: Any, vars: Any, path: str = '') -> None:
-        """
-        Auxiliary function that recursively looks for fields to decode inside YAML data.
+    def __aux_decode(self, data: Any, vars: Dict[str, Any], path: str = '') -> None:
+        """Auxiliary function that recursively looks for fields to decode inside YAML data.
 
-        :type data: Any
-        :param data: The YAML data to be decoded.
-        :type vars: Dicŧ[str, Any]
-        :param vars: The value of global variables.
+        :param data: Any
+        :type data: The YAML data to be encoded.
+        :param vars: Dict[str, Any]
+        :type vars: Declared global variables.
+        :param path: The path for the YAML element being parsed.
+        :type path: str
         """
         if isinstance(data, dict):
             self.__aux_decode_dict(data, vars, path)
         elif isinstance(data, list):
             self.__aux_decode_list(data, vars, path)
 
-    def __aux_decode_dict(self, data: Any, vars: Any, path: str = '') -> None:
-        """
-        This auxiliary function decodes only list elements inside YAML data.
+    def __aux_decode_dict(self, data: Any, vars: Dict[str, Any], path: str = '') -> None:
+        """This auxiliary function decodes only dict elements inside YAML data.
+
         Fields to decode have values delimited by {{ and }}.
         This auxiliary function decodes only dict elements.
         # NOTE: do not call this function directly. User '__aux_decode' instead.
 
-        :type data: Any
-        :param data: The YAML data to be decoded.
-        :type vars: Dicŧ[str, Any]
-        :param vars: The value of global variables.
+        :param data: Any
+        :type data: The YAML data to be encoded.
+        :param vars: Dict[str, Any]
+        :type vars: Declared global variables.
+        :param path: The path for the YAML element being parsed.
+        :type path: str
+        """
+        self.__aux_decode_dict_values(data, vars, path)
+        self.__aux_decode_dict_keys(data, vars, path)
+
+    def __aux_decode_dict_values(self, data: Any, vars: Dict[str, Any], path: str = '') -> None:
+        """This auxiliary function decodes only the values of dict elements inside the YAML data.
+
+        Fields to decode have values delimited by {{ and }}.
+        # NOTE: do not call this function directly. Use '__aux_decode' instead.
+
+        :param data: Any
+        :type data: The YAML data to be encoded.
+        :param vars: Dict[str, Any]
+        :type vars: Declared global variables.
+        :param path: The path for the YAML element being parsed.
+        :type path: str
         """
         for k, v in data.items():
 
@@ -76,18 +94,48 @@ class YAMLDataDecoder:
             else:
                 self.__aux_decode(v, vars, new_path)
 
-    def __aux_decode_list(self, data: Any, vars: Dict[str, Any], path: str = '') -> None:
+    def __aux_decode_dict_keys(self, data: Any, vars: Dict[str, Any], path: str = '') -> None:
+        """This auxiliary function decodes only the keys of dict elements inside the YAML data.
+
+        Fields to decode have values delimited by {{ and }}.
+        # NOTE: do not call this function directly. Use '__aux_decode' instead.
+
+        :param data: Any
+        :type data: The YAML data to be encoded.
+        :param vars: Dict[str, Any]
+        :type vars: Declared global variables.
+        :param path: The path for the YAML element being parsed.
+        :type path: str
         """
-        This auxiliary function decodes only list elements inside YAML data.
+        keys = list(data.keys())
+        for k in keys:
+
+            new_path = f'{path}.{k}' if path else k
+
+            if isinstance(k, str):  # in order to contain delimiters the field must be of type str
+                matches = re.findall(r'{{[a-zA-Z0-9_\s\-\!\?]+}}', k)
+                for match in matches:
+                    variable_name = self.__extract_variable_name(match)
+                    if variable_name in vars:
+                        data[vars[variable_name]] = data.pop(k)
+                    elif variable_name in os.environ:
+                        data[os.environ[variable_name]] = data.pop(k)
+                    else:
+                        raise UndeclaredGlobalVariableError(field=new_path, var=variable_name)
+
+    def __aux_decode_list(self, data: Any, vars: Dict[str, Any], path: str = '') -> None:
+        """This auxiliary function decodes only list elements inside YAML data.
+
         Fields to decode have values dlimited by {{ and }}.
         # NOTE: do not call this function directly. User '__aux_decode' instead.
 
-        :type data: Any
-        :param data: The YAML data to be decoded.
-        :type vars: Dicŧ[str, Any]
-        :param vars: The value of global variables.
+        :param data: Any
+        :type data: The YAML data to be encoded.
+        :param vars: Dict[str, Any]
+        :type vars: Declared global variables.
+        :param path: The path for the YAML element being parsed.
+        :type path: str
         """
-
         for idx, elem in enumerate(data):
 
             new_path = f'{path}[{idx}]'
