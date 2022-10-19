@@ -1,4 +1,5 @@
 import click
+import os
 import shutil
 from pkg_resources import resource_filename
 from rigel.cli.run import RunJobCommand
@@ -17,18 +18,26 @@ def cli() -> None:
 
 
 @click.command()
-def init() -> None:
+@click.option('--force', 'force', type=bool, is_flag=True, help='Overwrite existing Rigelfile')
+def init(force: bool) -> None:
     """
     Create a new Rigelfile.
     """
-    # TODO: add Rigelfile detection and add flag to --force
-    rigelfile_path = resource_filename(__name__, 'assets/Rigelfile')
-    shutil.copyfile(rigelfile_path, 'Rigelfile')
-    LOGGER.info("""
-    A Rigelfile has been placed in this directory.
-    Please read the comments in the Rigelfile
-    as well as documentation for more information on using Rigel.
-    """)
+
+    if os.path.exists('./Rigelfile') and not force:
+        LOGGER.info("""
+        A Rigelfile already exists in this directory.
+        To overwrite it with a new one rerun this command with the --force flag.
+        """)
+
+    else:
+        rigelfile_path = resource_filename(__name__, 'assets/Rigelfile')
+        shutil.copyfile(rigelfile_path, 'Rigelfile')
+        LOGGER.info("""
+        A Rigelfile has been placed in this directory.
+        Please read the comments in the Rigelfile
+        as well as documentation for more information on using Rigel.
+        """)
 
 
 def main() -> None:
