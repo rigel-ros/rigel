@@ -90,6 +90,7 @@ class YAMLDataDecoder:
                     elif variable_name in os.environ:
                         data[k] = data[k].replace(match, os.environ[variable_name])
                     else:
+                        print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>> {new_path} <<<>>>> {variable_name} <>>>>>>>>>>>>>>>>><')
                         raise UndeclaredGlobalVariableError(field=new_path, var=variable_name)
             else:
                 self.__aux_decode(v, vars, new_path)

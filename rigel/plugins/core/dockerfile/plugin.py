@@ -2,8 +2,8 @@ import os
 from pathlib import Path
 from pydantic import BaseModel, validator
 from rigel.exceptions import UnsupportedCompilerError
+from rigel.files.renderer import Renderer
 from rigel.loggers import get_logger
-from rigel.files import Renderer
 from typing import Any, Dict, List
 from ..models import SSHKey
 
@@ -55,7 +55,7 @@ class Plugin(BaseModel):
     env: List[Dict[str, Any]] = []
     rosinstall: List[str] = []
     ros_image: str
-    run: List[str] = []
+    docker_run: List[str] = []
     ssh: List[SSHKey] = []
     username: str = 'rigeluser'
 
@@ -78,16 +78,9 @@ class Plugin(BaseModel):
             raise UnsupportedCompilerError(compiler=compiler)
         return compiler
 
-    def setup(self) -> None:
-        pass
-
     def run(self) -> None:
-        """Create all the files required to containerize a given ROS package.
 
-        :type package: rigel.models.DockerSection
-        :param package: The ROS package whose Dockerfile is to be created.
-        """
-        LOGGER.warning(f"Creating build files for package {self.package}.")
+        LOGGER.warning(f"Creating Dockerfile for package {self.package}.")
 
         if self.dir:
             path = os.path.abspath(f'{self.dir}/.rigel_config')
@@ -108,5 +101,8 @@ class Plugin(BaseModel):
             renderer.render('config.j2', f'{path}/config')
             LOGGER.info(f"Created file {path}/config")
 
+    def setup(self) -> None:
+        pass  # do nothing
+
     def stop(self) -> None:
-        pass
+        pass  # do nothing
