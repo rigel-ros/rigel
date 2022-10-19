@@ -9,7 +9,7 @@ from rigel.exceptions import (
 from rigel.loggers import get_logger
 from rigel.models.builder import ModelBuilder
 from rigel.models.plugin import PluginSection
-from typing import Any, Tuple, Type
+from typing import Any, Type
 from .plugin import Plugin
 
 LOGGER = get_logger()
@@ -17,7 +17,8 @@ LOGGER = get_logger()
 
 class PluginManager:
 
-    def __is_plugin_compliant(self, entrypoint: Type) -> bool:
+    @staticmethod
+    def is_plugin_compliant(entrypoint: Type) -> bool:
         """Ensure that a given plugin entrypoint class is compliant with the
         rigel.plugins.Plugin protocol. All compliant plugins must implement
         a 'setup', 'run', and 'stop' functions.
@@ -31,7 +32,8 @@ class PluginManager:
         """
         return issubclass(entrypoint, Plugin)
 
-    def __is_setup_compliant(self, entrypoint: Type) -> bool:
+    @staticmethod
+    def is_setup_compliant(entrypoint: Type) -> bool:
         """Ensure that the 'setup' function declared inside a plugin's entrypoint class
         is not expecting any parameters (except for self).
 
@@ -45,7 +47,8 @@ class PluginManager:
         signature = inspect.signature(entrypoint.setup)
         return not len(signature.parameters) != 1  # allows for no parameter besides 'self'
 
-    def __is_run_compliant(self, entrypoint: Type) -> bool:
+    @staticmethod
+    def is_run_compliant(entrypoint: Type) -> bool:
         """Ensure that the 'run' function declared inside a plugin's entrypoint class
         is not expecting any parameters (except for self).
 
@@ -59,7 +62,8 @@ class PluginManager:
         signature = inspect.signature(entrypoint.run)
         return not len(signature.parameters) != 1  # allows for no parameter besides 'self'
 
-    def __is_stop_compliant(self, entrypoint: Type) -> bool:
+    @staticmethod
+    def is_stop_compliant(entrypoint: Type) -> bool:
         """Ensure that the 'stop' function declared inside a plugin's entrypoint class
         is not expecting any parameters (except for self).
 
@@ -73,11 +77,8 @@ class PluginManager:
         signature = inspect.signature(entrypoint.stop)
         return not len(signature.parameters) != 1  # allows for no parameter besides 'self'
 
-    # TODO: set return type to Plugin
-    def load(
-        self,
-        plugin: PluginSection,
-    ) -> Any:
+    @staticmethod
+    def load(plugin: PluginSection) -> Plugin:
         """Parse a list of plugins.
 
         :type plugin: rigel.models.PluginSection
@@ -95,38 +96,34 @@ class PluginManager:
         except ModuleNotFoundError:
             raise PluginNotFoundError(plugin=plugin_complete_name)
 
-        if not self.__is_plugin_compliant(cls):
+        if not PluginManager.is_plugin_compliant(cls):
             raise PluginNotCompliantError(
                 plugin=plugin_complete_name,
                 cause="entrypoint class must implement functions 'setup','run', and 'stop'."
             )
 
-        if not self.__is_setup_compliant(cls):
+        if not PluginManager.is_setup_compliant(cls):
             raise PluginNotCompliantError(
                 plugin=plugin_complete_name,
                 cause=f"attribute function '{plugin_complete_name}.setup' must not receive any parameters."
             )
 
-        if not self.__is_run_compliant(cls):
+        if not PluginManager.is_run_compliant(cls):
             raise PluginNotCompliantError(
                 plugin=plugin_complete_name,
                 cause=f"attribute function '{plugin_complete_name}.run' must not receive any parameters."
             )
 
-        if not self.__is_stop_compliant(cls):
+        if not PluginManager.is_stop_compliant(cls):
             raise PluginNotCompliantError(
                 plugin=plugin_complete_name,
                 cause=f"attribute function '{plugin_complete_name}.stop' must not receive any parameters."
             )
 
-        builder = ModelBuilder(cls)
+        return ModelBuilder(cls).build([], plugin._kwargs)
 
-        return builder.build([], plugin._kwargs)
-
-    def run(
-        self,
-        plugin: Tuple[str, Plugin],
-    ) -> None:
+    @staticmethod
+    def run(plugin: Plugin) -> None:
         """Run an external Rigel plugin.
 
         :type plugin: Tuple[str, rigel.plugin.Plugin]
@@ -134,26 +131,26 @@ class PluginManager:
         """
         try:
 
-            plugin_name, plugin_instance = plugin
+            identifier = plugin.__class__.__name__
 
             def stop_plugin(*args: Any) -> None:
                 print()
-                LOGGER.warning(f"Received signal to stop execution of plugin '{plugin_name}'")
-                plugin_instance.stop()
-                LOGGER.info(f"Plugin '{plugin_name}' stopped executing gracefully")
+                LOGGER.warning(f"Received signal to stop execution of plugin '{identifier}'")
+                plugin.stop()
+                LOGGER.info(f"Plugin '{identifier}' stopped executing gracefully")
                 exit(0)
 
             signal.signal(signal.SIGINT, stop_plugin)
             signal.signal(signal.SIGTSTP, stop_plugin)
 
-            LOGGER.debug(f"Allocating resources for plugin '{plugin_name}'")
-            plugin_instance.setup()
+            LOGGER.debug(f"Allocating resources for plugin '{identifier}'")
+            plugin.setup()
 
-            LOGGER.debug(f"Executing plugin '{plugin_name}'")
-            plugin_instance.run()
+            LOGGER.debug(f"Executing plugin '{identifier}'")
+            plugin.run()
 
-            plugin_instance.stop()
-            LOGGER.info(f"Plugin '{plugin_name}' finished execution with success")
+            plugin.stop()
+            LOGGER.info(f"Plugin '{identifier}' finished execution with success")
 
         except RigelError as err:
 

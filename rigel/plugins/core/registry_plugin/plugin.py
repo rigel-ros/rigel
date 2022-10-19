@@ -1,4 +1,4 @@
-from rigel.models import ModelBuilder
+from rigel.models.builder import ModelBuilder
 from typing import Any, Type
 from .registries import ECRPlugin, GenericDockerRegistryPlugin
 

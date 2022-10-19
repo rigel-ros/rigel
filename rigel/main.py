@@ -1,15 +1,8 @@
 import click
-import os
-
-from rigel.cli.config import ConfigCommand
+import shutil
+from pkg_resources import resource_filename
 from rigel.cli.run import RunJobCommand
-from rigel.cli.workspace import WorkspaceCommand
-
-# PackageCommand,
-# PluginCommand,
-from rigel.config import RIGEL_FOLDER, SettingsManager
 from rigel.loggers import get_logger
-from rigel.ros.manager import WorkspaceManager
 
 
 LOGGER = get_logger()
@@ -18,27 +11,33 @@ LOGGER = get_logger()
 @click.group()
 def cli() -> None:
     """
-    Rigel - containerize and deploy your ROS application using Docker
+    Rigel - develop your ROS application using Docker
     """
     pass
+
+
+@click.command()
+def init() -> None:
+    """
+    Create a new Rigelfile.
+    """
+    # TODO: add Rigelfile detection and add flag to --force
+    rigelfile_path = resource_filename(__name__, 'assets/Rigelfile')
+    shutil.copyfile(rigelfile_path, 'Rigelfile')
+    LOGGER.info("""
+    A Rigelfile has been placed in this directory.
+    Please read the comments in the Rigelfile
+    as well as documentation for more information on using Rigel.
+    """)
 
 
 def main() -> None:
     """
     Rigel application entry point.
     """
+    RunJobCommand().add_to_group(cli)
 
-    # Ensure that Rigel folder is always created
-    if not os.path.exists(RIGEL_FOLDER):
-        os.makedirs(RIGEL_FOLDER)
-
-    settings = SettingsManager()
-    workspace_manager = WorkspaceManager(settings)
-
-    ConfigCommand(settings).add_to_group(cli)
-    RunJobCommand(workspace_manager).add_to_group(cli)
-    WorkspaceCommand(workspace_manager).add_to_group(cli)
-
+    cli.add_command(init)
     cli()
 
 

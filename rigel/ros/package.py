@@ -161,32 +161,3 @@ class ROSPackage:
         builder.build(path, **kwargs)
 
         LOGGER.info(f"Docker image '{package.image}' built with success.")
-
-    @staticmethod
-    def create_package_files(package: DockerSection) -> None:
-        """
-        Create all the files required to containerize a given ROS package.
-
-        :type package: rigel.models.DockerSection
-        :param package: The ROS package whose Dockerfile is to be created.
-        """
-        LOGGER.warning(f"Creating build files for package {package.package}.")
-
-        if package.dir:
-            path = os.path.abspath(f'{package.dir}/.rigel_config')
-        else:
-            path = os.path.abspath(f'.rigel_config/{package.package}')
-
-        Path(path).mkdir(parents=True, exist_ok=True)
-
-        renderer = Renderer(package)
-
-        renderer.render('Dockerfile.j2', f'{path}/Dockerfile')
-        LOGGER.info(f"Created file {path}/Dockerfile")
-
-        renderer.render('entrypoint.j2', f'{path}/entrypoint.sh')
-        LOGGER.info(f"Created file {path}/entrypoint.sh")
-
-        if package.ssh:
-            renderer.render('config.j2', f'{path}/config')
-            LOGGER.info(f"Created file {path}/config")

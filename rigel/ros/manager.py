@@ -2,7 +2,7 @@ import os
 import yaml
 from rigel.config import SettingsManager
 from rigel.exceptions import RigelError
-from rigel.models.ros import Workspace
+from rigel.models.rigelfile import Workspace
 from rigel.loggers import get_logger
 from typing import Dict
 

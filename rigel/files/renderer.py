@@ -1,16 +1,15 @@
 from jinja2 import Template
 from pkg_resources import resource_string
-from rigel.models import DockerSection
+from pydantic import BaseModel
 
 
 class Renderer:
-    """
-    A class that creates Dockerfiles.
+    """A class that creates Dockerfiles.
     """
 
-    def __init__(self, configuration_file: DockerSection) -> None:
+    def __init__(self, configuration_file: BaseModel) -> None:
         """
-        :type configuration_file: rigel.models.DockerSection
+        :type configuration_file: pydantic.BaseModel
         :param configuration_file: An aggregator of information about the containerization of the ROS application.
         """
         self.configuration_file = configuration_file
@@ -25,6 +24,7 @@ class Renderer:
         :type output: string
         :param output: Name for the output rendered file.
         """
+
         # Open file template.
         dockerfile_template = resource_string(__name__, f'assets/templates/{template}').decode('utf-8')
         dockerfile_templater = Template(dockerfile_template)
