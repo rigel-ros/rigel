@@ -25,7 +25,7 @@ class RunJobCommand(CLICommand):
         manager = WorkspaceManager('./Rigelfile')
         try:
             manager.run_jobs(list(jobs), package)
-        except RigelError as err:
+        except Exception as err:
             LOGGER.error(err)
             exit(err.code)
 
@@ -38,6 +38,6 @@ class RunJobCommand(CLICommand):
         manager = WorkspaceManager('./Rigelfile')
         try:
             manager.run_sequence(list(sequences), package)
-        except RigelError as err:
+        except Exception as err:
             LOGGER.error(err)
             exit(err.code)

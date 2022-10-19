@@ -50,11 +50,6 @@ RUN touch /root/.ssh/known_hosts
 RUN ssh-keyscan {{ key.hostname }} >> /root/.ssh/known_hosts
 {%- endfor %}
 {%- endif %}
-{%- if configuration.hostname is defined and configuration.hostname|length > 0 -%}
-{%- for hostname in configuration.hostname %}
-RUN ssh-keyscan {{ hostname }} >> /root/.ssh/known_hosts
-{%- endfor %}
-{%- endif %}
 
 RUN mkdir -p /ros_workspace/src
 
@@ -112,7 +107,7 @@ RUN sh -c 'echo "$USERNAME ALL=(root) NOPASSWD:ALL" >> /etc/sudoers'
 USER $USERNAME
 
 # Create ROS workspace folder
-RUN mkdir -p /home/{{ configuration.username }}/ros_workspace/src
+RUN mkdir -p /home/{{ configurationf.username }}/ros_workspace/src
 
 {%- if configuration.rosinstall is defined and configuration.rosinstall|length > 0 %}
 
@@ -126,7 +121,7 @@ RUN sh -c 'sudo chown -R {{ configuration.username }}:{{ configuration.username 
 
 {% if configuration.dir is defined and configuration.dir|length -%}
 # Copy this repository into the ROS workspace.
-COPY . /home/{{ configuration.username }}/ros_workspace/src/{{ configuration.package }}
+COPY . /home/{{ configuration.username }}/ros_workspace/{{ configuration.dir }}
 {%- endif %}
 
 # Copy bringup script.

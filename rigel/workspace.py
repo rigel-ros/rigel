@@ -76,4 +76,4 @@ class WorkspaceManager:
                 raise Exception(f"Package '{package}' does not support job '{job}'")
 
             for plugin in plugins:
-                PluginManager.run(PluginManager.load(plugin))
+                PluginManager.run(PluginManager.load(self.workspace.distro, package, plugin))

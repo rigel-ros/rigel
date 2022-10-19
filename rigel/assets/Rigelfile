@@ -14,6 +14,12 @@ vars:
   distro: 'noetic'
 
 #
+# Specify your target ROS distribution.
+# This target distribution must be the same for all packages.
+#
+distro: '{{ distro }}'  # reference to declared global variable
+
+#
 # Use the 'packages' field to list all the ROS packages to be considered.
 # Each package has an unique identifier <package_PKG> and consists of a list of jobs.
 #
@@ -46,8 +52,7 @@ packages:
     jobs:
       hello:
         - plugin: rigel.plugins.core.HelloPlugin
-          distro: '{{ distro }}'  # reference to declared global variable
-          user: '{{ USER }}'      # reference to system environment variable
+          user: '{{ USER }}'  # reference to system environment variable
 
 # 
 # Use the 'sequences' field to automate the sequential execution of jobs.

@@ -4,8 +4,8 @@ from pydantic import BaseModel, validator
 from rigel.exceptions import UnsupportedCompilerError
 from rigel.loggers import get_logger
 from rigel.files import Renderer
-from typing import Any, Dict, List, Optional
-from ..models import Registry, SSHKey
+from typing import Any, Dict, List
+from ..models import SSHKey
 
 LOGGER = get_logger()
 
@@ -16,9 +16,7 @@ class Plugin(BaseModel):
     :type command: string
     :cvar command: The command to be executed once a container starts executing.
     :type distro: string
-    :cvar distro: The ROS distro to be used.
-    :type name: string
-    :cvar name: A unique name identifier for the ROS package.
+    :cvar distro: The target ROS distro. This field is automatically populated by Rigel.
     :type apt: List[string]
     :cvar apt: The name of dependencies to be installed using APT.
     :type compiler: string
@@ -29,9 +27,8 @@ class Plugin(BaseModel):
     :cvar entrypoint: A list of commands to be run while executing the entrypoint script.
     :type env: List[Dict[str, Any]]
     :cvar env: A list of environment variables to be set inside the Docker image.
-    :type hostname: List[string]
-    :type registry: Optional[rigel.files.Registry]
-    :cvar registry: Information about the image registry for the Docker image. Default value is None.
+    :type package: str
+    :cvar package: The target package identifier. This field is automatically populated by Rigel.
     :type rosinstall: List[string]
     :cvar rosinstall: A list of all required .rosinstall files.
     :type ros_image: string
@@ -43,22 +40,21 @@ class Plugin(BaseModel):
     :type username: string
     :cvar username: The desired username. Defaults to 'user'.
     """
-    # Required fields.
-    command: str
+    # Automatically provided fields.
     distro: str
     package: str
 
+    # Required fields.
+    command: str
+
     # Optional fields.
-    ros_image: str
     apt: List[str] = []
     compiler: str = 'catkin_make'
     dir: str = ''
     entrypoint: List[str] = []
     env: List[Dict[str, Any]] = []
-    hostname: List[str] = []
-    platforms: List[str] = []
     rosinstall: List[str] = []
-    registry: Optional[Registry] = None
+    ros_image: str
     run: List[str] = []
     ssh: List[SSHKey] = []
     username: str = 'rigeluser'

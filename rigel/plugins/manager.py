@@ -78,9 +78,13 @@ class PluginManager:
         return not len(signature.parameters) != 1  # allows for no parameter besides 'self'
 
     @staticmethod
-    def load(data: PluginSection) -> Plugin:
+    def load(distro: str, package: str, data: PluginSection) -> Plugin:
         """Parse a list of plugins.
 
+        :type distro: str
+        :param distro: The target ROS distro.
+        :type package: str
+        :param package: The target package identifier.
         :type plugin: rigel.models.PluginSection
         :param plugin: Information regarding the plugin to load.
 
@@ -120,6 +124,11 @@ class PluginManager:
                 cause=f"attribute function '{plugin_complete_name}.stop' must not receive any parameters."
             )
 
+        # All plugins are automatically provided with the target ROS distro
+        # and the target package identifier.
+        data._kwargs['distro'] = distro
+        data._kwargs['package'] = package
+
         return ModelBuilder(cls).build([], data._kwargs)
 
     @staticmethod
@@ -131,12 +140,12 @@ class PluginManager:
         """
         try:
 
-            identifier = plugin.__class__.__name__
+            identifier = plugin.__module__
 
             def stop_plugin(*args: Any) -> None:
                 LOGGER.warning(f"Received signal to stop execution of plugin '{identifier}'")
                 plugin.stop()
-                LOGGER.info(f"Plugin '{identifier}' stopped executing gracefully")
+                LOGGER.debug(f"Plugin '{identifier}' stopped executing gracefully")
                 exit(0)
 
             signal.signal(signal.SIGINT, stop_plugin)
@@ -149,7 +158,7 @@ class PluginManager:
             plugin.run()
 
             plugin.stop()
-            LOGGER.info(f"Plugin '{identifier}' finished execution with success")
+            LOGGER.debug(f"Plugin '{identifier}' finished execution with success")
 
         except RigelError as err:
 
