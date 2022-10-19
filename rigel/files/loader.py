@@ -51,5 +51,4 @@ class YAMLDataLoader:
                     message.append(arg)
                 else:
                     message.append(f'(line: {arg.line}, column: {arg.column})')
-
             raise UnformattedRigelfileError(trace=' '.join(message))

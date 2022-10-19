@@ -11,7 +11,7 @@
 # You can also use the same syntax to refer to existing system environment variables.
 #
 vars:
-  distro: noetic
+  distro: 'noetic'
 
 #
 # Use the 'packages' field to list all the ROS packages to be considered.
@@ -46,8 +46,8 @@ packages:
     jobs:
       hello:
         - plugin: rigel.plugins.core.HelloPlugin
-          distro: {{ distro }}  # reference to declared global variable
-          user: {{ USER }}      # reference to system environment variable
+          distro: '{{ distro }}'  # reference to declared global variable
+          user: '{{ USER }}'      # reference to system environment variable
 
 # 
 # Use the 'sequences' field to automate the sequential execution of jobs.

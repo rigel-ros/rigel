@@ -27,8 +27,9 @@ class PluginSection(BaseModel):
         try:
             plugin_name = kwargs['plugin']
             del kwargs['plugin']
+
         except KeyError:
             raise Exception(msg='Missing plugin name.')
 
         self._kwargs = kwargs
-        super().__init__(name=plugin_name)
+        super().__init__(plugin=plugin_name)

@@ -78,7 +78,7 @@ class PluginManager:
         return not len(signature.parameters) != 1  # allows for no parameter besides 'self'
 
     @staticmethod
-    def load(plugin: PluginSection) -> Plugin:
+    def load(data: PluginSection) -> Plugin:
         """Parse a list of plugins.
 
         :type plugin: rigel.models.PluginSection
@@ -87,7 +87,7 @@ class PluginManager:
         :rtype: Plugin
         :return: An instance of the specified plugin.
         """
-        plugin_complete_name = plugin.name.strip()
+        plugin_complete_name = data.plugin.strip()
         plugin_name, plugin_entrypoint = plugin_complete_name.rsplit('.', 1)
 
         try:
@@ -120,7 +120,7 @@ class PluginManager:
                 cause=f"attribute function '{plugin_complete_name}.stop' must not receive any parameters."
             )
 
-        return ModelBuilder(cls).build([], plugin._kwargs)
+        return ModelBuilder(cls).build([], data._kwargs)
 
     @staticmethod
     def run(plugin: Plugin) -> None:
@@ -134,7 +134,6 @@ class PluginManager:
             identifier = plugin.__class__.__name__
 
             def stop_plugin(*args: Any) -> None:
-                print()
                 LOGGER.warning(f"Received signal to stop execution of plugin '{identifier}'")
                 plugin.stop()
                 LOGGER.info(f"Plugin '{identifier}' stopped executing gracefully")

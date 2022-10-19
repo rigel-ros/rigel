@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from rigel import __version__ as RIGEL_VERSION
 from rigel.loggers import get_logger
 
 LOGGER = get_logger()
@@ -20,10 +21,9 @@ class Plugin(BaseModel):
         pass  # do nothing
 
     def run(self) -> None:
-        print(f'Hello {self.user}')
-        print('You are using:')
-        print(f'-> Rigel:\t{self.distro}')
-        print(f'-> ROS:\t\t{self.distro}')
+        LOGGER.info(f'Hello {self.user}! You are using:')
+        LOGGER.info(f'-> Rigel:\t{RIGEL_VERSION}')
+        LOGGER.info(f'-> ROS:\t\t{self.distro}')
 
     def stop(self) -> None:
         pass  # do nothing

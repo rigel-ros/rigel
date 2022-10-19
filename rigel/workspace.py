@@ -71,8 +71,9 @@ class WorkspaceManager:
 
         for job in jobs:
 
-            plugin_information = package_instance.jobs.get(job, None)
-            if not plugin_information:
+            plugins = package_instance.jobs.get(job, None)
+            if not plugins:
                 raise Exception(f"Package '{package}' does not support job '{job}'")
 
-            PluginManager.run(PluginManager.load(plugin_information))
+            for plugin in plugins:
+                PluginManager.run(PluginManager.load(plugin))

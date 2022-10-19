@@ -64,8 +64,10 @@ class Plugin(BaseModel):
     username: str = 'rigeluser'
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
+
         if not kwargs.get('ros_image') and kwargs.get('distro'):
             kwargs['ros_image'] = kwargs['distro']
+
         super().__init__(*args, **kwargs)
 
     @validator('compiler')

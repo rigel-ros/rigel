@@ -1,5 +1,6 @@
 import click
 from rigel.cli.command import CLICommand
+from rigel.exceptions import RigelError
 from rigel.loggers import get_logger
 from rigel.workspace import WorkspaceManager
 from sys import exit
@@ -24,7 +25,7 @@ class RunJobCommand(CLICommand):
         manager = WorkspaceManager('./Rigelfile')
         try:
             manager.run_jobs(list(jobs), package)
-        except Exception as err:
+        except RigelError as err:
             LOGGER.error(err)
             exit(err.code)
 
@@ -37,6 +38,6 @@ class RunJobCommand(CLICommand):
         manager = WorkspaceManager('./Rigelfile')
         try:
             manager.run_sequence(list(sequences), package)
-        except Exception as err:
+        except RigelError as err:
             LOGGER.error(err)
             exit(err.code)
