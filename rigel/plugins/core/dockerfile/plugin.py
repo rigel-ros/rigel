@@ -4,6 +4,7 @@ from pydantic import BaseModel, validator
 from rigel.exceptions import UnsupportedCompilerError
 from rigel.files.renderer import Renderer
 from rigel.loggers import get_logger
+from rigel.models.rigelfile import Package
 from typing import Any, Dict, List
 from ..models import SSHKey
 
@@ -21,13 +22,11 @@ class Plugin(BaseModel):
     :cvar apt: The name of dependencies to be installed using APT.
     :type compiler: string
     :cvar compiler: The tool with which to compile the containerized ROS workspace. Default value is 'catkin_make'.
-    :type dir: string
-    :cvar dir: The folder containing the ROS package source code, if required.
     :type entrypoint: List[string]
     :cvar entrypoint: A list of commands to be run while executing the entrypoint script.
     :type env: List[Dict[str, Any]]
     :cvar env: A list of environment variables to be set inside the Docker image.
-    :type package: str
+    :type package: Package
     :cvar package: The target package identifier. This field is automatically populated by Rigel.
     :type rosinstall: List[string]
     :cvar rosinstall: A list of all required .rosinstall files.
@@ -42,7 +41,7 @@ class Plugin(BaseModel):
     """
     # Automatically provided fields.
     distro: str
-    package: str
+    package: Package
 
     # Required fields.
     command: str
@@ -50,7 +49,7 @@ class Plugin(BaseModel):
     # Optional fields.
     apt: List[str] = []
     compiler: str = 'catkin_make'
-    dir: str = ''
+
     entrypoint: List[str] = []
     env: List[Dict[str, Any]] = []
     rosinstall: List[str] = []
@@ -80,12 +79,12 @@ class Plugin(BaseModel):
 
     def run(self) -> None:
 
-        LOGGER.warning(f"Creating Dockerfile for package {self.package}.")
+        LOGGER.warning(f"Creating Dockerfile for package '{self.package.name}'.")
 
-        if self.dir:
-            path = os.path.abspath(f'{self.dir}/.rigel_config')
+        if self.package.dir:
+            path = os.path.abspath(f'{self.package.dir}/.rigel_config')
         else:
-            path = os.path.abspath(f'.rigel_config/{self.package}')
+            path = os.path.abspath(f'.rigel_config/{self.package.name}')
 
         Path(path).mkdir(parents=True, exist_ok=True)
 
