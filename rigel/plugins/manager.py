@@ -9,6 +9,7 @@ from rigel.exceptions import (
 from rigel.loggers import get_logger
 from rigel.models.builder import ModelBuilder
 from rigel.models.plugin import PluginSection
+from rigel.models.rigelfile import Package
 from typing import Any, Type
 from .plugin import Plugin
 
@@ -78,13 +79,13 @@ class PluginManager:
         return not len(signature.parameters) != 1  # allows for no parameter besides 'self'
 
     @staticmethod
-    def load(distro: str, package: str, data: PluginSection) -> Plugin:
+    def load(distro: str, package: Package, data: PluginSection) -> Plugin:
         """Parse a list of plugins.
 
         :type distro: str
         :param distro: The target ROS distro.
-        :type package: str
-        :param package: The target package identifier.
+        :type package: Package
+        :param package: The target package.
         :type plugin: rigel.models.PluginSection
         :param plugin: Information regarding the plugin to load.
 
@@ -124,8 +125,7 @@ class PluginManager:
                 cause=f"attribute function '{plugin_complete_name}.stop' must not receive any parameters."
             )
 
-        # All plugins are automatically provided with the target ROS distro
-        # and the target package identifier.
+        # All plugins are automatically provided with the target ROS distro and the target package.
         data._kwargs['distro'] = distro
         data._kwargs['package'] = package
 

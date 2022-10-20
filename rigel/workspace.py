@@ -1,7 +1,7 @@
 from rigel.files.decoder import YAMLDataDecoder
 from rigel.files.loader import YAMLDataLoader
 from rigel.models.builder import ModelBuilder
-from rigel.models.rigelfile import Rigelfile
+from rigel.models.rigelfile import Rigelfile, Package
 from rigel.plugins.manager import PluginManager
 from typing import List, Optional
 
@@ -21,6 +21,32 @@ class WorkspaceManager:
 
         self.workspace = ModelBuilder(Rigelfile).build([], yaml_data)
 
+    def get_package(self, package: str) -> Package:
+        """Retrieve a listed ROS package, if existent.
+
+        :param package: The ROS package identifier.
+        :type package: str
+        :return: The ROS package.
+        :rtype: Package
+        """
+        try:
+            return [pkg for pkg in self.workspace.packages if pkg.name == package][0]
+        except IndexError:
+            raise Exception(f"Package '{package}' was not found")
+
+    def get_sequence_jobs(self, sequence: str) -> List[str]:
+        """Retrieve jobs of a given sequence.
+
+        :param sequence: The sequence identifier.
+        :type sequence: str
+        :return: The list of jobs.
+        :rtype: List[str]
+        """
+        try:
+            return self.workspace.sequences[sequence]
+        except KeyError:
+            raise Exception(f"Sequence '{sequence}' was not found")
+
     def run_sequence(self, sequences: List[str], package: Optional[str] = None) -> None:
         """Run a single sequence or a list of job sequences.
 
@@ -31,16 +57,7 @@ class WorkspaceManager:
         :raises Exception: _description_
         """
         for sequence in sequences:
-
-            jobs = self.workspace.sequences.get(sequence, None)
-            if not jobs:
-                raise Exception(f"Sequence '{sequence}' was not found")
-
-            if package:
-                self.run_sequence_package(jobs, package)
-            else:
-                for package in self.workspace.packages.keys():
-                    self.run_sequence_package(jobs, package)
+            self.run_jobs(self.get_sequence_jobs(sequence), package)
 
     def run_jobs(self, jobs: List[str], package: Optional[str] = None) -> None:
         """Run a single job or a list of jobs.
@@ -52,26 +69,22 @@ class WorkspaceManager:
         :type package: Optional[str]
         """
         if package:
-            self.run_jobs_package(jobs, package)
+            self.run_jobs_package(jobs, self.get_package(package))
         else:
-            for package in self.workspace.packages.keys():
+            for package in self.workspace.packages:
                 self.run_jobs_package(jobs, package)
 
-    def run_jobs_package(self, jobs: List[str], package: str) -> None:
+    def run_jobs_package(self, jobs: List[str], package: Package) -> None:
         """Run a list of jobs over a single package.
 
         :param jobs: A list of job identifiers.
         :type jobs: List[str]
-        :param package: The package identifier.
-        :type package: str
+        :param package: The package.
+        :type package: Package
         """
-        package_instance = self.workspace.packages.get(package, None)
-        if not package_instance:
-            raise Exception(f"Package '{package}' was not found")
-
         for job in jobs:
 
-            plugins = package_instance.jobs.get(job, None)
+            plugins = package.jobs.get(job, None)
             if not plugins:
                 raise Exception(f"Package '{package}' does not support job '{job}'")
 
