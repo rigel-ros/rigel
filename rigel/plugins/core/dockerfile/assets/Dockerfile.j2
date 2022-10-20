@@ -18,14 +18,14 @@ RUN apt clean && apt update && apt install -y \
 
 RUN mkdir -p /root/.ssh/
 
-{% if configuration.ssh is defined and configuration.ssh|length > 0 -%}
+{% if configuration.package.ssh is defined and configuration.package.ssh|length > 0 -%}
 # Add SSH keys and set their permissions.
-{% for key in configuration.ssh -%}
+{% for key in configuration.package.ssh -%}
 {%- if key.file == False -%}
 ARG {{ key.value }}
 {%- endif %}
 {%- endfor %}
-{%- for key in configuration.ssh %}
+{%- for key in configuration.package.ssh %}
 {% if key.file -%}
 COPY {{ key.value }} /root/.ssh/{{ key.value }}
 {%- else -%}
@@ -35,7 +35,7 @@ RUN echo "${{ key.value }}" > /root/.ssh/{{ key.value }} && chmod 600 /root/.ssh
 
 # Copy SSH configuration file and set its permissions.
 
-{% if configuration.dir is defined and configuration.dir|length -%}
+{% if configuration.package.dir is defined and configuration.package.dir|length -%}
 COPY .rigel_config/config /root/.ssh/config
 {%- else -%}
 COPY config /root/.ssh/config
@@ -45,8 +45,8 @@ RUN chmod 600 /root/.ssh/config
 
 # Ensure hosts are accepted.
 RUN touch /root/.ssh/known_hosts
-{%- if configuration.ssh is defined and configuration.ssh|length > 0 -%}
-{%- for key in configuration.ssh %}
+{%- if configuration.package.ssh is defined and configuration.package.ssh|length > 0 -%}
+{%- for key in configuration.package.ssh %}
 RUN ssh-keyscan {{ key.hostname }} >> /root/.ssh/known_hosts
 {%- endfor %}
 {%- endif %}
@@ -119,13 +119,13 @@ RUN sh -c 'sudo chmod -R +x /home/{{ configuration.username }}/ros_workspace'
 RUN sh -c 'sudo chown -R {{ configuration.username }}:{{ configuration.username }} /home/{{ configuration.username }}/ros_workspace'
 {%- endif %}
 
-{% if configuration.dir is defined and configuration.dir|length -%}
+{% if configuration.package.dir is defined and configuration.package.dir|length -%}
 # Copy this repository into the ROS workspace.
-COPY . /home/{{ configuration.username }}/ros_workspace/{{ configuration.dir }}
+COPY . /home/{{ configuration.username }}/ros_workspace/{{ configuration.package.dir }}
 {%- endif %}
 
 # Copy bringup script.
-{% if configuration.dir is defined and configuration.dir|length -%}
+{% if configuration.package.dir is defined and configuration.package.dir|length -%}
 COPY .rigel_config/entrypoint.sh /home/{{ configuration.username }}/robot-entrypoint.sh
 {%- else -%}
 COPY entrypoint.sh /home/{{ configuration.username }}/robot-entrypoint.sh

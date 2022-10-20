@@ -1,24 +1,6 @@
 from pydantic import BaseModel
 from typing import Any, List, Dict
-from .plugin import PluginSection
-
-
-class Package(BaseModel):
-    """A placeholder for information regarding a single Rigel-ROS package.
-
-    Each Rigel-ROS package may support the execution of individual jobs.
-
-    :type dir: string
-    :cvar dir: The folder containing the ROS package source code, if any.
-    :type jobs: Dict[str, List[PluginSection]]
-    :cvar jobs: The jobs supported by the package.
-    """
-    # Required fields.
-    name: str
-
-    # Optional fields.
-    dir: str = ''
-    jobs: Dict[str, List[PluginSection]] = {}
+from .package import Package
 
 
 class Rigelfile(BaseModel):

@@ -26,7 +26,7 @@ class Renderer:
         """
 
         # Open file template.
-        dockerfile_template = resource_string('rigel', f'assets/templates/{template}').decode('utf-8')
+        dockerfile_template = resource_string(__name__, f'assets/{template}').decode('utf-8')
         dockerfile_templater = Template(dockerfile_template)
 
         with open(output, 'w+') as output_file:

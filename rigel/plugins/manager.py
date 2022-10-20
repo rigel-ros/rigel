@@ -8,8 +8,8 @@ from rigel.exceptions import (
 )
 from rigel.loggers import get_logger
 from rigel.models.builder import ModelBuilder
+from rigel.models.package import Package
 from rigel.models.plugin import PluginSection
-from rigel.models.rigelfile import Package
 from typing import Any, Type
 from .plugin import Plugin
 
@@ -157,10 +157,14 @@ class PluginManager:
             LOGGER.debug(f"Executing plugin '{identifier}'")
             plugin.run()
 
-            plugin.stop()
-            LOGGER.debug(f"Plugin '{identifier}' finished execution with success")
-
         except RigelError as err:
 
+            LOGGER.warning(f"An error occured suring the execution of plugin '{identifier}'")
+            LOGGER.warning("Attempting to stop its executing gracefully before handling the error.")
+            plugin.stop()
+
             LOGGER.error(err)
-            exit(err.code)
+            exit()
+
+        plugin.stop()
+        LOGGER.debug(f"Plugin '{identifier}' finished execution with success")

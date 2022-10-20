@@ -2,11 +2,10 @@ import os
 from pathlib import Path
 from pydantic import BaseModel, validator
 from rigel.exceptions import UnsupportedCompilerError
-from rigel.files.renderer import Renderer
 from rigel.loggers import get_logger
-from rigel.models.rigelfile import Package
+from rigel.models.package import Package
 from typing import Any, Dict, List
-from ..models import SSHKey
+from .renderer import Renderer
 
 LOGGER = get_logger()
 
@@ -34,8 +33,6 @@ class Plugin(BaseModel):
     :cvar ros_image: The official ROS Docker image to use as a base for the new Docker image.
     :type run: List[string]
     :cvar run: A list of commands to be executed while building the Docker image.
-    :type ssh: List[rigel.files.SSHKey]
-    :cvar ssh: A list of all required private SSH keys.
     :type username: string
     :cvar username: The desired username. Defaults to 'user'.
     """
@@ -55,7 +52,6 @@ class Plugin(BaseModel):
     rosinstall: List[str] = []
     ros_image: str
     docker_run: List[str] = []
-    ssh: List[SSHKey] = []
     username: str = 'rigeluser'
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -96,7 +92,7 @@ class Plugin(BaseModel):
         renderer.render('entrypoint.j2', f'{path}/entrypoint.sh')
         LOGGER.info(f"Created file {path}/entrypoint.sh")
 
-        if self.ssh:
+        if self.package.ssh:
             renderer.render('config.j2', f'{path}/config')
             LOGGER.info(f"Created file {path}/config")
 

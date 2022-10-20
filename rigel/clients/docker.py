@@ -56,38 +56,6 @@ class DockerClient:
 
         raise AttributeError(f"No 'DockerClient' object has attribute '{__name}'")
 
-    def login(self, registry: str, username: str, password: str) -> None:
-        """
-        Authenticate user with a given Docker image regisry.
-
-        :type registry: string
-        :param registry: The registry to authenticate with.
-        :type username: string
-        :param username: The registry username.
-        :type password: string
-        :param password: The registry password.
-        """
-        try:
-            self.client.login(
-                username=username,
-                password=password,
-                server=registry
-            )
-        except python_on_whales.exceptions.DockerException as exception:
-            raise DockerAPIError(exception=exception)
-
-    def logout(self, registry: str) -> None:
-        """
-        Logout from a Docker image registry.
-
-        :param registry: _description_
-        :type registry: str
-        """
-        try:
-            self.client.logout(registry)
-        except python_on_whales.exceptions.DockerException as exception:
-            raise DockerAPIError(exception=exception)
-
     def get_image(self, name: str) -> Optional[python_on_whales.components.image.cli_wrapper.Image]:
         """
         Get an existing Docker image.

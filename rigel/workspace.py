@@ -1,7 +1,8 @@
 from rigel.files.decoder import YAMLDataDecoder
 from rigel.files.loader import YAMLDataLoader
 from rigel.models.builder import ModelBuilder
-from rigel.models.rigelfile import Rigelfile, Package
+from rigel.models.package import Package
+from rigel.models.rigelfile import Rigelfile
 from rigel.plugins.manager import PluginManager
 from typing import List, Optional
 
