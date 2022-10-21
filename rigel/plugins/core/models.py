@@ -1,7 +1,6 @@
-import os
-from pydantic import BaseModel, validator
-from rigel.exceptions import UndeclaredEnvironmentVariableError
-from typing import Any, Dict
+from pydantic import BaseModel
+from typing import Optional
+
 
 class Registry(BaseModel):
     """Information placeholder about an image registry.
@@ -13,6 +12,9 @@ class Registry(BaseModel):
     :type username: string
     :cvar username: The username to authenticate.
     """
-    password: str
+    # Required fields.
     server: str
-    username: str
+
+    # Optional fields.
+    password: Optional[str] = None
+    username: Optional[str] = None
