@@ -159,7 +159,7 @@ class PluginManager:
 
         except RigelError as err:
 
-            LOGGER.warning(f"An error occured suring the execution of plugin '{identifier}'")
+            LOGGER.warning(f"An error occured during the execution of plugin '{identifier}'")
             LOGGER.warning("Attempting to stop its executing gracefully before handling the error.")
             plugin.stop()
 

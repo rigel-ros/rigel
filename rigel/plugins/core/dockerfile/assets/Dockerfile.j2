@@ -121,7 +121,7 @@ RUN sh -c 'sudo chown -R {{ configuration.username }}:{{ configuration.username 
 
 {% if configuration.package.dir is defined and configuration.package.dir|length -%}
 # Copy this repository into the ROS workspace.
-COPY . /home/{{ configuration.username }}/ros_workspace/{{ configuration.package.dir }}
+COPY . /home/{{ configuration.username }}/ros_workspace/src/{{ configuration.package.name }}
 {%- endif %}
 
 # Copy bringup script.

@@ -136,8 +136,23 @@ class Plugin(BaseModel):
                         privileged=True,
                         remove=True,
                     )
+                    LOGGER.info(f"Created QEMU configuration file for '{arch}'")
 
         LOGGER.info(f"QEMU configuration files were created for the following architectures {', '.join(self.platforms)}.")
+
+    def delete_qemu_files(self) -> None:
+        """ Delete required QEMU configuration files.
+        """
+
+        self._docker.run_container(
+            'qus',
+            'aptman/qus',
+            command=['-- -r'],
+            privileged=True,
+            remove=True,
+        )
+
+        LOGGER.info("QEMU configuration files were delete.")
 
     def create_builder(self) -> None:
         """ Create a dedicated Docker Buildx builder.
@@ -196,6 +211,7 @@ class Plugin(BaseModel):
 
     def stop(self) -> None:
         if self.platforms:
+            self.delete_qemu_files()
             self.remove_builder()
 
         if self.registry:
