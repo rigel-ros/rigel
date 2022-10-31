@@ -77,18 +77,6 @@ class Plugin(BaseModel):
                 raise UnsupportedPlatformError(platform=platform)
         return platforms
 
-    def get_package_paths(self) -> Tuple[str, str]:
-        if self.package.dir:
-            return (
-                os.path.abspath(f'{self.package.dir}'),                      # package root
-                os.path.abspath(f'{self.package.dir}/.rigel_config')         # Dockerfile folder
-            )
-        else:
-            return (
-                os.path.abspath(f'.rigel_config/{self.package.name}'),    # package root
-                os.path.abspath(f'.rigel_config/{self.package.name}')     # Dockerfile folder
-            )
-
     def login(self) -> None:
         """Login to a Docker image registry.
         """
@@ -183,12 +171,10 @@ class Plugin(BaseModel):
                 # NOTE: SSHKey model ensures that environment variable is declared.
                 complete_buildargs[key.value] = os.environ[key.value]
 
-        package_root_path, package_dockerfile_path = self.get_package_paths()
-
         try:
 
             kwargs = {
-                "file": f'{package_dockerfile_path}/Dockerfile',
+                "file": f'{self.package.dir}/Dockerfile',
                 "tags": self.image,
                 "load": self.load,
                 "push": self.push,
@@ -198,7 +184,7 @@ class Plugin(BaseModel):
             if self.platforms:
                 kwargs["platforms"] = self.platforms
 
-            self._docker.build(package_root_path, **kwargs)
+            self._docker.build(self.package.dir, **kwargs)
 
             if self.push:
                 LOGGER.info(f"Docker image '{self.image}' built and pushed with success.")

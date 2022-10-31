@@ -57,6 +57,6 @@ class Package(BaseModel):
     name: str
 
     # Optional fields.
-    dir: str = ''
+    dir: str = '.'
     jobs: Dict[str, List[PluginSection]] = {}
     ssh: List[SSHKey] = []

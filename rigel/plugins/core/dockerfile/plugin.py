@@ -77,24 +77,19 @@ class Plugin(BaseModel):
 
         LOGGER.warning(f"Creating Dockerfile for package '{self.package.name}'.")
 
-        if self.package.dir:
-            path = os.path.abspath(f'{self.package.dir}/.rigel_config')
-        else:
-            path = os.path.abspath(f'.rigel_config/{self.package.name}')
-
-        Path(path).mkdir(parents=True, exist_ok=True)
+        Path(self.package.dir).mkdir(parents=True, exist_ok=True)
 
         renderer = Renderer(self)
 
-        renderer.render('Dockerfile.j2', f'{path}/Dockerfile')
-        LOGGER.info(f"Created file {path}/Dockerfile")
+        renderer.render('Dockerfile.j2', f'{self.package.dir}/Dockerfile')
+        LOGGER.info("Created file Dockerfile")
 
-        renderer.render('entrypoint.j2', f'{path}/entrypoint.sh')
-        LOGGER.info(f"Created file {path}/entrypoint.sh")
+        renderer.render('entrypoint.j2', f'{self.package.dir}/entrypoint.sh')
+        LOGGER.info("Created file entrypoint.sh")
 
         if self.package.ssh:
-            renderer.render('config.j2', f'{path}/config')
-            LOGGER.info(f"Created file {path}/config")
+            renderer.render('config.j2', f'{self.package.dir}/config')
+            LOGGER.info("Created file config")
 
     def setup(self) -> None:
         pass  # do nothing
