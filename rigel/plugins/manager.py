@@ -126,10 +126,10 @@ class PluginManager:
             )
 
         # All plugins are automatically provided with the target ROS distro and the target package.
-        data._kwargs['distro'] = distro
-        data._kwargs['package'] = package
+        data.plugin_kwargs['distro'] = distro
+        data.plugin_kwargs['package'] = package
 
-        return ModelBuilder(cls).build([], data._kwargs)
+        return ModelBuilder(cls).build([], data.plugin_kwargs)
 
     @staticmethod
     def run(plugin: Plugin) -> None:

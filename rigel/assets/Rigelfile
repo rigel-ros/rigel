@@ -37,9 +37,10 @@ distro: '{{ distro }}'  # reference to declared global variable
 #     jobs:
 #       <job_0>:
 #         - plugin: <plugin_0_1>
-#           <plugin_kwargs_0_key>: <plugin_kwargs_0_value>
-#           <plugin_kwargs_1_key>: <plugin_kwargs_1_value>
-#           ...
+#           with:
+#             <plugin_kwargs_0_key>: <plugin_kwargs_0_value>
+#             <plugin_kwargs_1_key>: <plugin_kwargs_1_value>
+#             ...
 #         - plugin: <plugin_0_1>
 #           ...
 #       <job_1>:
@@ -54,7 +55,8 @@ packages:
     jobs:
       hello:
         - plugin: rigel.plugins.core.HelloPlugin
-          user: '{{ USER }}'  # reference to system environment variable
+          with:
+            user: '{{ USER }}'  # reference to system environment variable
 
 # 
 # Use the 'sequences' field to automate the sequential execution of jobs.

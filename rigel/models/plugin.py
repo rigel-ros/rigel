@@ -1,4 +1,4 @@
-from pydantic import BaseModel, PrivateAttr
+from pydantic import BaseModel
 from typing import Any, Dict
 
 
@@ -13,23 +13,18 @@ class PluginSection(BaseModel):
 
     :type plugin: string
     :cvar plugin: The plugin module to import.
-    :type _kwargs: Dict[str, Any]
-    :cvar _kwargs: Positional arguments to be passed to the entrypoint class.
+    :type plugin_kwargs: Dict[str, Any]
+    :cvar plugin_kwargs: Positional arguments to be passed to the entrypoint class.
     """
     # Required fields.
     plugin: str
 
     # List of private fields.
-    _kwargs: Dict[str, Any] = PrivateAttr()
+    plugin_kwargs: Dict[str, Any] = {}
 
-    def __init__(self, **kwargs: Any) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
 
-        try:
-            plugin_name = kwargs['plugin']
-            del kwargs['plugin']
+        if kwargs.get('with', False):
+            kwargs['plugin_kwargs'] = kwargs.pop('with')
 
-        except KeyError:
-            raise Exception(msg='Missing plugin name.')
-
-        self._kwargs = kwargs
-        super().__init__(plugin=plugin_name)
+        super().__init__(*args, **kwargs)
