@@ -1,6 +1,6 @@
 import os
 import python_on_whales.exceptions
-from pydantic import BaseModel, PrivateAttr, validator
+from pydantic import BaseModel, validator
 from rigel.clients.docker import DockerClient
 from rigel.exceptions import (
     DockerAPIError,
@@ -8,8 +8,9 @@ from rigel.exceptions import (
     RigelError,
 )
 from rigel.loggers import get_logger
-from rigel.models.rigelfile import Package
-from typing import Any, Dict, List, Optional, Tuple
+from rigel.models.package import Package, Target
+from rigel.plugins import Plugin as PluginBase
+from typing import Dict, List, Optional, Tuple
 from ..models import Registry
 
 LOGGER = get_logger()
@@ -23,7 +24,7 @@ SUPPORTED_PLATFORMS: List[Tuple[str, str, str]] = [
 BUILDX_BUILDER_NAME = 'rigel-builder'
 
 
-class Plugin(BaseModel):
+class PluginModel(BaseModel):
     """A plugin to build Docker images using Docker BuildX.
 
     :type distro: string
@@ -41,12 +42,11 @@ class Plugin(BaseModel):
     :type registry: Optional[rigel.files.Registry]
     :cvar registry: Information about the image registry for the Docker image. Default value is None.
     """
-    # Automatically provided fields.
-    distro: str
-    package: Package
 
     # Required fields.
+    distro: str
     image: str
+    package: Package
 
     # Optional fields.
     buildargs: Dict[str, str] = {}
@@ -54,13 +54,6 @@ class Plugin(BaseModel):
     platforms: List[str] = []
     push: bool = False
     registry: Optional[Registry] = None
-
-    # Private fields.
-    _docker: DockerClient = PrivateAttr()
-
-    def __init__(self, *args: List[Any], **kwargs: Dict[str, Any]) -> None:
-        super().__init__(*args, **kwargs)
-        self._docker = DockerClient()
 
     @validator('platforms')
     def validate_platforms(cls, platforms: List[str]) -> List[str]:
@@ -77,16 +70,26 @@ class Plugin(BaseModel):
                 raise UnsupportedPlatformError(platform=platform)
         return platforms
 
-    def login(self) -> None:
+
+class Plugin(PluginBase):
+
+    def __init__(self, distro: str, targets: List[Target]) -> None:
+        super().__init__(distro, targets)
+        self.__docker: DockerClient = DockerClient()
+
+    def login(self, plugin: PluginModel) -> None:
         """Login to a Docker image registry.
+
+        :param plugin: Plugin data.
+        :type plugin: PluginModel
         """
-        username = self.registry.username
-        server = self.registry.server
+        username = plugin.registry.username
+        server = plugin.registry.server
 
         try:
-            self._docker.login(
+            self.__docker.login(
                 username=username,
-                password=self.registry.password,
+                password=plugin.registry.password,
                 server=server
             )
         except python_on_whales.exceptions.DockerException as exception:
@@ -95,13 +98,16 @@ class Plugin(BaseModel):
 
         LOGGER.info(f"Logged in with success as user '{username}' with registry '{server}'.")
 
-    def logout(self) -> None:
+    def logout(self, plugin: PluginModel) -> None:
         """Logout from a Docker image registry.
+
+        :param plugin: Plugin data.
+        :type plugin: PluginModel
         """
-        server = self.registry.server
+        server = plugin.registry.server
 
         try:
-            self._docker.logout(server)
+            self.__docker.logout(server)
         except python_on_whales.exceptions.DockerException as exception:
             raise DockerAPIError(exception=exception)
 
@@ -112,27 +118,21 @@ class Plugin(BaseModel):
         These configuration files support the building of multi-architecture Docker images.
         """
 
-        LOGGER.info("Configuring QEMU.")
+        self.__docker.run_container(
+            'qus',
+            'aptman/qus',
+            command=['-s -- -c -p'],
+            privileged=True,
+            remove=True,
+        )
 
-        for arch, _, qemu_config_file in SUPPORTED_PLATFORMS:
-            if arch in self.platforms:
-                if not os.path.exists(f'/proc/sys/fs/binfmt_misc/{qemu_config_file}'):
-                    self._docker.run_container(
-                        'qus',
-                        'aptman/qus',
-                        command=['-s -- -c -p'],
-                        privileged=True,
-                        remove=True,
-                    )
-                    LOGGER.info(f"Created QEMU configuration file for '{arch}'")
-
-        LOGGER.info(f"QEMU configuration files were created for the following architectures {', '.join(self.platforms)}.")
+        LOGGER.info("QEMU configuration files were created.")
 
     def delete_qemu_files(self) -> None:
         """ Delete required QEMU configuration files.
         """
 
-        self._docker.run_container(
+        self.__docker.run_container(
             'qus',
             'aptman/qus',
             command=['-- -r'],
@@ -145,60 +145,71 @@ class Plugin(BaseModel):
     def create_builder(self) -> None:
         """ Create a dedicated Docker Buildx builder.
         """
-        self._docker.create_builder(BUILDX_BUILDER_NAME, use=True)
+        self.__docker.create_builder(BUILDX_BUILDER_NAME, use=True)
         LOGGER.info(f"Create builder '{BUILDX_BUILDER_NAME}'.")
 
     def remove_builder(self) -> None:
         """ Remove dedicated Docker Buildx builder.
         """
-        self._docker.remove_builder(BUILDX_BUILDER_NAME)
+        self.__docker.remove_builder(BUILDX_BUILDER_NAME)
         LOGGER.info(f"Removed builder '{BUILDX_BUILDER_NAME}'.")
 
     def setup(self) -> None:
-        if self.registry:
-            self.login()
 
-        if self.platforms:
-            self.configure_qemu()
-            self.create_builder()
+        self.__targets = [
+            (package, package_data, PluginModel(distro=self.distro, package=package_data, **plugin_data))
+            for package, package_data, plugin_data in self.targets]
+
+        self.configure_qemu()
+        self.create_builder()
+
+        for _, _, plugin_model in self.__targets:
+
+            if plugin_model.registry:
+                self.login(plugin_model)
 
     def run(self) -> None:
-        LOGGER.info(f"Building Docker image '{self.image}'.")
 
-        complete_buildargs = self.buildargs
-        for key in self.package.ssh:
-            if not key.file:
-                # NOTE: SSHKey model ensures that environment variable is declared.
-                complete_buildargs[key.value] = os.environ[key.value]
+        for package, package_data, plugin_model in self.__targets:
 
-        try:
+            LOGGER.info(f"Building Docker image '{plugin_model.image}' for package '{package}'.")
 
-            kwargs = {
-                "file": f'{self.package.dir}/Dockerfile',
-                "tags": self.image,
-                "load": self.load,
-                "push": self.push,
-                "build_args": complete_buildargs
-            }
+            complete_buildargs = plugin_model.buildargs
+            for key in package_data.ssh:
+                if not key.file:
+                    # NOTE: SSHKey model ensures that environment variable is declared.
+                    complete_buildargs[key.value] = os.environ[key.value]
 
-            if self.platforms:
-                kwargs["platforms"] = self.platforms
+            try:
 
-            self._docker.build(self.package.dir, **kwargs)
+                kwargs = {
+                    "file": f'{package_data.dir}/Dockerfile',
+                    "tags": plugin_model.image,
+                    "load": plugin_model.load,
+                    "push": plugin_model.push,
+                    "build_args": complete_buildargs
+                }
 
-            if self.push:
-                LOGGER.info(f"Docker image '{self.image}' built and pushed with success.")
-            else:
-                LOGGER.info(f"Docker image '{self.image}' built with success.")
+                if plugin_model.platforms:
+                    kwargs["platforms"] = plugin_model.platforms
 
-        except RigelError as err:
-            LOGGER.error(err)
-            exit(err.code)
+                self.__docker.build(package_data.dir, **kwargs)
+
+                if plugin_model.push:
+                    LOGGER.info(f"Docker image '{plugin_model.image}' built and pushed with success.")
+                elif plugin_model.load:
+                    LOGGER.info(f"Docker image '{plugin_model.image}' built with success.")
+
+            except RigelError as err:
+                LOGGER.error(err)
+                exit(err.code)
 
     def stop(self) -> None:
-        if self.platforms:
-            self.delete_qemu_files()
-            self.remove_builder()
 
-        if self.registry:
-            self.logout()
+        self.delete_qemu_files()
+        self.remove_builder()
+
+        for _, _, plugin_model in self.__targets:
+
+            if plugin_model.registry:
+                self.logout(plugin_model)

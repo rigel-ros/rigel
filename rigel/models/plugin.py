@@ -1,5 +1,7 @@
 from pydantic import BaseModel
-from typing import Any, Dict
+from typing import Any, Dict, List, Union
+
+PluginDataSection = Dict[str, Any]
 
 
 class PluginSection(BaseModel):
@@ -8,23 +10,13 @@ class PluginSection(BaseModel):
     Each plugin consists of a Python module installed in the system
     and then loaded at runtime by Rigel.
 
-    Each entrypoint class must be compliant with
-    the protocol rigel.plugins.Plugin.
-
     :type plugin: string
-    :cvar plugin: The plugin module to import.
-    :type plugin_kwargs: Dict[str, Any]
-    :cvar plugin_kwargs: Positional arguments to be passed to the entrypoint class.
+    :cvar plugin: The Python module to import.
+    :type target: Union[List[str], str]
+    :cvar target: The target ROS packages.
     """
     # Required fields.
     plugin: str
 
-    # List of private fields.
-    plugin_kwargs: Dict[str, Any] = {}
-
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-
-        if kwargs.get('with', False):
-            kwargs['plugin_kwargs'] = kwargs.pop('with')
-
-        super().__init__(*args, **kwargs)
+    # Optional fields.
+    targets: Union[List[str], str] = 'all'

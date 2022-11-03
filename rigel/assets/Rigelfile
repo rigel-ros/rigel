@@ -4,7 +4,7 @@
 ---
 
 #
-# Use the 'vars field' to declare all variables whose value you may need to use
+# Use the 'vars field' to declare variables whose value you may need to use
 # multiple times throughout this file.
 # 
 # References to declared variables is possible with the {{ <var> }} syntax.
@@ -12,65 +12,114 @@
 #
 vars:
   distro: noetic
+  build_load: True
+  build_push: False
 
 #
 # Specify your target ROS distribution.
-# This target distribution must be the same for all packages.
+# This target distribution must be the same for all listed packages.
 #
 distro: '{{ distro }}'  # reference to declared global variable
 
 #
-# Use the 'packages' field to list all the ROS packages to be considered.
-# Each package has an unique identifier <package_PKG> and consists of a list of jobs.
+# Use the 'jobs' field to list all jobs to be considered.
+# Each job has an unique identifier <JOB_IDENTIFIER> and has associated:
+# - a plugin entrypoint class to be called at runtime. You can use either plugins
+# provided by Rigel or use your own custom plugins.
+# - a list of target package identifiers. Packages in this list must support the
+# job in question and provide data for it. A single package identifier can 
+# be provided instead. By default the value "all" is used, and all packages are
+# considered as targets. 
 #
-# Each job has an unique job identifier <job_JOB> and has associated a list of plugins
-# and their respective keyword arguments. 
-# 
-# You can execute jobs (all packages) with the command:
-# rigel run job <job_JOB> 
+# You can execute jobs with the command:
+# rigel run job <JOB_IDENTIFIER>
+#
+# STRUCTURE:
+#
+# jobs:
+#   <JOB_IDENTIFIER_0>:
+#     plugin: <PYTHON_PLUGIN_MODULE>
+#     targets: [<PACKAGE_IDENTIFIER_0>, ...] | <PACKAGE_IDENTIFIER> | "all"
+#   ...
+#   <JOB_IDENTIFIER_n>:
+#     plugin: <PYTHON_PLUGIN_MODULE>
+#     targets: [<PACKAGE_IDENTIFIER_0>, ...] | <PACKAGE_IDENTIFIER> | "all"
+#
+jobs:
+
+  dockerfile:
+    plugin: "rigel.plugins.core.Dockerfile"
+    targets: "all"
+
+  build:
+    plugin: "rigel.plugins.core.BuildXPlugin"
+    targets: "all"
+
+#
+# Use the 'packages' field to list all the ROS packages to be considered.
+# Each package has an unique identifier <PKG_IDENTIFIER>
+# and consists of a list of supported jobs.
+# Proper data must be provided for each supported job. 
+#
+# Additional information regarding SSH and image registries can also be declared.
 #
 # STRUCTURE:
 # 
 # packages:
-#   -
-#     name: <package_0>
+#   <PKG_IDENTIFIER_0>
 #     jobs:
-#       <job_0>:
-#         - plugin: <plugin_0_1>
-#           with:
-#             <plugin_kwargs_0_key>: <plugin_kwargs_0_value>
-#             <plugin_kwargs_1_key>: <plugin_kwargs_1_value>
+#       <SUPPORTED_JOB_IDENTIFIER_0>:
+#         <JOB_0_KWARG_0_KEY>: <JOB_0_KWARG_0_VALUE>
+#         <JOB_0_KWARG_1_KEY>: <JOB_0_KWARG_1_VALUE>
 #             ...
-#         - plugin: <plugin_0_1>
-#           ...
-#       <job_1>:
+#       <SUPPORTED_JOB_IDENTIFIER_1>:
 #         ...
 #       ...
-#   <package_1>:
 #   ...
+#   <PKG_IDENTIFIER_n>:
+#     jobs:
+#       <SUPPORTED_JOB_IDENTIFIER_0>:
+#         <JOB_0_KWARG_0_KEY>: <JOB_0_KWARG_0_VALUE>
+#         <JOB_0_KWARG_1_KEY>: <JOB_0_KWARG_1_VALUE>
+#             ...
+#       <SUPPORTED_JOB_IDENTIFIER_1>:
 # 
 packages:
-  -
-    name: my-pkg
+
+  publisher:
+    dir: "rigel_test/publisher"
     jobs:
-      hello:
-        - plugin: rigel.plugins.core.HelloPlugin
-          with:
-            user: '{{ USER }}'  # reference to system environment variable
+      dockerfile:
+        command: "rostopic pub -r 1 /chatter std_msgs/String '{\"data\": \"Hello\"}'"
+      build:
+        image: rigel-test-publisher:{{ distro }}
+        load: {{ build_load }}
+        push: {{ build_push }}
+
+  subscriber:
+    dir: "rigel_test/subscriber"
+    jobs:
+      dockerfile:
+        command: "rostopic echo /chatter"
+      build:
+        image: rigel-test-subsriber:{{ distro }}
+        load: {{ build_load }}
+        push: {{ build_push }}
 
 # 
 # Use the 'sequences' field to automate the sequential execution of jobs.
-# Each sequence has an unique sequence identifier <sequence_SEQ> and consists of a list
-# of job identifiers <job_JOB>
+# Each sequence has an unique sequence identifier <SEQ_IDENTIFIER> and consists 
+# of a list of job identifiers <JOB_IDENTIFIER>.
 #
-# You can execute job sequences (all packages) with the command:
-# rigel run sequence <sequence_SEQ>
+# You can execute job sequences with the command:
+# rigel run sequence <SEQ_IDENTIFIER>
 # 
 # STRUCTURE:
 # 
 # sequences:
-#   <sequence_0>: [<job_0>, <job_2>, <job_1>, ...] 
-#   <sequence_1>: [<job_2>, <job_0>, <job_0>, ...] 
-#   <sequence_2>: [<job_2>, <job_1>, <job_0>, ...] 
+#   <SEQ_IDENTIFIER_0>: [<JOB_IDENTIFIER_0>, ...] 
+#   <SEQ_IDENTIFIER_1>: [<JOB_IDENTIFIER_0>, ...] 
+#   ...
+#   <SEQ_IDENTIFIER_2>: [<JOB_IDENTIFIER_0>, ...] 
 # 
 sequences: {}

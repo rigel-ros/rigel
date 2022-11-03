@@ -34,12 +34,7 @@ RUN echo "${{ key.value }}" > /root/.ssh/{{ key.value }} && chmod 600 /root/.ssh
 {%- endfor %}
 
 # Copy SSH configuration file and set its permissions.
-
-{% if configuration.package.dir is defined and configuration.package.dir|length -%}
-COPY .rigel_config/config /root/.ssh/config
-{%- else -%}
 COPY config /root/.ssh/config
-{%- endif %}
 RUN chmod 600 /root/.ssh/config
 {%- endif %}
 
@@ -119,17 +114,11 @@ RUN sh -c 'sudo chmod -R +x /home/{{ configuration.username }}/ros_workspace'
 RUN sh -c 'sudo chown -R {{ configuration.username }}:{{ configuration.username }} /home/{{ configuration.username }}/ros_workspace'
 {%- endif %}
 
-{% if configuration.package.dir is defined and configuration.package.dir|length -%}
 # Copy this repository into the ROS workspace.
-COPY . /home/{{ configuration.username }}/ros_workspace/src/{{ configuration.package.name }}
-{%- endif %}
+COPY . /home/{{ configuration.username }}/ros_workspace/src/rigel_local_packages
 
 # Copy bringup script.
-{% if configuration.package.dir is defined and configuration.package.dir|length -%}
-COPY .rigel_config/entrypoint.sh /home/{{ configuration.username }}/robot-entrypoint.sh
-{%- else -%}
 COPY entrypoint.sh /home/{{ configuration.username }}/robot-entrypoint.sh
-{%- endif %}
 
 # Compile ROS workspace.
 RUN /bin/bash -c "source /opt/ros/{{ configuration.distro }}/setup.bash \ 

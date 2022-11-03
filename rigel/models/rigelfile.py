@@ -1,21 +1,23 @@
 from pydantic import BaseModel
 from typing import Any, List, Dict
 from .package import Package
+from .plugin import PluginSection
 
 
 class Rigelfile(BaseModel):
-    """A placeholder for information regarding a single Rigel-ROS workspace.
+    """A placeholder for information regarding a set of ROS packages.
 
-    Each workspace may contain multiple Rigel-ROS packages and
-    support the execution of individual jobs and job sequences.
+    Each set may contain multiple ROS packages
+    supporting the execution of individual jobs and job sequences.
 
     :type distro: str
     :cvar distro: Target ROS distro.
-    :type packages: List[Package]
-    :cvar packages: The Rigel-ROS packages contained within this workspace.
+    :type jobs: Dict[str, PluginSection]
+    :cvar jobs: The supported individual jobs.
+    :type packages: Dict[str, Package]
+    :cvar packages: The set of relevant ROS packages.
     :type sequences: Dict[str, List[str]]
     :cvar sequences: The supported sequence of jobs.
-    Each entry corresponds to a path within the workspace 'src' folder.
     :type vars: Dict[str, Any]
     :cvar vars: Section containing the values of global variables.
     """
@@ -23,6 +25,7 @@ class Rigelfile(BaseModel):
     distro: str
 
     # Optional fields.
-    packages: List[Package] = []
+    jobs: Dict[str, PluginSection] = {}
+    packages: Dict[str, Package] = {}
     sequences: Dict[str, List[str]] = {}
     vars: Dict[str, Any] = {}

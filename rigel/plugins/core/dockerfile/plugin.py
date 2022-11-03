@@ -1,16 +1,17 @@
-import os
 from pathlib import Path
 from pydantic import BaseModel, validator
 from rigel.exceptions import UnsupportedCompilerError
 from rigel.loggers import get_logger
-from rigel.models.package import Package
+from rigel.models.package import Package, Target
+from rigel.plugins import Plugin as PluginBase
 from typing import Any, Dict, List
 from .renderer import Renderer
+
 
 LOGGER = get_logger()
 
 
-class Plugin(BaseModel):
+class PluginModel(BaseModel):
     """A plugin that creates a ready-to-use Dockerfile for an existing ROS package.
 
     :type command: string
@@ -36,12 +37,10 @@ class Plugin(BaseModel):
     :type username: string
     :cvar username: The desired username. Defaults to 'user'.
     """
-    # Automatically provided fields.
-    distro: str
-    package: Package
-
     # Required fields.
     command: str
+    distro: str
+    package: Package
 
     # Optional fields.
     apt: List[str] = []
@@ -73,26 +72,36 @@ class Plugin(BaseModel):
             raise UnsupportedCompilerError(compiler=compiler)
         return compiler
 
-    def run(self) -> None:
 
-        LOGGER.warning(f"Creating Dockerfile for package '{self.package.name}'.")
+class Plugin(PluginBase):
 
-        Path(self.package.dir).mkdir(parents=True, exist_ok=True)
-
-        renderer = Renderer(self)
-
-        renderer.render('Dockerfile.j2', f'{self.package.dir}/Dockerfile')
-        LOGGER.info("Created file Dockerfile")
-
-        renderer.render('entrypoint.j2', f'{self.package.dir}/entrypoint.sh')
-        LOGGER.info("Created file entrypoint.sh")
-
-        if self.package.ssh:
-            renderer.render('config.j2', f'{self.package.dir}/config')
-            LOGGER.info("Created file config")
+    def __init__(self, distro: str, targets: List[Target]) -> None:
+        super().__init__(distro, targets)
 
     def setup(self) -> None:
-        pass  # do nothing
+        self.__targets = [
+            (package, package_data, PluginModel(distro=self.distro, package=package_data, **plugin_data))
+            for package, package_data, plugin_data in self.targets]
+
+    def run(self) -> None:
+
+        for package, package_data, plugin_model in self.__targets:
+
+            LOGGER.warning(f"Creating files for package '{package}'")
+
+            Path(package_data.dir).mkdir(parents=True, exist_ok=True)
+
+            renderer = Renderer(plugin_model)
+
+            renderer.render('Dockerfile.j2', f'{package_data.dir}/Dockerfile')
+            LOGGER.info(f"Created file {package_data.dir}/Dockerfile")
+
+            renderer.render('entrypoint.j2', f'{package_data.dir}/entrypoint.sh')
+            LOGGER.info(f"Created file {package_data.dir}/entrypoint.sh")
+
+            if package_data.ssh:
+                renderer.render('config.j2', f'{package_data.dir}/config')
+                LOGGER.info(f"Created file {package_data.dir}/config")
 
     def stop(self) -> None:
         pass  # do nothing

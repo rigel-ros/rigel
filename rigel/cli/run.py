@@ -4,7 +4,6 @@ from rigel.exceptions import RigelError
 from rigel.loggers import get_logger
 from rigel.workspace import WorkspaceManager
 from sys import exit
-from typing import Optional, Tuple
 
 LOGGER = get_logger()
 
@@ -17,27 +16,25 @@ class RunJobCommand(CLICommand):
         super().__init__(command='run')
 
     @click.command()
-    @click.argument('jobs', type=str, nargs=-1)
-    @click.option('-p', '--pkg', 'package', type=str, default=None)
-    def job(self, jobs: Tuple[str], package: Optional[str]) -> None:
-        """Run multiple jobs
+    @click.argument('job', type=str)
+    def job(self, job: str) -> None:
+        """Run a single job
         """
-        manager = WorkspaceManager('./Rigelfile')
         try:
-            manager.run_jobs(list(jobs), package)
-        except Exception as err:
+            manager = WorkspaceManager('./Rigelfile')
+            manager.run_job(job)
+        except RigelError as err:
             LOGGER.error(err)
-            exit(err.code)
+            exit(1)
 
     @click.command()
-    @click.argument('sequences', type=str, nargs=-1)
-    @click.option('-p', '--pkg', 'package', default=None)
-    def sequence(self, sequences: Tuple[str], package: Optional[str]) -> None:
-        """Run multiple job sequences
+    @click.argument('sequence', type=str)
+    def sequence(self, sequence: str) -> None:
+        """Run a sequence of jobs
         """
-        manager = WorkspaceManager('./Rigelfile')
         try:
-            manager.run_sequence(list(sequences), package)
-        except Exception as err:
+            manager = WorkspaceManager('./Rigelfile')
+            manager.run_sequence(sequence)
+        except RigelError as err:
             LOGGER.error(err)
-            exit(err.code)
+            exit(1)

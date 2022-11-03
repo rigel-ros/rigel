@@ -1,8 +1,10 @@
 import os
 from pydantic import BaseModel, validator
 from rigel.exceptions import UndeclaredEnvironmentVariableError
-from typing import Any, List, Dict
-from .plugin import PluginSection
+from typing import Any, List, Dict, Tuple
+from .plugin import PluginDataSection
+
+Target = Tuple[str, 'Package', PluginDataSection]
 
 
 class SSHKey(BaseModel):
@@ -42,21 +44,18 @@ class SSHKey(BaseModel):
 
 
 class Package(BaseModel):
-    """A placeholder for information regarding a single Rigel-ROS package.
+    """A placeholder for information regarding a single ROS package.
 
-    Each Rigel-ROS package may support the execution of individual jobs.
+    Each ROS package may support the execution of individual jobs.
 
     :type dir: string
-    :cvar dir: The folder containing the ROS package source code, if any.
-    :type jobs: Dict[str, List[PluginSection]]
+    :cvar dir: The folder containing the ROS package source code, if any. Defaults to '.'.
+    :type jobs: Dict[str, PluginDataSection]
     :cvar jobs: The jobs supported by the package.
     :type ssh: List[rigel.files.SSHKey]
     :cvar ssh: A list of all required private SSH keys.
     """
-    # Required fields.
-    name: str
-
     # Optional fields.
     dir: str = '.'
-    jobs: Dict[str, List[PluginSection]] = {}
+    jobs: Dict[str, PluginDataSection] = {}
     ssh: List[SSHKey] = []

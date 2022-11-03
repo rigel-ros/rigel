@@ -17,7 +17,6 @@ class Renderer:
     def render(self, template: str, output: str) -> None:
         """
         Create a new Dockerfile.
-        Dockerfiles are always placed inside the .rigel_config directory.
 
         :type template: string
         :param template: Name of the template file to render.

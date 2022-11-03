@@ -1,10 +1,15 @@
 from rigel.files.decoder import YAMLDataDecoder
 from rigel.files.loader import YAMLDataLoader
+from rigel.loggers import get_logger
 from rigel.models.builder import ModelBuilder
-from rigel.models.package import Package
+from rigel.models.package import Target
+from rigel.models.plugin import PluginSection
 from rigel.models.rigelfile import Rigelfile
 from rigel.plugins.manager import PluginManager
-from typing import List, Optional
+from typing import List, Tuple
+
+
+LOGGER = get_logger()
 
 
 class WorkspaceManager:
@@ -22,25 +27,25 @@ class WorkspaceManager:
 
         self.workspace = ModelBuilder(Rigelfile).build([], yaml_data)
 
-    def get_package(self, package: str) -> Package:
-        """Retrieve a listed ROS package, if existent.
+    def get_job_data(self, job: str) -> Tuple[str, PluginSection]:
+        """Retrieve a listed job, if existent.
 
-        :param package: The ROS package identifier.
-        :type package: str
-        :return: The ROS package.
-        :rtype: Package
+        :param job: The job identifier.
+        :type job: str
+        :return: The job information.
+        :rtype: PluginSection
         """
         try:
-            return [pkg for pkg in self.workspace.packages if pkg.name == package][0]
-        except IndexError:
-            raise Exception(f"Package '{package}' was not found")
+            return job, self.workspace.jobs[job]
+        except KeyError:
+            raise Exception(f"Job '{job}' was not found")
 
-    def get_sequence_jobs(self, sequence: str) -> List[str]:
-        """Retrieve jobs of a given sequence.
+    def get_sequence_data(self, sequence: str) -> List[str]:
+        """Retrieve a sequence of jobs, if existent.
 
         :param sequence: The sequence identifier.
         :type sequence: str
-        :return: The list of jobs.
+        :return: The sequence of jobs.
         :rtype: List[str]
         """
         try:
@@ -48,46 +53,75 @@ class WorkspaceManager:
         except KeyError:
             raise Exception(f"Sequence '{sequence}' was not found")
 
-    def run_sequence(self, sequences: List[str], package: Optional[str] = None) -> None:
-        """Run a single sequence or a list of job sequences.
+    def get_target_packages(self, job: Tuple[str, PluginSection]) -> List[Target]:
+        """Obtain information about the targets of a given job.
 
-        :param sequences: A list of sequence identifiers.
-        :type sequences: List[str]
-        :param package:, defaults to None
-        :type package: Optional[str], optional
-        :raises Exception: _description_
+        :param job: A tuple containing the job identifier and global job information.
+        :type job: Tuple[str, PluginSection]
+        :return: A list of targets.
+        :rtype: List[Target]
         """
-        for sequence in sequences:
-            self.run_jobs(self.get_sequence_jobs(sequence), package)
 
-    def run_jobs(self, jobs: List[str], package: Optional[str] = None) -> None:
-        """Run a single job or a list of jobs.
+        job_identifier, job_data = job
+        targets = job_data.targets
 
-        :param jobs: A list of job identifiers.
-        :type jobs: List[str]
-        :param package: The package identifier, default to None.
-        When None, the list of jobs are run over all packages.
-        :type package: Optional[str]
+        if isinstance(targets, str):
+
+            if targets == 'all':
+
+                return [
+                    (name, data, data.jobs[job_identifier]) for name, data in self.workspace.packages.items()
+                    if data.jobs.get(job_identifier)
+                ]
+
+            else:
+
+                return [
+                    (name, data, data.jobs[job_identifier]) for name, data in self.workspace.packages.items()
+                    if data.jobs.get(job_identifier) and name == targets
+                ]
+
+        # else:  # a list of targets was provided
+        return [
+            (name, data, data.jobs[job_identifier]) for name, data in self.workspace.packages.items()
+            if data.jobs.get(job_identifier) and name in targets
+        ]
+
+    def execute_job(self, job: Tuple[str, PluginSection]) -> None:
+        """Execute a single job.
+
+        :param job: A tuple containing the job identifier and global job information.
+        :type job: Tuple[str, PluginSection]
         """
-        if package:
-            self.run_jobs_package(jobs, self.get_package(package))
+        job_identifier, job_data = job
+        targets = self.get_target_packages(job)
+        if not targets:
+            LOGGER.warning(f"No target package was found for job '{job_identifier}'.")
         else:
-            for package in self.workspace.packages:
-                self.run_jobs_package(jobs, package)
+            manager = PluginManager()
+            plugin = manager.load(job_data.plugin, self.workspace.distro, targets)
+            manager.run(plugin)
 
-    def run_jobs_package(self, jobs: List[str], package: Package) -> None:
-        """Run a list of jobs over a single package.
+    def run_job(self, job: str) -> None:
+        """Run a single job.
 
-        :param jobs: A list of job identifiers.
-        :type jobs: List[str]
-        :param package: The package.
-        :type package: Package
+        :param sequence: The job identifier.
+        :type sequence: str
         """
+        self.execute_job(self.get_job_data(job))
+
+    def run_sequence(self, sequence: str) -> None:
+        """Run a sequence of jobs.
+
+        :param sequence: The sequence identifier.
+        :type sequence: str
+        """
+        jobs = [self.get_job_data(job) for job in self.get_sequence_data(sequence)]
         for job in jobs:
+            self.execute_job(job)
 
-            plugins = package.jobs.get(job, None)
-            if not plugins:
-                raise Exception(f"Package '{package}' does not support job '{job}'")
 
-            for plugin in plugins:
-                PluginManager.run(PluginManager.load(self.workspace.distro, package, plugin))
+if __name__ == '__main__':
+
+    manager = WorkspaceManager('./Rigelfile')
+    print(manager.workspace)
