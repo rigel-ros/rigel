@@ -1,74 +1,17 @@
 import os
 import python_on_whales.exceptions
-from pydantic import BaseModel, validator
 from rigel.clients.docker import DockerClient
-from rigel.exceptions import (
-    DockerAPIError,
-    UnsupportedPlatformError,
-    RigelError,
-)
+from rigel.exceptions import DockerAPIError, RigelError
 from rigel.loggers import get_logger
-from rigel.models.package import Package, Target
+from rigel.models.package import Target
 from rigel.plugins import Plugin as PluginBase
-from typing import Dict, List, Optional, Tuple
-from ..models import Registry
+from typing import List
+from .models import StandardContainerRegistry, PluginModel
+
 
 LOGGER = get_logger()
 
-SUPPORTED_PLATFORMS: List[Tuple[str, str, str]] = [
-    # (docker_platform_name, qus_argument, qemu_file_name)
-    ('linux/amd64', 'x86_64', ''),
-    ('linux/arm64', 'arm', 'qemu-arm')
-]
-
 BUILDX_BUILDER_NAME = 'rigel-builder'
-
-
-class PluginModel(BaseModel):
-    """A plugin to build Docker images using Docker BuildX.
-
-    :type distro: string
-    :cvar distro: The target ROS distro. This field is automatically populated by Rigel.
-    :type image: str
-    :cvar image: The name for the final Docker image.
-    :type load: bool
-    :cvar load: Flag to store built image locally. Defaults to False,
-    :type package: str
-    :cvar package: The target package identifier. This field is automatically populated by Rigel.
-    :type platforms: List[str]
-    :cvar platforms: A list of architectures for which to build the Docker image.
-    :type push: bool
-    :cvar push: Flag to store built image in a remote registry.. Defaults to False,
-    :type registry: Optional[rigel.files.Registry]
-    :cvar registry: Information about the image registry for the Docker image. Default value is None.
-    """
-
-    # Required fields.
-    distro: str
-    image: str
-    package: Package
-
-    # Optional fields.
-    buildargs: Dict[str, str] = {}
-    load: bool = False
-    platforms: List[str] = []
-    push: bool = False
-    registry: Optional[Registry] = None
-
-    @validator('platforms')
-    def validate_platforms(cls, platforms: List[str]) -> List[str]:
-        """Ensure that all listed platforms are supported by the current default builder.
-
-        :param platforms: A list of architectures candidates for which to build the Docker image.
-        :type platforms: List[str]
-        :return: A list of supported architectures for which to build the Docker image.
-        :rtype: List[str]
-        """
-        supported_platforms = [p[0] for p in SUPPORTED_PLATFORMS]
-        for platform in platforms:
-            if platform not in supported_platforms:
-                raise UnsupportedPlatformError(platform=platform)
-        return platforms
 
 
 class Plugin(PluginBase):
@@ -83,9 +26,20 @@ class Plugin(PluginBase):
         :param plugin: Plugin data.
         :type plugin: PluginModel
         """
-        username = plugin.registry.username
-        server = plugin.registry.server
+        if isinstance(plugin.registry, StandardContainerRegistry):
+            self.__login_standard(plugin)
+        else:  # ElasticContainerRegistry
+            self.__login_ecr(plugin)
 
+    def __login_standard(self, plugin: PluginModel) -> None:
+        """Login to a standard Docker image registry.
+
+        :param plugin: Plugin data.
+        :type plugin: PluginModel
+        """
+        server = plugin.registry.server
+        username = plugin.registry.username
+        LOGGER.debug(f"Attempting login '{username}' with registry '{server}'.")
         try:
             self.__docker.login(
                 username=username,
@@ -93,10 +47,29 @@ class Plugin(PluginBase):
                 server=server
             )
         except python_on_whales.exceptions.DockerException as exception:
-            print(exception)
             raise DockerAPIError(exception=exception)
 
         LOGGER.info(f"Logged in with success as user '{username}' with registry '{server}'.")
+
+    def __login_ecr(self, plugin: PluginModel) -> None:
+        """Login to a AWS Elastic Container Registry instance.
+
+        :param plugin: Plugin data.
+        :type plugin: PluginModel
+        """
+        server = plugin.registry.server
+        LOGGER.debug(f"Attempting login with registry '{server}'.")
+        try:
+            self.__docker.login_ecr(
+                aws_access_key_id=plugin.registry.aws_access_key_id,
+                aws_secret_access_key=plugin.registry.aws_secret_access_key,
+                region_name=plugin.registry.region_name,
+                registry=server
+            )
+        except python_on_whales.exceptions.DockerException as exception:
+            raise DockerAPIError(exception=exception)
+
+        LOGGER.info(f"Logged in with success to {server}.")
 
     def logout(self, plugin: PluginModel) -> None:
         """Logout from a Docker image registry.
