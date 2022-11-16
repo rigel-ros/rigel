@@ -7,8 +7,8 @@ from rigel.exceptions import (
 )
 from rigel.loggers import get_logger
 from rigel.models.builder import ModelBuilder
-from rigel.models.plugin import PluginDataSection
-from typing import List, Tuple, Type
+from rigel.models.package import Target
+from typing import List, Type
 from .plugin import Plugin
 
 LOGGER = get_logger()
@@ -71,7 +71,7 @@ class PluginManager:
         signature = inspect.signature(entrypoint.stop)
         return not len(signature.parameters) != 1  # allows for no parameter besides 'self'
 
-    def load(self, entrypoint: str, distro: str, targets: List[Tuple[str, PluginDataSection]]) -> Plugin:
+    def load(self, entrypoint: str, distro: str, targets: List[Target]) -> Plugin:
         """Parse a list of plugins.
 
         :type distro: str
@@ -117,7 +117,10 @@ class PluginManager:
                 cause=f"attribute function '{plugin_complete_name}.stop' must not receive any parameters."
             )
 
-        return ModelBuilder(cls).build([distro, targets], {})
+        plugin = ModelBuilder(cls).build([distro, targets], {})
+        assert isinstance(plugin, Plugin)
+
+        return plugin
 
     def run(self, plugin: Plugin) -> None:
         """Run an external Rigel plugin.

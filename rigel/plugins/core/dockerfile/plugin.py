@@ -96,11 +96,11 @@ class Plugin(PluginBase):
             renderer.render('Dockerfile.j2', f'{package_data.dir}/Dockerfile')
             LOGGER.info(f"Created file {package_data.dir}/Dockerfile")
 
-            renderer.render('entrypoint.j2', f'{package_data.dir}/entrypoint.sh')
+            renderer.render('entrypoint.j2', f'{package_data.dir}/dockerfile_entrypoint.sh')
             LOGGER.info(f"Created file {package_data.dir}/entrypoint.sh")
 
             if package_data.ssh:
-                renderer.render('config.j2', f'{package_data.dir}/config')
+                renderer.render('config.j2', f'{package_data.dir}/dockerfile_config')
                 LOGGER.info(f"Created file {package_data.dir}/config")
 
     def stop(self) -> None:

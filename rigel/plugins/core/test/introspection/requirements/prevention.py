@@ -1,16 +1,20 @@
 import threading
 from math import inf
-from rigel.simulations.command import Command, CommandBuilder, CommandType
+from rigel.plugins.core.test.introspection.command import (
+    Command,
+    CommandBuilder,
+    CommandType
+)
 from .disjoint import DisjointSimulationRequirementNode
 from .node import SimulationRequirementNode
 from .simple import SimpleSimulationRequirementNode
 
 
-class ResponseSimulationRequirementNode(SimulationRequirementNode):
+class PreventionSimulationRequirementNode(SimulationRequirementNode):
     """
-    A response simulation requirement node ensures
-    that no ROS message is received that satisfies posterior requirements
-    before anterior requirements were previously satisfied.
+    A response simulation requirement node ensures that
+    if a ROS message is received that satisfies anterior requirements
+    then no other message ROS message is received that satisfies posterior requirements.
     """
 
     def __init__(self, timeout: float = inf) -> None:
@@ -27,11 +31,11 @@ class ResponseSimulationRequirementNode(SimulationRequirementNode):
 
     def assess_children_nodes(self) -> bool:
         """
-        A response simulation requirement is considered satisfied
-        only if the posterior requirement is satisfied after the anterior requirement.
+        An existence simulation requirement is considered satisfied
+        only if the posterior requirement is never satisfied after the anterior requirement.
 
         :rtype: bool
-        :return: True is requirement is satisfied. False otherwise.
+        :return: True if requirement is satisfied. False otherwise.
         """
         anterior = self.children[0]
         posterior = self.children[1]
@@ -44,7 +48,7 @@ class ResponseSimulationRequirementNode(SimulationRequirementNode):
         assert isinstance(anterior, SimulationRequirementNode)
         assert isinstance(posterior, SimulationRequirementNode)
 
-        return anterior.satisfied and posterior.satisfied
+        return anterior.satisfied and not posterior.satisfied
 
     def handle_timeout(self) -> None:
         """
@@ -56,8 +60,6 @@ class ResponseSimulationRequirementNode(SimulationRequirementNode):
             self.send_upstream_cmd(CommandBuilder.build_status_change_cmd())
             self.send_downstream_cmd(CommandBuilder.build_rosbridge_disconnect_cmd())
         else:
-            # If the posterior requirement is satisfied before the anterior one
-            # then a point of no return if reached and the assessment can be stopped.
             self.send_upstream_cmd(CommandBuilder.build_stop_simulation_cmd())
 
     def handle_children_status_change(self) -> None:
@@ -78,17 +80,15 @@ class ResponseSimulationRequirementNode(SimulationRequirementNode):
         if not posterior.trigger:  # true right after anterior requirement was satisfied
             self.send_child_downstream_cmd(posterior, CommandBuilder.build_trigger_cmd(anterior.last_message))
 
-        else:
-            self.satisfied = self.assess_children_nodes()
-            if self.satisfied:
-                self.__timer.cancel()
-                self.send_downstream_cmd(CommandBuilder.build_rosbridge_disconnect_cmd())
-                self.send_upstream_cmd(CommandBuilder.build_status_change_cmd())
+        # If the posterior requirement is satisfied after the anterior requirement
+        # then a point of no return if reached and the assessment can be stopped.
+        else:  # anterior.satisfied and posterior.satisfied
+            self.send_upstream_cmd(CommandBuilder.build_stop_simulation_cmd())
 
     def handle_trigger(self, command: Command) -> None:
         """
         Handle commands of type TRIGGER.
-        Forward command to anterior children.
+        Forward commad to anterior children.
 
         :param command: Received command.
         :type command: Command

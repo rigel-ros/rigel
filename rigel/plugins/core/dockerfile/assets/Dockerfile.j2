@@ -34,7 +34,7 @@ RUN echo "${{ key.value }}" > /root/.ssh/{{ key.value }} && chmod 600 /root/.ssh
 {%- endfor %}
 
 # Copy SSH configuration file and set its permissions.
-COPY config /root/.ssh/config
+COPY dockerfile_config /root/.ssh/config
 RUN chmod 600 /root/.ssh/config
 {%- endif %}
 
@@ -118,7 +118,7 @@ RUN sh -c 'sudo chown -R {{ configuration.username }}:{{ configuration.username 
 COPY . /home/{{ configuration.username }}/ros_workspace/src/rigel_local_packages
 
 # Copy bringup script.
-COPY entrypoint.sh /home/{{ configuration.username }}/robot-entrypoint.sh
+COPY dockerfile_entrypoint.sh /home/{{ configuration.username }}/robot-entrypoint.sh
 
 # Compile ROS workspace.
 RUN /bin/bash -c "source /opt/ros/{{ configuration.distro }}/setup.bash \ 

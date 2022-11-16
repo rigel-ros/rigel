@@ -6,7 +6,11 @@ from rigel.loggers import get_logger
 from rigel.models.package import Target
 from rigel.plugins import Plugin as PluginBase
 from typing import List
-from .models import StandardContainerRegistry, PluginModel
+from .models import (
+    ElasticContainerRegistry,
+    StandardContainerRegistry,
+    PluginModel
+)
 
 
 LOGGER = get_logger()
@@ -37,6 +41,7 @@ class Plugin(PluginBase):
         :param plugin: Plugin data.
         :type plugin: PluginModel
         """
+        assert isinstance(plugin.registry, StandardContainerRegistry)
         server = plugin.registry.server
         username = plugin.registry.username
         LOGGER.debug(f"Attempting login '{username}' with registry '{server}'.")
@@ -57,6 +62,7 @@ class Plugin(PluginBase):
         :param plugin: Plugin data.
         :type plugin: PluginModel
         """
+        assert isinstance(plugin.registry, ElasticContainerRegistry)
         server = plugin.registry.server
         LOGGER.debug(f"Attempting login with registry '{server}'.")
         try:
@@ -77,6 +83,7 @@ class Plugin(PluginBase):
         :param plugin: Plugin data.
         :type plugin: PluginModel
         """
+        assert plugin.registry
         server = plugin.registry.server
 
         try:

@@ -14,7 +14,7 @@ class Plugin:
         self.distro = distro
         self.targets = targets
 
-    def __enter__(self) -> None:
+    def __enter__(self) -> Any:
         signal.signal(signal.SIGINT, self.stop_plugin)
         signal.signal(signal.SIGTSTP, self.stop_plugin)
         self.setup()

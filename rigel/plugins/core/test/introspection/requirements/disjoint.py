@@ -1,4 +1,8 @@
-from rigel.simulations.command import Command, CommandBuilder, CommandType
+from rigel.plugins.core.test.introspection.command import (
+    Command,
+    CommandBuilder,
+    CommandType
+)
 from .node import SimulationRequirementNode
 
 

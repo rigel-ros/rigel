@@ -1,6 +1,10 @@
 import time
 from rigel.clients import ROSBridgeClient
-from rigel.simulations.command import Command, CommandBuilder, CommandType
+from rigel.plugins.core.test.introspection.command import (
+    Command,
+    CommandBuilder,
+    CommandType
+)
 from typing import Any, Callable, Dict
 
 from .disjoint import DisjointSimulationRequirementNode

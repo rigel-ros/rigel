@@ -25,7 +25,9 @@ class WorkspaceManager:
         decoder = YAMLDataDecoder()
         yaml_data = decoder.decode(loader.load())
 
-        self.workspace = ModelBuilder(Rigelfile).build([], yaml_data)
+        _instance = ModelBuilder(Rigelfile).build([], yaml_data)
+        assert isinstance(_instance, Rigelfile)
+        self.workspace: Rigelfile = _instance
 
     def get_job_data(self, job: str) -> Tuple[str, PluginSection]:
         """Retrieve a listed job, if existent.

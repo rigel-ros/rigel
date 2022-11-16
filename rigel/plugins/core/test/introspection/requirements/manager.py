@@ -1,7 +1,11 @@
 import threading
 from .node import SimulationRequirementNode
 from rigel.clients import ROSBridgeClient
-from rigel.simulations.command import Command, CommandBuilder, CommandType
+from rigel.plugins.core.test.introspection.command import (
+    Command,
+    CommandBuilder,
+    CommandType
+)
 
 
 class SimulationRequirementsManager(SimulationRequirementNode):
@@ -98,7 +102,7 @@ class SimulationRequirementsManager(SimulationRequirementNode):
         """
         if self.assess_children_nodes() != self.satisfied:  # only consider state changes
             self.satisfied = not self.satisfied
-            # Stop simulation once all requirements are .
+            # Stop simulation once all requirements are satisfied.
             if self.satisfied:
                 self.stop_timers()
                 self.stop_simulation()

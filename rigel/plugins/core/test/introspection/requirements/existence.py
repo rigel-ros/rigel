@@ -1,13 +1,17 @@
 import threading
 from math import inf
-from rigel.simulations.command import Command, CommandBuilder, CommandType
+from rigel.plugins.core.test.introspection.command import (
+    Command,
+    CommandBuilder,
+    CommandType
+)
 from .node import SimulationRequirementNode
 
 
-class AbsenceSimulationRequirementNode(SimulationRequirementNode):
+class ExistenceSimulationRequirementNode(SimulationRequirementNode):
     """
-    An absence simulation requirement node ensures
-    that no ROS message was received that satisfies a given condition.
+    An existence simulation requirement node ensures
+    that at least a ROS message was received that satisfies a given condition.
     """
 
     def __init__(self, timeout: float = inf) -> None:
@@ -15,10 +19,6 @@ class AbsenceSimulationRequirementNode(SimulationRequirementNode):
         self.father = None
         self.timeout = timeout
         self.__timer = threading.Timer(timeout, self.handle_timeout)
-
-        # By default an absence requirement is considered satisfied.
-        # Change of state requires a prior reception of ROS messages by children nodes.
-        self.satisfied = True
 
     def __str__(self) -> str:
         repr = ''
@@ -28,23 +28,23 @@ class AbsenceSimulationRequirementNode(SimulationRequirementNode):
 
     def assess_children_nodes(self) -> bool:
         """
-        An absence simulation requirement is considered satisfied
-        only if no children simulation requirements is satisfied.
+        An existence simulation requirement is considered satisfied
+        only if all children simulation requirements are also satisfied.
 
         :rtype: bool
-        :return: True if no children simulation requirement is satisfied. False otherwise.
+        :return: True if all children simulation requirements are satisfied. False otherwise.
         """
         for child in self.children:
 
-            # NOTE: the following assertions is required so that mypy
+            # NOTE: the following assertion is required so that mypy
             # doesn't throw an error related with multiple inheritance.
             # All 'children' are of type CommandHandler and
             # 'satisfied' is a member of SimulationRequirementNode
             # that inherits from CommandHandler.
             assert isinstance(child, SimulationRequirementNode)
-            if child.satisfied:
-                return False
 
+            if not child.satisfied:
+                return False
         return True
 
     def handle_children_status_change(self) -> None:
@@ -52,8 +52,8 @@ class AbsenceSimulationRequirementNode(SimulationRequirementNode):
         Handle STATUS_CHANGE commands sent by children nodes.
         Whenever a child changes state a disjoint requirement node must check its satisfability.
         """
-        if not self.assess_children_nodes():  # only consider state changes
-            self.satisfied = False
+        if self.assess_children_nodes():
+            self.satisfied = True
 
             self.__timer.cancel()
 
@@ -61,7 +61,7 @@ class AbsenceSimulationRequirementNode(SimulationRequirementNode):
             self.send_downstream_cmd(CommandBuilder.build_rosbridge_disconnect_cmd())
 
             # Inform father node about state change.
-            self.send_upstream_cmd(CommandBuilder.build_stop_simulation_cmd())
+            self.send_upstream_cmd(CommandBuilder.build_status_change_cmd())
 
     def handle_timeout(self) -> None:
         """
@@ -117,7 +117,7 @@ class AbsenceSimulationRequirementNode(SimulationRequirementNode):
         """
         if command.type == CommandType.ROSBRIDGE_CONNECT:
             self.handle_rosbridge_connection_commands(command)
-        if command.type == CommandType.ROSBRIDGE_DISCONNECT:
+        elif command.type == CommandType.ROSBRIDGE_DISCONNECT:
             self.handle_rosbridge_disconnection_commands(command)
-        if command.type == CommandType.TRIGGER:
+        elif command.type == CommandType.TRIGGER:
             self.send_downstream_cmd(command)

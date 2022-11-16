@@ -90,7 +90,6 @@ class YAMLDataDecoder:
                     elif variable_name in os.environ:
                         data[k] = data[k].replace(match, os.environ[variable_name])
                     else:
-                        print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>> {new_path} <<<>>>> {variable_name} <>>>>>>>>>>>>>>>>><')
                         raise UndeclaredGlobalVariableError(field=new_path, var=variable_name)
             else:
                 self.__aux_decode(v, vars, new_path)
@@ -127,7 +126,7 @@ class YAMLDataDecoder:
     def __aux_decode_list(self, data: Any, vars: Dict[str, Any], path: str = '') -> None:
         """This auxiliary function decodes only list elements inside YAML data.
 
-        Fields to decode have values dlimited by {{ and }}.
+        Fields to decode have values delimited by {{ and }}.
         # NOTE: do not call this function directly. User '__aux_decode' instead.
 
         :param data: Any
@@ -166,6 +165,6 @@ class YAMLDataDecoder:
         """
 
         # Function entry point.
-        variables = data.get('vars') or []
+        variables = data.get('vars') or {}
         self.__aux_decode(data, variables)
         return data

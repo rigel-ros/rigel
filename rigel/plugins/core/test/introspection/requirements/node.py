@@ -1,4 +1,4 @@
-from rigel.simulations.command import CommandHandler
+from rigel.plugins.core.test.introspection.command import CommandHandler
 
 
 class SimulationRequirementNode(CommandHandler):

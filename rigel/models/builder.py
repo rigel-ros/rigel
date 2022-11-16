@@ -29,7 +29,7 @@ class ModelBuilder:
         :type kwargs: Dict[str, Any]
         :param kwargs: Positional class arguments.
 
-        :rtype: Any
+        :rtype: Type
         :return: An instance of the specified class.
         """
         try:
