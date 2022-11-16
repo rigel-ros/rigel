@@ -12,7 +12,7 @@ LOGGER = get_logger()
 @click.group()
 def cli() -> None:
     """
-    Rigel - develop your ROS application using Docker
+    Rigel - automate your ROS pipelines using containers.
     """
     pass
 
