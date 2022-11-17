@@ -33,6 +33,40 @@ class DockerClientTesting(unittest.TestCase):
         self.assertEqual(context.exception.args, ("No 'DockerClient' object has attribute 'my_test_attribute'",))
 
     @patch('rigel.clients.docker.python_on_whales.docker')
+    def test_docker_builder_exists_true(self, docker_mock: Mock) -> None:
+        """
+        Ensure that the mechanism to verify if a Docker builder already exists
+        is working as expected.
+        """
+        test_docker_builder = 'test_docker_builder'
+
+        test_builder = Mock()
+        docker_mock.buildx.inspect.return_value = test_builder
+
+        docker_client = DockerClient()
+        builder = docker_client.get_builder(test_docker_builder)
+
+        docker_mock.buildx.inspect.assert_called_once_with(test_docker_builder)
+        self.assertEqual(builder, test_builder)
+
+    @patch('rigel.clients.docker.python_on_whales.docker')
+    def test_docker_builder_exists_false(self, docker_mock: Mock) -> None:
+        """
+        Ensure that the mechanism to verify if a Docker builder already exists
+        is working as expected.
+        """
+        test_docker_builder = 'test_docker_builder'
+
+        test_exception = python_on_whales.exceptions.DockerException(['test_command'], 0)
+        docker_mock.buildx.inspect.side_effect = test_exception
+
+        docker_client = DockerClient()
+        builder = docker_client.get_builder(test_docker_builder)
+
+        docker_mock.buildx.inspect.assert_called_once_with(test_docker_builder)
+        self.assertIsNone(builder)
+
+    @patch('rigel.clients.docker.python_on_whales.docker')
     def test_docker_network_exists_true(self, docker_mock: Mock) -> None:
         """
         Ensure that the mechanism to verify if a Docker network already exists

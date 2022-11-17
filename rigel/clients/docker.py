@@ -47,6 +47,19 @@ class DockerClient:
 
         raise AttributeError(f"No 'DockerClient' object has attribute '{__name}'")
 
+    def get_builder(self, name: str) -> Optional[python_on_whales.components.buildx.cli_wrapper.Builder]:
+        """
+        Get a Docker builder
+        :param name: the name of the builder
+        :type name: str
+        :return: the builder, if existent
+        :rtype: python_on_whales.components.buildx.cli_wrapper.Builder
+        """
+        try:
+            return self.client.buildx.inspect(name)
+        except python_on_whales.exceptions.DockerException:
+            return None
+
     def create_builder(
         self,
         name: str,

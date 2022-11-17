@@ -14,14 +14,14 @@ class Plugin:
         self.distro = distro
         self.targets = targets
 
-    def __enter__(self) -> Any:
+    def handle_signals(self) -> None:
         signal.signal(signal.SIGINT, self.stop_plugin)
         signal.signal(signal.SIGTSTP, self.stop_plugin)
+
+    def __enter__(self) -> Any:
+        self.handle_signals()
         self.setup()
         return self
-
-    def __str__(self) -> str:
-        return f'DISTRO: {self.distro}\nTARGETS: {self.targets}'
 
     def stop_plugin(*args: Any) -> None:
         exit(1)  # this will trigger __exit__
