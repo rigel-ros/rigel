@@ -32,14 +32,6 @@ class DockerAPIError(RigelError):
     code = 2
 
 
-class InvalidDockerClientInstanceError(RigelError):
-    """
-    Raised whenever an invalid Docker client instance is provided.
-    """
-    base = "An invalid instance of python_on_whales.docker_client.DockerClient was provided."
-    code = 4
-
-
 class PydanticValidationError(RigelError):
     """
     Raised whenever a ValidationError is thrown

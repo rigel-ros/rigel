@@ -1,9 +1,6 @@
 import python_on_whales
 import time
-from rigel.exceptions import (
-    DockerAPIError,
-    InvalidDockerClientInstanceError
-)
+from rigel.exceptions import DockerAPIError
 from rigel.loggers import get_logger
 from typing import Any, Iterable, Optional, Tuple, Union
 
@@ -24,20 +21,14 @@ class DockerClient:
     # A Docker client instance.
     client: python_on_whales.docker_client.DockerClient
 
-    def __init__(self, client: Optional[python_on_whales.docker_client.DockerClient] = None) -> None:
+    def __init__(self) -> None:
         """
         Create a Docker client instance.
 
         :type client: Optional[python_on_whales.docker_client.DockerClient]
         :param client: A Docker client instance.
         """
-        if client:
-            if isinstance(client, InvalidDockerClientInstanceError):
-                self.client = client
-            else:
-                raise InvalidDockerClientInstanceError()
-        else:
-            self.client = python_on_whales.docker
+        self.client = python_on_whales.docker
 
     def __getattribute__(self, __name: str) -> Any:
 
@@ -55,85 +46,6 @@ class DockerClient:
             pass
 
         raise AttributeError(f"No 'DockerClient' object has attribute '{__name}'")
-
-    def get_image(self, name: str) -> Optional[python_on_whales.components.image.cli_wrapper.Image]:
-        """
-        Get an existing Docker image.
-
-        :type name: string
-        :param name: The Docker image name.
-        :rtype: Optional[python_on_whales.components.image.cli_wrapper.Image]
-        :return: The Docker image if existent. None otherwise.
-        """
-        try:
-            if self.client.image.exists(name):
-                return self.client.image.inspect(name)
-            else:
-                return None
-        except python_on_whales.exceptions.DockerException as exception:
-            raise DockerAPIError(exception=exception)
-
-    def build_image(
-        self,
-        path: str,
-        **kwargs: Any
-    ) -> None:
-        """
-        Build a new Docker image.
-
-        :type path: string
-        :param path: Root of the build context.
-        :type kwargs: Dict[str, Any]
-        :param kwargs: Keyword arguments. Consult the documentation for more information
-        (https://github.com/gabrieldemarmiesse/python-on-whales/blob/master/python_on_whales/components/buildx/cli_wrapper.py#L204)
-        """
-        try:
-            self.client.build(
-                path,
-                **kwargs
-            )
-        except python_on_whales.exceptions.DockerException as exception:
-            raise DockerAPIError(exception=exception)
-
-    def tag_image(self, source_image: str, target_image: str) -> None:
-        """
-        Create a Docker image that references an existing Docker image.
-
-        :type source_image: string
-        :param source_image: The name of the image being referenced.
-        :type target_image: string
-        :param target_image: The desired name for the new image.
-        """
-        try:
-            self.client.image.tag(source_image, target_image)
-        except python_on_whales.exceptions.DockerException as exception:
-            raise DockerAPIError(exception=exception)
-
-    def push_image(self, image: str) -> None:
-        """
-        Push a Docker image to a Docker image registry.
-
-        :type image: string
-        :param image: The name of the Docker image.
-        """
-        try:
-            self.client.image.push(image)
-        except python_on_whales.exceptions.DockerException as exception:
-            raise DockerAPIError(exception=exception)
-
-    def get_builder(self, name: str) -> Optional[python_on_whales.components.buildx.cli_wrapper.Builder]:
-        """
-        Get a Docker builder
-
-        :param name: the name of the builder
-        :type name: str
-        :return: the builder, if existent
-        :rtype: python_on_whales.components.buildx.cli_wrapper.Builder
-        """
-        try:
-            return self.client.buildx.inspect(name)
-        except python_on_whales.exceptions.DockerException:
-            return None
 
     def create_builder(
         self,
