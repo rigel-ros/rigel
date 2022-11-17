@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Type
 
 class ModelBuilder:
     """
-    A class to help instantiate subclasses of pydantic.BaseModel.
+    A class to help instantiate model classes.
     This class handles all the exceptions that may occur
     while creating instances of a given class.
     """
@@ -19,7 +19,7 @@ class ModelBuilder:
         """
         self.instance_type = instance_type
 
-    # TODO: change return type from Any to BaseModel.
+    # TODO: change return type from Any to a proper type.
     def build(self, args: List[Any], kwargs: Dict[str, Any]) -> Any:
         """
         Create an instance of the specified class.

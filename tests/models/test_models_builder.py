@@ -1,7 +1,7 @@
 import pydantic
 import unittest
 from rigel.exceptions import PydanticValidationError
-from rigel.models import ModelBuilder
+from rigel.models.builder import ModelBuilder
 from unittest.mock import Mock, patch
 
 
@@ -11,7 +11,7 @@ class TestModel(pydantic.BaseModel):
 
 class ModelBuildingTesting(unittest.TestCase):
     """
-    Test suite for rigel.models.ModelBuilding class.
+    Test suite for rigel.models.builder.ModelBuilding class.
     """
 
     @patch.object(TestModel, '__init__')
