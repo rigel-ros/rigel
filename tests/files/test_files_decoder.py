@@ -1,6 +1,6 @@
 import unittest
 from rigel.exceptions import UndeclaredGlobalVariableError
-from rigel.files import YAMLDataDecoder
+from rigel.files.decoder import YAMLDataDecoder
 
 
 class YAMLDataDecoderTesting(unittest.TestCase):
@@ -35,7 +35,7 @@ class YAMLDataDecoderTesting(unittest.TestCase):
     def test_decoding_mechanism_dict(self) -> None:
         """
         Test if decoding mechanism works as expected whenever references
-        to unknown global variables are made inside a dict.
+        to unknown global variables are made inside a dict (values only).
         """
         template_value = 'test_value'
         unchanged_value = 'unchanged_value'
@@ -47,6 +47,23 @@ class YAMLDataDecoderTesting(unittest.TestCase):
         decoder = YAMLDataDecoder()
         decoded_test_data = decoder.decode(test_data)
         self.assertEqual(decoded_test_data['test_key'], template_value)
+        self.assertEqual(decoded_test_data['unchanged_key'], unchanged_value)  # control value
+
+    def test_decoding_mechanism_dict_keys(self) -> None:
+        """
+        Test if decoding mechanism works as expected whenever references
+        to unknown global variables are made inside a dict (keys only).
+        """
+        template_value = 'test_key'
+        unchanged_value = 'unchanged_value'
+        test_data = {
+            'vars': {'template_var': template_value},
+            '{{ template_var }}': 'test_value',
+            'unchanged_key': unchanged_value
+        }
+        decoder = YAMLDataDecoder()
+        decoded_test_data = decoder.decode(test_data)
+        self.assertEqual(decoded_test_data[template_value], 'test_value')
         self.assertEqual(decoded_test_data['unchanged_key'], unchanged_value)  # control value
 
     def test_decoding_mechanism_list(self) -> None:

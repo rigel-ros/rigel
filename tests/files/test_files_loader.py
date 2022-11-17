@@ -4,7 +4,7 @@ from rigel.exceptions import (
     RigelfileNotFoundError,
     UnformattedRigelfileError
 )
-from rigel.files import YAMLDataLoader
+from rigel.files.loader import YAMLDataLoader
 from unittest.mock import Mock, mock_open, patch
 
 
