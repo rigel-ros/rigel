@@ -1,4 +1,4 @@
-import inspect
+import sys
 from importlib import import_module
 from rigel.exceptions import (
     PluginNotCompliantError,
@@ -29,48 +29,6 @@ class PluginManager:
         """
         return issubclass(entrypoint, Plugin)
 
-    def is_setup_compliant(self, entrypoint: Type) -> bool:
-        """Ensure that the 'setup' function declared inside a plugin's entrypoint class
-        is not expecting any parameters (except for self).
-
-        :type entrypoint: Type
-        :param entrypoint: The plugin entrypoint class.
-
-        :rtype: bool
-        :return: True is the 'setup' function declared inside a plugin's entrypoint class
-        expects no arguments. False otherwise.
-        """
-        signature = inspect.signature(entrypoint.setup)
-        return not len(signature.parameters) != 1  # allows for no parameter besides 'self'
-
-    def is_run_compliant(self, entrypoint: Type) -> bool:
-        """Ensure that the 'run' function declared inside a plugin's entrypoint class
-        is not expecting any parameters (except for self).
-
-        :type entrypoint: Type
-        :param entrypoint: The plugin entrypoint class.
-
-        :rtype: bool
-        :return: True if the 'run' function inside the plugin's entrypoint class
-        expects no arguments. False otherwise.
-        """
-        signature = inspect.signature(entrypoint.run)
-        return not len(signature.parameters) != 1  # allows for no parameter besides 'self'
-
-    def is_stop_compliant(self, entrypoint: Type) -> bool:
-        """Ensure that the 'stop' function declared inside a plugin's entrypoint class
-        is not expecting any parameters (except for self).
-
-        :type entrypoint: Type
-        :param entrypoint: The plugin entrypoint class.
-
-        :rtype: bool
-        :return: True if the 'stop' function inside the plugin's entrypoint class
-        expects no arguments. False otherwise.
-        """
-        signature = inspect.signature(entrypoint.stop)
-        return not len(signature.parameters) != 1  # allows for no parameter besides 'self'
-
     def load(self, entrypoint: str, distro: str, targets: List[Target]) -> Plugin:
         """Parse a list of plugins.
 
@@ -96,25 +54,7 @@ class PluginManager:
         if not self.is_plugin_compliant(cls):
             raise PluginNotCompliantError(
                 plugin=plugin_complete_name,
-                cause="entrypoint class must implement functions 'setup','run', and 'stop'."
-            )
-
-        if not self.is_setup_compliant(cls):
-            raise PluginNotCompliantError(
-                plugin=plugin_complete_name,
-                cause=f"attribute function '{plugin_complete_name}.setup' must not receive any parameters."
-            )
-
-        if not self.is_run_compliant(cls):
-            raise PluginNotCompliantError(
-                plugin=plugin_complete_name,
-                cause=f"attribute function '{plugin_complete_name}.run' must not receive any parameters."
-            )
-
-        if not self.is_stop_compliant(cls):
-            raise PluginNotCompliantError(
-                plugin=plugin_complete_name,
-                cause=f"attribute function '{plugin_complete_name}.stop' must not receive any parameters."
+                cause="entrypoint class must inherit functions 'setup','run', and 'stop' from class 'Pugin'."
             )
 
         plugin = ModelBuilder(cls).build([distro, targets], {})
@@ -134,8 +74,11 @@ class PluginManager:
         LOGGER.debug(f"Plugin '{identifier}' started executing.")
 
         try:
+
             with plugin:
                 plugin.run()
+            LOGGER.debug(f"Plugin '{identifier}' finished execution with success")
+
         except RigelError as err:
 
             LOGGER.warning(f"An error occured during the execution of plugin '{identifier}'")
@@ -143,7 +86,4 @@ class PluginManager:
             plugin.stop()
 
             LOGGER.error(err)
-            exit()
-
-        plugin.stop()
-        LOGGER.debug(f"Plugin '{identifier}' finished execution with success")
+            sys.exit()

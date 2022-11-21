@@ -23,10 +23,13 @@ class SimulationRequirementsManager(SimulationRequirementNode):
         self.__stop_timer = threading.Timer(max_timeout, self.handle_stop_timeout)
 
     def __str__(self) -> str:
-        repr = ''
-        for child in self.children:
-            repr += f'{str(child)}\n'
-        return repr
+        if self.children:
+            repr = ''
+            for child in self.children:
+                repr += f'{str(child)}\n'
+            return repr
+        else:
+            return 'No simulation requirements were provided.'
 
     def connect_to_rosbridge(self, rosbridge_client: ROSBridgeClient) -> None:
         """
