@@ -8,7 +8,7 @@ from typing import Any, Dict
 from unittest.mock import call, Mock, patch
 
 TEST_DISTRO = 'test_distro'
-TEST_SSH_KEY_ENV = 'STANDARD_REGISTRY_ENV'
+TEST_SSH_KEY_ENV = 'STANDARD_SSH_KEY_REGISTRY_ENV'
 TEST_SSH_KEY_VALUE = 'dummy-ssh-key'
 
 os.environ[TEST_SSH_KEY_ENV] = TEST_SSH_KEY_VALUE
