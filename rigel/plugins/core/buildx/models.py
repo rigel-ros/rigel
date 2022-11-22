@@ -72,5 +72,5 @@ class PluginModel(BaseModel):
         supported_platforms = [p for p in SUPPORTED_PLATFORMS]
         for platform in platforms:
             if platform not in supported_platforms:
-                raise UnsupportedPlatformError(platform=platform)
+                raise UnsupportedPlatformError(platform)
         return platforms

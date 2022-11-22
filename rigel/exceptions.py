@@ -1,4 +1,4 @@
-from typing import Any
+from pydantic.error_wrappers import ValidationError
 
 
 class RigelError(Exception):
@@ -10,26 +10,25 @@ class RigelError(Exception):
     :type code: int
     :cvar code: The error code.
     """
-    base: str = 'Generic Rigel error.'
-    code: int = 1
+    base: str
 
-    def __init__(self, **kwargs: Any):
-        Exception.__init__(self, self.base.format(**kwargs))
-        self.kwargs = kwargs
+    def __init__(self, base: str = 'Generic Rigel error.'):
+        self.base = base
 
     def __str__(self) -> str:
-        return f'({self.code}) {self.base}'
+        return self.base
 
 
 class DockerAPIError(RigelError):
     """
     Raised whenever an exception is thrown while making a call to the Docker API.
 
-    :type exception: docker.errors.DockerException
+    :type exception: Exception
     :ivar exception: The exception thrown by the Docker API.
     """
-    base = "An error occured while calling the Docker API: {exception}"
-    code = 2
+    def __init__(self, exception: Exception) -> None:
+        super().__init__(f"An error occured while calling the Docker API: {exception}")
+        self.exception = exception
 
 
 class PydanticValidationError(RigelError):
@@ -40,8 +39,9 @@ class PydanticValidationError(RigelError):
     :type exception: pydantic.error_wrappers.ValidationError
     :ivar exception: The exception thrown.
     """
-    base = "An error occurred while validating Pydantic model: {exception}."
-    code = 6
+    def __init__(self, exception: ValidationError) -> None:
+        super().__init__(f"An error occurred while validating Pydantic model: {exception}.")
+        self.exception = exception
 
 
 class UndeclaredEnvironmentVariableError(RigelError):
@@ -51,8 +51,9 @@ class UndeclaredEnvironmentVariableError(RigelError):
     :type env: string
     :ivar env: The undeclared environment variable.
     """
-    base = "Environment variable {env} is not declared."
-    code = 7
+    def __init__(self, env: str) -> None:
+        super().__init__(f"Environment variable {env} is not declared.")
+        self.env = env
 
 
 class UndeclaredGlobalVariableError(RigelError):
@@ -64,25 +65,18 @@ class UndeclaredGlobalVariableError(RigelError):
     :type var: string
     :ivar var: Global variable identifier.
     """
-    base = "Field '{field}' set to have the value of undeclared global variable '{var}'."
-    code = 8
+    def __init__(self, field: str, var: str) -> None:
+        super().__init__(f"Field '{field}' set to have the value of undeclared global variable '{var}'.")
+        self.field = field
+        self.var = var
 
 
 class RigelfileNotFoundError(RigelError):
     """
     Raised whenever a Rigelfile is required but is not found.
     """
-    base = "Rigelfile was not found. Use 'rigel init' to create one."
-    code = 6
-
-
-class RigelfileAlreadyExistsError(RigelError):
-    """
-    Raised whenever an attempt is made to create a Rigelfile inside a folder
-    that already contains a Rigelfile.
-    """
-    base = "A Rigelfile already exists. Use '--force' flag to write over existing Rigelfile."
-    code = 7
+    def __init__(self) -> None:
+        super().__init__("Rigelfile was not found. Use 'rigel init' to create one.")
 
 
 class UnformattedRigelfileError(RigelError):
@@ -92,27 +86,17 @@ class UnformattedRigelfileError(RigelError):
     :type trace: string
     :ivar trace: A message detailing what format error was found and where.
     """
-    base = "Rigelfile is not properly formatted: {trace}."
-    code = 8
-
-
-class IncompleteRigelfileError(RigelError):
-    """
-    Raised whenever an attempt is made to use an incomplete Rigelfile.
-
-    :type block: string
-    :ivar block: The required block that is missing.
-    """
-    base = "Incomplete Rigelfile. Missing required block '{block}'."
-    code = 9
+    def __init__(self, trace: str) -> None:
+        super().__init__(f"Rigelfile is not properly formatted: {trace}.")
+        self.trace = trace
 
 
 class EmptyRigelfileError(RigelError):
     """
     Raised whenever an empty Rigelfile is found.
     """
-    base = "Provided Rigelfile is empty."
-    code = 12
+    def __init__(self) -> None:
+        super().__init__("Provided Rigelfile is empty.")
 
 
 class UnsupportedCompilerError(RigelError):
@@ -122,8 +106,9 @@ class UnsupportedCompilerError(RigelError):
     :type compiler: string
     :ivar compiler: The name of the unsupported compiler.
     """
-    base = "Unsupported compiler '{compiler}'."
-    code = 13
+    def __init__(self, compiler: str) -> None:
+        super().__init__(f"Unsupported compiler '{compiler}'.")
+        self.compiler = compiler
 
 
 class UnsupportedPlatformError(RigelError):
@@ -133,19 +118,9 @@ class UnsupportedPlatformError(RigelError):
     :type compiler: platform
     :ivar compiler: The unsupported platform.
     """
-    base = "Unsupported platform '{platform}'."
-    code = 14
-
-
-class InvalidPlatformError(RigelError):
-    """
-    Raised whenever an attemp to use an invalid platform is made.
-
-    :param RigelError: platform
-    :type RigelError: The invalid platform.
-    """
-    base = "An invalid platform was used: '{platform}'."
-    code = 15
+    def __init__(self, platform: str) -> None:
+        super().__init__(f"Unsupported platform '{platform}'.")
+        self.platform = platform
 
 
 class PluginNotFoundError(RigelError):
@@ -155,20 +130,11 @@ class PluginNotFoundError(RigelError):
     :type plugin: string
     :ivar plugin: Name of the plugin.
     """
-    base = ("Unable to load plugin '{plugin}'. Make sure plugin is installed in your system.\n"
-            "For more information on plugin installation run command 'rigel install --help'.")
-    code = 17
-
-
-class PluginInstallationError(RigelError):
-    """
-    Raised whenever an error occurs while installing an plugin.
-
-    :type plugin: string
-    :ivar plugin: Name of the plugin to be installed.
-    """
-    base = "An error occurred while installing plugin {plugin}."
-    code = 18
+    def __init__(self, plugin: str) -> None:
+        base = (f"Unable to load plugin '{plugin}'. Make sure plugin is installed in your system.\n"
+                "For more information on plugin installation run command 'rigel install --help'.")
+        super().__init__(base)
+        self.plugin = plugin
 
 
 class PluginNotCompliantError(RigelError):
@@ -181,27 +147,7 @@ class PluginNotCompliantError(RigelError):
     :type cause: string
     :ivar cause: Reason why plugin is not compliant.
     """
-    base = "Plugin '{plugin}' does not comply with Rigel plugin protocol: {cause}"
-    code = 19
-
-
-class InvalidPluginNameError(RigelError):
-    """
-    Raised whenever an invalid plugin name is passed.
-
-    :type plugin: string
-    :ivar plugin: The invalid plugin name.
-    """
-    base = "Invalid plugin name '{plugin}'."
-    code = 20
-
-
-class UnknownROSPackagesError(RigelError):
-    """
-    Raised whenever unlisted ROS package are referenced.
-
-    :type packages: List[string]
-    :ivar packages: List of unknown ROS packages.
-    """
-    base = "The following packages were not declared in the Rigelfile: {packages}."
-    code = 21
+    def __init__(self, plugin: str, cause: str) -> None:
+        super().__init__(f"Plugin '{plugin}' does not comply with Rigel plugin protocol: {cause}")
+        self.plugin = plugin
+        self.cause = cause

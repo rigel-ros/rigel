@@ -58,7 +58,7 @@ class Plugin(PluginBase):
                 server=server
             )
         except python_on_whales.exceptions.DockerException as exception:
-            raise DockerAPIError(exception=exception)
+            raise DockerAPIError(exception)
 
         LOGGER.info(f"Logged in with success as user '{username}' with registry '{server}'.")
 
@@ -79,7 +79,7 @@ class Plugin(PluginBase):
                 registry=server
             )
         except python_on_whales.exceptions.DockerException as exception:
-            raise DockerAPIError(exception=exception)
+            raise DockerAPIError(exception)
 
         LOGGER.info(f"Logged in with success to {server}.")
 
@@ -95,7 +95,7 @@ class Plugin(PluginBase):
         try:
             self.__docker.logout(server)
         except python_on_whales.exceptions.DockerException as exception:
-            raise DockerAPIError(exception=exception)
+            raise DockerAPIError(exception)
 
         LOGGER.info(f"Logged out with success from registry '{server}'.")
 
@@ -183,7 +183,6 @@ class Plugin(PluginBase):
 
             except RigelError as err:
                 LOGGER.error(err)
-                exit(err.code)
 
     def stop(self) -> None:
 

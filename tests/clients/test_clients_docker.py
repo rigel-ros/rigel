@@ -165,7 +165,7 @@ class DockerClientTesting(unittest.TestCase):
                 'test_docker_network_name',
                 'test_docker_network_driver'
             )
-        self.assertEqual(context.exception.kwargs['exception'], test_exception)
+        self.assertEqual(context.exception.exception, test_exception)
 
     @patch('rigel.clients.docker.python_on_whales.docker')
     @patch('rigel.clients.docker.DockerClient.get_network')
@@ -187,7 +187,7 @@ class DockerClientTesting(unittest.TestCase):
             docker_client.remove_network(test_network_name)
 
         network_mock.assert_called_once_with(test_network_name)
-        self.assertEqual(context.exception.kwargs['exception'], test_exception)
+        self.assertEqual(context.exception.exception, test_exception)
 
     @patch('rigel.clients.docker.python_on_whales.docker')
     @patch('rigel.clients.docker.DockerClient.get_network')
@@ -235,7 +235,7 @@ class DockerClientTesting(unittest.TestCase):
             docker_client = DockerClient()
             docker_client.get_container('test_docker_container')
 
-        self.assertEqual(context.exception.kwargs['exception'], test_exception)
+        self.assertEqual(context.exception.exception, test_exception)
 
     @patch('rigel.clients.docker.python_on_whales.docker')
     def test_docker_get_container_exists(self, docker_mock: Mock) -> None:
@@ -288,7 +288,7 @@ class DockerClientTesting(unittest.TestCase):
         with self.assertRaises(DockerAPIError) as context:
             docker_client = DockerClient()
             docker_client.remove_container('test_docker_container_name')
-        self.assertEqual(context.exception.kwargs['exception'], test_exception)
+        self.assertEqual(context.exception.exception, test_exception)
 
     @patch('rigel.clients.docker.python_on_whales.docker')
     @patch('rigel.clients.docker.DockerClient.get_container')
@@ -347,8 +347,7 @@ class DockerClientTesting(unittest.TestCase):
                 'test_docker_container_name',
                 'test_docker_image_name'
             )
-
-        self.assertEqual(context.exception.kwargs['exception'], test_exception)
+        self.assertEqual(context.exception.exception, test_exception)
 
     @patch('rigel.clients.docker.python_on_whales.docker')
     @patch('rigel.clients.docker.DockerClient.get_container')

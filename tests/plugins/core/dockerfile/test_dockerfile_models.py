@@ -64,7 +64,7 @@ class DockerfilePluginModelTesting(unittest.TestCase):
         }
         with self.assertRaises(UnsupportedCompilerError) as context:
             PluginModel(**data)
-        self.assertEqual(context.exception.kwargs['compiler'], compiler)
+        self.assertEqual(context.exception.compiler, compiler)
 
 
 if __name__ == '__main__':

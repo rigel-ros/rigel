@@ -23,7 +23,7 @@ class BuildXPluginModelTesting(unittest.TestCase):
                 package='test_package',
                 platforms=[test_distro]
             )
-        self.assertEqual(context.exception.kwargs['platform'], test_distro)
+        self.assertEqual(context.exception.platform, test_distro)
 
     def test_default_values(self) -> None:
         """

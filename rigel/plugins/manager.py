@@ -49,12 +49,12 @@ class PluginManager:
             module = import_module(plugin_name)
             cls: Type = getattr(module, plugin_entrypoint)
         except ModuleNotFoundError:
-            raise PluginNotFoundError(plugin=plugin_complete_name)
+            raise PluginNotFoundError(plugin_complete_name)
 
         if not self.is_plugin_compliant(cls):
             raise PluginNotCompliantError(
-                plugin=plugin_complete_name,
-                cause="entrypoint class must inherit functions 'setup','run', and 'stop' from class 'Pugin'."
+                plugin_complete_name,
+                "entrypoint class must inherit functions 'setup','run', and 'stop' from class 'Pugin'."
             )
 
         plugin = ModelBuilder(cls).build([distro, targets], {})

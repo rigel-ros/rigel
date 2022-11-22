@@ -90,7 +90,7 @@ class YAMLDataDecoder:
                     elif variable_name in os.environ:
                         data[k] = data[k].replace(match, os.environ[variable_name])
                     else:
-                        raise UndeclaredGlobalVariableError(field=new_path, var=variable_name)
+                        raise UndeclaredGlobalVariableError(new_path, variable_name)
             else:
                 self.__aux_decode(v, vars, new_path)
 
@@ -121,7 +121,7 @@ class YAMLDataDecoder:
                     elif variable_name in os.environ:
                         data[os.environ[variable_name]] = data.pop(k)
                     else:
-                        raise UndeclaredGlobalVariableError(field=new_path, var=variable_name)
+                        raise UndeclaredGlobalVariableError(new_path, variable_name)
 
     def __aux_decode_list(self, data: Any, vars: Dict[str, Any], path: str = '') -> None:
         """This auxiliary function decodes only list elements inside YAML data.
@@ -149,7 +149,7 @@ class YAMLDataDecoder:
                     elif variable_name in os.environ:
                         data[idx] = data[idx].replace(match, os.environ[variable_name])
                     else:
-                        raise UndeclaredGlobalVariableError(field=new_path, var=variable_name)
+                        raise UndeclaredGlobalVariableError(new_path, variable_name)
             else:
                 self.__aux_decode(elem, vars, new_path)
 

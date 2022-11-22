@@ -81,7 +81,7 @@ class DockerClient:
             try:
                 return self.client.buildx.create(name=name, use=use, driver=driver)
             except python_on_whales.exceptions.DockerException as exception:
-                raise DockerAPIError(exception=exception)
+                raise DockerAPIError(exception)
         return builder  # return already existing builder
 
     def remove_builder(self, name: str) -> None:
@@ -96,7 +96,7 @@ class DockerClient:
             try:
                 self.client.buildx.remove(builder)
             except python_on_whales.exceptions.DockerException as exception:
-                raise DockerAPIError(exception=exception)
+                raise DockerAPIError(exception)
 
     def get_network(self, name: str) -> Optional[python_on_whales.components.network.cli_wrapper.Network]:
         """
@@ -130,7 +130,7 @@ class DockerClient:
             try:
                 return self.client.network.create(name, driver=driver)
             except python_on_whales.exceptions.DockerException as exception:
-                raise DockerAPIError(exception=exception)
+                raise DockerAPIError(exception)
         return network  # return already existing network
 
     def remove_network(self, name: str) -> None:
@@ -145,7 +145,7 @@ class DockerClient:
             try:
                 self.client.network.remove(network)
             except python_on_whales.exceptions.DockerException as exception:
-                raise DockerAPIError(exception=exception)
+                raise DockerAPIError(exception)
 
     def get_container(self, name: str) -> Optional[python_on_whales.components.container.cli_wrapper.Container]:
         """
@@ -163,7 +163,7 @@ class DockerClient:
             else:
                 return None
         except python_on_whales.exceptions.DockerException as exception:
-            raise DockerAPIError(exception=exception)
+            raise DockerAPIError(exception)
 
     def run_container(
         self,
@@ -191,7 +191,7 @@ class DockerClient:
             try:
                 return self.client.container.run(image, **kwargs)
             except python_on_whales.exceptions.DockerException as exception:
-                raise DockerAPIError(exception=exception)
+                raise DockerAPIError(exception)
         return container  # return already existing container
 
     def remove_container(self, name: str) -> None:
@@ -206,7 +206,7 @@ class DockerClient:
             try:
                 container.remove(force=True, volumes=True)
             except python_on_whales.exceptions.DockerException as exception:
-                raise DockerAPIError(exception=exception)
+                raise DockerAPIError(exception)
 
     def wait_for_container_status(
             self,
@@ -237,13 +237,13 @@ class DockerClient:
                         container.state.status
                     ))
                 else:
-                    raise DockerAPIError(exception=Exception(
+                    raise DockerAPIError(Exception(
                         'Timeout while waiting for status of container {} to become "{}".'.format(
                             container.id[:self.DOCKER_CONTAINER_ID_DISPLAY_SIZE],
                             status
                         )
                     ))
             else:
-                raise DockerAPIError(exception=Exception(
+                raise DockerAPIError(Exception(
                     f'Unable to watch over status of container "{name}" since it does not exist.'
                 ))

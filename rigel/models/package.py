@@ -39,7 +39,7 @@ class SSHKey(BaseModel):
         """
         if not values['file']:  # ensure value concerns an environment variable
             if not os.environ.get(v):
-                raise UndeclaredEnvironmentVariableError(env=v)
+                raise UndeclaredEnvironmentVariableError(v)
         return v
 
 

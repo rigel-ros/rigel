@@ -46,7 +46,7 @@ class PluginManagerTesting(unittest.TestCase):
         with self.assertRaises(PluginNotFoundError) as context:
             manager = PluginManager()
             manager.load(test_plugin_entrypoint, 'distro', [])
-        self.assertEqual(context.exception.kwargs['plugin'], test_plugin_entrypoint)
+        self.assertEqual(context.exception.plugin, test_plugin_entrypoint)
 
     @patch('rigel.plugins.manager.getattr')
     @patch('rigel.plugins.manager.import_module')
@@ -69,7 +69,7 @@ class PluginManagerTesting(unittest.TestCase):
             manager.load(test_plugin_entrypoint, 'distro', [])
 
         import_mock.assert_called_once_with(test_plugin_name)
-        self.assertEqual(context.exception.kwargs['plugin'], test_plugin_entrypoint)
+        self.assertEqual(context.exception.plugin, test_plugin_entrypoint)
 
     @patch('rigel.plugins.manager.getattr')
     @patch('rigel.plugins.manager.import_module')

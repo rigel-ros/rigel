@@ -62,5 +62,5 @@ class PluginModel(BaseModel):
         """
         # NOTE: At the moment only "catkin" and "colcon" are supported.
         if compiler not in ['catkin_make', 'colcon']:
-            raise UnsupportedCompilerError(compiler=compiler)
+            raise UnsupportedCompilerError(compiler)
         return compiler

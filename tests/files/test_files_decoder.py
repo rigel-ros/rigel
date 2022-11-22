@@ -17,8 +17,8 @@ class YAMLDataDecoderTesting(unittest.TestCase):
         with self.assertRaises(UndeclaredGlobalVariableError) as context:
             decoder = YAMLDataDecoder()
             decoder.decode(test_data)
-        self.assertEqual(context.exception.kwargs['field'], 'test_key')
-        self.assertEqual(context.exception.kwargs['var'], 'unknown')
+        self.assertEqual(context.exception.field, 'test_key')
+        self.assertEqual(context.exception.var, 'unknown')
 
     def test_undeclared_variable_error_list(self) -> None:
         """
@@ -29,8 +29,8 @@ class YAMLDataDecoderTesting(unittest.TestCase):
         with self.assertRaises(UndeclaredGlobalVariableError) as context:
             decoder = YAMLDataDecoder()
             decoder.decode(test_data)
-        self.assertEqual(context.exception.kwargs['field'], 'test_key[0]')
-        self.assertEqual(context.exception.kwargs['var'], 'unknown')
+        self.assertEqual(context.exception.field, 'test_key[0]')
+        self.assertEqual(context.exception.var, 'unknown')
 
     def test_decoding_mechanism_dict(self) -> None:
         """

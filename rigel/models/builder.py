@@ -36,4 +36,4 @@ class ModelBuilder:
             return self.instance_type(*args, **kwargs)
 
         except ValidationError as exception:
-            raise PydanticValidationError(exception=exception)
+            raise PydanticValidationError(exception)

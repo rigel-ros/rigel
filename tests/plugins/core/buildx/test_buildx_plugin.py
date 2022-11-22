@@ -144,7 +144,7 @@ class BuildXPluginTesting(unittest.TestCase):
             plugin = Plugin(TEST_DISTRO, [])
             plugin.login(DUMMY_STANDARD_MODEL)
 
-        self.assertEqual(context.exception.kwargs['exception'], test_exception)
+        self.assertEqual(context.exception.exception, test_exception)
 
     @patch('rigel.plugins.core.buildx.plugin.DockerClient')
     def test_login_ecr(self, docker_mock: Mock) -> None:
@@ -178,7 +178,7 @@ class BuildXPluginTesting(unittest.TestCase):
             plugin = Plugin(TEST_DISTRO, [])
             plugin.login(DUMMY_ECR_MODEL)
 
-        self.assertEqual(context.exception.kwargs['exception'], test_exception)
+        self.assertEqual(context.exception.exception, test_exception)
 
     @patch('rigel.plugins.core.buildx.plugin.DockerClient')
     def test_logout(self, docker_mock: Mock) -> None:
@@ -207,7 +207,7 @@ class BuildXPluginTesting(unittest.TestCase):
             plugin = Plugin(TEST_DISTRO, [])
             plugin.logout(DUMMY_ECR_MODEL)
 
-        self.assertEqual(context.exception.kwargs['exception'], test_exception)
+        self.assertEqual(context.exception.exception, test_exception)
 
     @patch('rigel.plugins.core.buildx.plugin.DockerClient')
     def test_configure_qemu(self, docker_mock: Mock) -> None:

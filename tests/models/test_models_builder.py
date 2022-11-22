@@ -34,7 +34,7 @@ class ModelBuildingTesting(unittest.TestCase):
             with self.assertRaises(PydanticValidationError) as context:
                 builder = ModelBuilder(TestModel)
                 builder.build([], {})
-            self.assertEqual(context.exception.kwargs['exception'], test_exception)
+            self.assertEqual(context.exception.exception, test_exception)
 
     @patch.object(TestModel, '__init__')
     def test_injected_data(self, mock_model: Mock) -> None:

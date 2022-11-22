@@ -27,7 +27,7 @@ class SSHKeyModelTesting(unittest.TestCase):
             SSHKey(**test_key_data)
 
         environ_mock.assert_called_once_with(test_environment_variable)
-        self.assertEqual(context.exception.kwargs['env'], test_environment_variable)
+        self.assertEqual(context.exception.env, test_environment_variable)
 
 
 if __name__ == '__main__':
