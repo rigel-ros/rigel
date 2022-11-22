@@ -1,23 +1,23 @@
 import unittest
-from rigel.files import Renderer
-from rigel.models import DockerSection
+from rigel.models.package import Package
+from rigel.plugins.core.dockerfile.models import PluginModel
+from rigel.plugins.core.dockerfile.renderer import Renderer
 from unittest.mock import MagicMock, Mock, mock_open, patch
 
 
 class RendererTesting(unittest.TestCase):
     """
-    Test suite for rigel.files.dockerfile.Renderer class.
+    Test suite for rigel.plugins.core.dockerfile.renderer.Renderer class.
     """
 
     configuration_data = {
-        'package': 'test_package',
         'distro': 'test_distro',
         'command': 'test_command',
-        'image': 'test_image'
+        'package': Package()
     }
 
-    @patch('rigel.files.renderer.resource_string')
-    @patch('rigel.files.renderer.Template')
+    @patch('rigel.plugins.core.dockerfile.renderer.resource_string')
+    @patch('rigel.plugins.core.dockerfile.renderer.Template')
     @patch('builtins.open', new_callable=mock_open())
     def test_renderer(
             self,
@@ -42,10 +42,10 @@ class RendererTesting(unittest.TestCase):
         template_instance.render.return_value = template_data
         template_mock.return_value = template_instance
 
-        test_configuration = DockerSection(**self.configuration_data)
+        test_configuration = PluginModel(**self.configuration_data)
         Renderer(test_configuration).render(input_file, output_file)
 
-        resources_mock.assert_called_once_with('rigel.files.renderer', f'assets/templates/{input_file}')
+        resources_mock.assert_called_once_with('rigel.plugins.core.dockerfile.renderer', f'assets/{input_file}')
         template_mock.assert_called_once_with(filepath.decode())
         open_mock.assert_called_once_with(output_file, 'w+')
         template_instance.render.assert_called_once_with(configuration=test_configuration.dict())

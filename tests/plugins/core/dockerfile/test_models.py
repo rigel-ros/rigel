@@ -3,29 +3,40 @@ from rigel.exceptions import (
     UnsupportedCompilerError,
     UnsupportedPlatformError
 )
-from rigel.models import DockerSection
+from rigel.models.package import Package
+from rigel.plugins.core.dockerfile.models import PluginModel
 
 
-class DockerSectionTesting(unittest.TestCase):
+class DockerfilePluginModelTesting(unittest.TestCase):
     """
-    Test suite for rigel.models.DockerSection class.
+    Test suite for rigel.plugins.core.dockerfile.models.PluginModel class.
     """
 
-    def test_default_ros_image(self) -> None:
+    def test_default_values(self) -> None:
         """
-        Test if by default the ROS Docker image used as a base for new images matches the
-        selected ROS distribution.
+        Test if default values are set as expected.
         """
+        test_command = 'test_command'
         test_distro = 'test_ros_distro'
+        test_package = Package()
         data = {
-            'command': 'test-command',
+            'command': test_command,
             'distro': test_distro,
-            'image': 'test-image',
-            'package': 'test-package'
+            'package': test_package
         }
-        section = DockerSection(**data)
+        section = PluginModel(**data)
+        self.assertEqual(section.command, test_command)
         self.assertEqual(section.distro, test_distro)
+        self.assertEqual(section.package, test_package)
+
+        self.assertEqual(section.apt, [])
+        self.assertEqual(section.compiler, 'catkin_make')
+        self.assertEqual(section.entrypoint, [])
+        self.assertEqual(section.env, [])
+        self.assertEqual(section.rosinstall, [])
         self.assertEqual(section.ros_image, test_distro)
+        self.assertEqual(section.docker_run, [])
+        self.assertEqual(section.username, 'rigeluser')
 
     def test_custom_ros_image(self) -> None:
         """
@@ -36,11 +47,10 @@ class DockerSectionTesting(unittest.TestCase):
         data = {
             'command': 'test-command',
             'distro': test_distro,
-            'image': 'test-image',
-            'package': 'test-package',
+            'package': Package(),
             'ros_image': test_ros_image
         }
-        section = DockerSection(**data)
+        section = PluginModel(**data)
         self.assertEqual(section.distro, test_distro)
         self.assertEqual(section.ros_image, test_ros_image)
 
@@ -52,30 +62,12 @@ class DockerSectionTesting(unittest.TestCase):
         data = {
             'command': 'test-command',
             'distro': 'test-distro',
-            'image': 'test-image',
-            'package': 'test-package',
+            'package': Package(),
             'compiler': compiler
         }
         with self.assertRaises(UnsupportedCompilerError) as context:
-            DockerSection(**data)
+            PluginModel(**data)
         self.assertEqual(context.exception.kwargs['compiler'], compiler)
-
-    def test_unsupported_platform_error(self) -> None:
-        """
-        Test if UnsupportedPlatformError is thrown if an invalid platform is declared.
-        """
-        platform = 'test_unsupported_platform'
-        data = {
-            'command': 'test-command',
-            'distro': 'test-distro',
-            'image': 'test-image',
-            'package': 'test-package',
-            'platforms': [platform]
-        }
-
-        with self.assertRaises(UnsupportedPlatformError) as context:
-            DockerSection(**data)
-        self.assertEqual(context.exception.kwargs['platform'], platform)
 
 
 if __name__ == '__main__':
