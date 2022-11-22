@@ -120,6 +120,8 @@ class BuildXPluginTesting(unittest.TestCase):
         """
         docker_mock.return_value = docker_mock
 
+        assert isinstance(DUMMY_STANDARD_MODEL.registry, StandardContainerRegistry)
+
         plugin = Plugin(TEST_DISTRO, [])
         plugin.login(DUMMY_STANDARD_MODEL)
         docker_mock.login.assert_called_once_with(
@@ -150,6 +152,8 @@ class BuildXPluginTesting(unittest.TestCase):
         Ensure that the login mechanism for ECR registries works as expected.
         """
         docker_mock.return_value = docker_mock
+
+        assert isinstance(DUMMY_ECR_MODEL.registry, ElasticContainerRegistry)
 
         plugin = Plugin(TEST_DISTRO, [])
         plugin.login(DUMMY_ECR_MODEL)
@@ -182,6 +186,8 @@ class BuildXPluginTesting(unittest.TestCase):
         Ensure that the logout mechanism works as expected.
         """
         docker_mock.return_value = docker_mock
+
+        assert isinstance(DUMMY_ECR_MODEL.registry, ElasticContainerRegistry)
 
         plugin = Plugin(TEST_DISTRO, [])
         plugin.logout(DUMMY_ECR_MODEL)

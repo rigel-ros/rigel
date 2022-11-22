@@ -6,7 +6,7 @@ from unittest.mock import MagicMock
 class DummyCLICommand(CLICommand):
     """ Dummy CLI command for test purposes.
     """
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(command='dummy')
 
 

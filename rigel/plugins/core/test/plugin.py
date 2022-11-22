@@ -6,6 +6,7 @@ from rigel.models.package import Target
 from rigel.plugins import Plugin as PluginBase
 from typing import Dict, List, Optional, Tuple
 from .models import PluginModel
+from .introspection.command import CommandHandler
 from .introspection.requirements.manager import SimulationRequirementsManager
 from .introspection.parser import SimulationRequirementsParser
 
@@ -81,7 +82,7 @@ class Plugin(PluginBase):
             result[key.strip()] = value.strip()
         return result
 
-    def convert_volumes(self, volumes: List[str]) -> List[Tuple[str, str]]:
+    def convert_volumes(self, volumes: List[str]) -> List[Tuple[str, ...]]:
         result = []
         for volume in volumes:
             result.append(tuple(volume.split(':')))
@@ -93,6 +94,7 @@ class Plugin(PluginBase):
         """
         self.__docker_client.wait_for_container_status('master', 'running')
         master_container = self.__docker_client.get_container('master')
+        assert master_container
         master_ip = master_container.network_settings.networks[self.__network_name].ip_address
 
         # Start containerize ROS application
@@ -113,7 +115,10 @@ class Plugin(PluginBase):
 
                 if plugin.introspection:
 
-                    requirements = [self.__requirements_parser.parse(requirement) for requirement in plugin.introspection]
+                    requirements: List[CommandHandler] = [
+                        self.__requirements_parser.parse(requirement) for requirement in plugin.introspection
+                    ]
+
                     self.__requirements_manager.children = requirements
 
                     # Connect to ROS bridge inside container
