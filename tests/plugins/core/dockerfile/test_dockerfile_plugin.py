@@ -56,12 +56,14 @@ class DockerfileCorePluginTesting(unittest.TestCase):
         Plugin(TEST_DISTRO, [])
         prepare_targets_mock.assert_called_once()
 
+    @patch('rigel.plugins.core.dockerfile.plugin.Path')
     @patch('rigel.plugins.core.dockerfile.plugin.Renderer')
-    def test_rigelfile_creation(self, renderer_mock: Mock) -> None:
+    def test_rigelfile_creation(self, renderer_mock: Mock, path_mock: Mock) -> None:
         """
         Test if the creation of a new Rigelfile is done as expected.
         """
         renderer_mock.return_value = renderer_mock
+        path_mock.return_value = path_mock
 
         plugin = Plugin(TEST_DISTRO, [
             ('test_target_0', DUMMY_SSH_MODEL.package, self.get_initial_data(DUMMY_SSH_MODEL)),
@@ -69,7 +71,15 @@ class DockerfileCorePluginTesting(unittest.TestCase):
         ])
         plugin.run()
 
-        renderer_constructor_calls = [
+        path_calls = [
+            call(DUMMY_SSH_MODEL.package.dir),
+            call.mkdir(parents=True, exist_ok=True),
+            call(DUMMY_STANDARD_MODEL.package.dir),
+            call.mkdir(parents=True, exist_ok=True)
+        ]
+        path_mock.assert_has_calls(path_calls)
+
+        renderer_calls = [
             call(DUMMY_SSH_MODEL),
             call.render('Dockerfile.j2', f'{DUMMY_SSH_MODEL.package.dir}/Dockerfile'),
             call.render('entrypoint.j2', f'{DUMMY_SSH_MODEL.package.dir}/dockerfile_entrypoint.sh'),
@@ -78,7 +88,7 @@ class DockerfileCorePluginTesting(unittest.TestCase):
             call.render('Dockerfile.j2', f'{DUMMY_STANDARD_MODEL.package.dir}/Dockerfile'),
             call.render('entrypoint.j2', f'{DUMMY_STANDARD_MODEL.package.dir}/dockerfile_entrypoint.sh'),
         ]
-        renderer_mock.assert_has_calls(renderer_constructor_calls)
+        renderer_mock.assert_has_calls(renderer_calls)
 
 
 if __name__ == '__main__':
