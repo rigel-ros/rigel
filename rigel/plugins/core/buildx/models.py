@@ -1,30 +1,29 @@
 from pydantic import BaseModel, Field, validator
 from rigel.exceptions import UnsupportedPlatformError
 from rigel.models.package import Package
-from typing import Dict, List, Literal, Optional, Tuple, Union
+from typing import Dict, List, Literal, Optional, Union
 from typing_extensions import Annotated
 
 
-SUPPORTED_PLATFORMS: List[Tuple[str, str, str]] = [
-    # (docker_platform_name, qus_argument, qemu_file_name)
-    ('linux/amd64', 'x86_64', ''),
-    ('linux/arm64', 'arm', 'qemu-arm')
+SUPPORTED_PLATFORMS: List[str] = [
+    'linux/amd64',
+    'linux/arm64',
 ]
 
 
 class StandardContainerRegistry(BaseModel):
     type: Literal['standard']
     server: str
-    password: Optional[str]
-    username: Optional[str]
+    password: str
+    username: str
 
 
 class ElasticContainerRegistry(BaseModel):
     type: Literal['ecr']
     server: str
-    aws_access_key_id: Optional[str]
-    aws_secret_access_key: Optional[str]
-    region_name: Optional[str]
+    aws_access_key_id: str
+    aws_secret_access_key: str
+    region_name: str
 
 
 CredentialsType = Annotated[Union[StandardContainerRegistry, ElasticContainerRegistry], Field(discriminator='type')]
@@ -70,7 +69,7 @@ class PluginModel(BaseModel):
         :return: A list of supported architectures for which to build the Docker image.
         :rtype: List[str]
         """
-        supported_platforms = [p[0] for p in SUPPORTED_PLATFORMS]
+        supported_platforms = [p for p in SUPPORTED_PLATFORMS]
         for platform in platforms:
             if platform not in supported_platforms:
                 raise UnsupportedPlatformError(platform=platform)

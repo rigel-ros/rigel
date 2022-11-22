@@ -23,6 +23,12 @@ class Plugin(PluginBase):
     def __init__(self, distro: str, targets: List[Target]) -> None:
         super().__init__(distro, targets)
         self.__docker: DockerClient = DockerClient()
+        self.prepare_targets()
+
+    def prepare_targets(self) -> None:
+        self.__targets = [
+            (package, package_data, PluginModel(distro=self.distro, package=package_data, **plugin_data))
+            for package, package_data, plugin_data in self.targets]
 
     def login(self, plugin: PluginModel) -> None:
         """Login to a Docker image registry.
@@ -31,11 +37,11 @@ class Plugin(PluginBase):
         :type plugin: PluginModel
         """
         if isinstance(plugin.registry, StandardContainerRegistry):
-            self.__login_standard(plugin)
+            self.login_standard(plugin)
         else:  # ElasticContainerRegistry
-            self.__login_ecr(plugin)
+            self.login_ecr(plugin)
 
-    def __login_standard(self, plugin: PluginModel) -> None:
+    def login_standard(self, plugin: PluginModel) -> None:
         """Login to a standard Docker image registry.
 
         :param plugin: Plugin data.
@@ -56,7 +62,7 @@ class Plugin(PluginBase):
 
         LOGGER.info(f"Logged in with success as user '{username}' with registry '{server}'.")
 
-    def __login_ecr(self, plugin: PluginModel) -> None:
+    def login_ecr(self, plugin: PluginModel) -> None:
         """Login to a AWS Elastic Container Registry instance.
 
         :param plugin: Plugin data.
@@ -136,10 +142,6 @@ class Plugin(PluginBase):
 
     def setup(self) -> None:
 
-        self.__targets = [
-            (package, package_data, PluginModel(distro=self.distro, package=package_data, **plugin_data))
-            for package, package_data, plugin_data in self.targets]
-
         self.configure_qemu()
         self.create_builder()
 
@@ -154,14 +156,13 @@ class Plugin(PluginBase):
 
             LOGGER.info(f"Building Docker image '{plugin_model.image}' for package '{package}'.")
 
-            complete_buildargs = plugin_model.buildargs
+            complete_buildargs = plugin_model.buildargs.copy()
             for key in package_data.ssh:
                 if not key.file:
                     # NOTE: SSHKey model ensures that environment variable is declared.
                     complete_buildargs[key.value] = os.environ[key.value]
 
             try:
-
                 kwargs = {
                     "file": f'{package_data.dir}/Dockerfile',
                     "tags": plugin_model.image,
