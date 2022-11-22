@@ -1,8 +1,5 @@
 import unittest
-from rigel.exceptions import (
-    UnsupportedCompilerError,
-    UnsupportedPlatformError
-)
+from rigel.exceptions import UnsupportedCompilerError
 from rigel.models.package import Package
 from rigel.plugins.core.dockerfile.models import PluginModel
 
