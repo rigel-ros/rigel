@@ -3,14 +3,15 @@ import python_on_whales.exceptions
 from rigel.clients.docker import DockerClient
 from rigel.exceptions import DockerAPIError, RigelError
 from rigel.loggers import get_logger
-from rigel.models.package import Target
+from rigel.models.package import (
+    ElasticContainerRegistry,
+    RegistryType,
+    Target,
+    StandardContainerRegistry
+)
 from rigel.plugins import Plugin as PluginBase
 from typing import List
-from .models import (
-    ElasticContainerRegistry,
-    StandardContainerRegistry,
-    PluginModel
-)
+from .models import PluginModel
 
 
 LOGGER = get_logger()
@@ -30,31 +31,31 @@ class Plugin(PluginBase):
             (package, package_data, PluginModel(distro=self.distro, package=package_data, **plugin_data))
             for package, package_data, plugin_data in self.targets]
 
-    def login(self, plugin: PluginModel) -> None:
+    def login(self, registry: RegistryType) -> None:
         """Login to a Docker image registry.
 
-        :param plugin: Plugin data.
-        :type plugin: PluginModel
+        :param registry: Image registry.
+        :type registry: RegistryType
         """
-        if isinstance(plugin.registry, StandardContainerRegistry):
-            self.login_standard(plugin)
+        if isinstance(registry, StandardContainerRegistry):
+            self.login_standard(registry)
         else:  # ElasticContainerRegistry
-            self.login_ecr(plugin)
+            self.login_ecr(registry)
 
-    def login_standard(self, plugin: PluginModel) -> None:
+    def login_standard(self, registry: StandardContainerRegistry) -> None:
         """Login to a standard Docker image registry.
 
-        :param plugin: Plugin data.
-        :type plugin: PluginModel
+        :param plugin: Standard image registry.
+        :type plugin: StandardContainerRegistry
         """
-        assert isinstance(plugin.registry, StandardContainerRegistry)
-        server = plugin.registry.server
-        username = plugin.registry.username
+        assert isinstance(registry, StandardContainerRegistry)
+        server = registry.server
+        username = registry.username
         LOGGER.debug(f"Attempting login '{username}' with registry '{server}'.")
         try:
             self.__docker.login(
                 username=username,
-                password=plugin.registry.password,
+                password=registry.password,
                 server=server
             )
         except python_on_whales.exceptions.DockerException as exception:
@@ -62,20 +63,20 @@ class Plugin(PluginBase):
 
         LOGGER.info(f"Logged in with success as user '{username}' with registry '{server}'.")
 
-    def login_ecr(self, plugin: PluginModel) -> None:
+    def login_ecr(self, registry: ElasticContainerRegistry) -> None:
         """Login to a AWS Elastic Container Registry instance.
 
-        :param plugin: Plugin data.
-        :type plugin: PluginModel
+        :param registry: AWS Elastic Container Registry registry.
+        :type registry: ElasticContainerRegistry
         """
-        assert isinstance(plugin.registry, ElasticContainerRegistry)
-        server = plugin.registry.server
+        assert isinstance(registry, ElasticContainerRegistry)
+        server = registry.server
         LOGGER.debug(f"Attempting login with registry '{server}'.")
         try:
             self.__docker.login_ecr(
-                aws_access_key_id=plugin.registry.aws_access_key_id,
-                aws_secret_access_key=plugin.registry.aws_secret_access_key,
-                region_name=plugin.registry.region_name,
+                aws_access_key_id=registry.aws_access_key_id,
+                aws_secret_access_key=registry.aws_secret_access_key,
+                region_name=registry.region_name,
                 registry=server
             )
         except python_on_whales.exceptions.DockerException as exception:
@@ -83,14 +84,14 @@ class Plugin(PluginBase):
 
         LOGGER.info(f"Logged in with success to {server}.")
 
-    def logout(self, plugin: PluginModel) -> None:
+    def logout(self, registry: RegistryType) -> None:
         """Logout from a Docker image registry.
 
-        :param plugin: Plugin data.
-        :type plugin: PluginModel
+        :param plugin: Image registry.
+        :type plugin: RegistryType
         """
-        assert plugin.registry
-        server = plugin.registry.server
+        assert registry
+        server = registry.server
 
         try:
             self.__docker.logout(server)
@@ -145,10 +146,10 @@ class Plugin(PluginBase):
         self.configure_qemu()
         self.create_builder()
 
-        for _, _, plugin_model in self.__targets:
+        for _, package_data, _ in self.__targets:
 
-            if plugin_model.registry:
-                self.login(plugin_model)
+            for registry in package_data.registries:
+                self.login(registry)
 
     def run(self) -> None:
 
@@ -189,7 +190,7 @@ class Plugin(PluginBase):
         self.delete_qemu_files()
         self.remove_builder()
 
-        for _, _, plugin_model in self.__targets:
+        for _, package_data, _ in self.__targets:
 
-            if plugin_model.registry:
-                self.logout(plugin_model)
+            for registry in package_data.registries:
+                self.logout(registry)

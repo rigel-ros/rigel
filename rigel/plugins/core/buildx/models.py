@@ -1,32 +1,13 @@
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, validator
 from rigel.exceptions import UnsupportedPlatformError
 from rigel.models.package import Package
-from typing import Dict, List, Literal, Optional, Union
-from typing_extensions import Annotated
+from typing import Dict, List
 
 
 SUPPORTED_PLATFORMS: List[str] = [
     'linux/amd64',
     'linux/arm64',
 ]
-
-
-class StandardContainerRegistry(BaseModel):
-    type: Literal['standard']
-    server: str
-    password: str
-    username: str
-
-
-class ElasticContainerRegistry(BaseModel):
-    type: Literal['ecr']
-    server: str
-    aws_access_key_id: str
-    aws_secret_access_key: str
-    region_name: str
-
-
-CredentialsType = Annotated[Union[StandardContainerRegistry, ElasticContainerRegistry], Field(discriminator='type')]
 
 
 class PluginModel(BaseModel):
@@ -44,8 +25,6 @@ class PluginModel(BaseModel):
     :cvar platforms: A list of architectures for which to build the Docker image.
     :type push: bool
     :cvar push: Flag to store built image in a remote registry.. Defaults to False,
-    :type registry: Optional[CredentialsType]
-    :cvar registry: Information about the image registry for the Docker image. Default value is None.
     """
 
     # Required fields.
@@ -58,7 +37,6 @@ class PluginModel(BaseModel):
     load: bool = False
     platforms: List[str] = []
     push: bool = False
-    registry: Optional[CredentialsType] = None
 
     @validator('platforms')
     def validate_platforms(cls, platforms: List[str]) -> List[str]:

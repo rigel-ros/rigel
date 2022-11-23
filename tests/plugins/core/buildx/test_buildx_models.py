@@ -47,7 +47,6 @@ class BuildXPluginModelTesting(unittest.TestCase):
         self.assertEqual(plugin.load, False)
         self.assertEqual(plugin.platforms, [])
         self.assertEqual(plugin.push, False)
-        self.assertEqual(plugin.registry, None)
 
 
 if __name__ == '__main__':

@@ -2,13 +2,14 @@ import os
 import unittest
 from python_on_whales.exceptions import DockerException
 from rigel.exceptions import DockerAPIError
-from rigel.models.package import Package, SSHKey
-from rigel.plugins import Plugin as PluginBase
-from rigel.plugins.core.buildx.models import (
+from rigel.models.package import (
+    Package,
     ElasticContainerRegistry,
-    PluginModel,
-    StandardContainerRegistry
+    StandardContainerRegistry,
+    SSHKey
 )
+from rigel.plugins import Plugin as PluginBase
+from rigel.plugins.core.buildx.models import PluginModel
 from rigel.plugins.core.buildx.plugin import Plugin
 from typing import Any, Dict
 from unittest.mock import call, Mock, patch
@@ -43,21 +44,23 @@ DUMMY_STANDARD_MODEL = PluginModel(
     image='test_image',
     package=Package(
         dir='standard_dir',
-        ssh=[SSHKey(hostname='standard_registry', value='STANDARD_REGISTRY_ENV')]
+        ssh=[SSHKey(hostname='standard_registry', value='STANDARD_REGISTRY_ENV')],
+        registries=[DUMMY_STANDARD_REGISTRY]
     ),
     buildargs={'TEST': 'STANDARD'},
-    load=True,
-    registry=DUMMY_STANDARD_REGISTRY
+    load=True
 )
 
 DUMMY_ECR_MODEL = PluginModel(
     distro=TEST_DISTRO,
     image='test_image',
-    package=Package(dir='ecr_dir'),
+    package=Package(
+        dir='ecr_dir',
+        registries=[DUMMY_ECR]
+    ),
     buildargs={'TEST': 'ECR'},
     platforms=['linux/arm64'],
-    push=True,
-    registry=DUMMY_ECR
+    push=True
 )
 
 TEST_BUILDER_NAME = 'test_builder_name'
@@ -98,8 +101,8 @@ class BuildXPluginTesting(unittest.TestCase):
         Ensure that the adequate login mechanism for standard registries is selected.
         """
         plugin = Plugin(TEST_DISTRO, [])
-        plugin.login(DUMMY_STANDARD_MODEL)
-        standard_mock.assert_called_once_with(DUMMY_STANDARD_MODEL)
+        plugin.login(DUMMY_STANDARD_REGISTRY)
+        standard_mock.assert_called_once_with(DUMMY_STANDARD_REGISTRY)
         ecr_mock.assert_not_called()
 
     @patch('rigel.plugins.core.buildx.plugin.Plugin.login_standard')
@@ -109,9 +112,9 @@ class BuildXPluginTesting(unittest.TestCase):
         Ensure that the adequate login mechanism for ECR registries is selected.
         """
         plugin = Plugin(TEST_DISTRO, [])
-        plugin.login(DUMMY_ECR_MODEL)
+        plugin.login(DUMMY_ECR)
         standard_mock.assert_not_called()
-        ecr_mock.assert_called_once_with(DUMMY_ECR_MODEL)
+        ecr_mock.assert_called_once_with(DUMMY_ECR)
 
     @patch('rigel.plugins.core.buildx.plugin.DockerClient')
     def test_login_standard(self, docker_mock: Mock) -> None:
@@ -120,14 +123,15 @@ class BuildXPluginTesting(unittest.TestCase):
         """
         docker_mock.return_value = docker_mock
 
-        assert isinstance(DUMMY_STANDARD_MODEL.registry, StandardContainerRegistry)
+        registry = DUMMY_STANDARD_MODEL.package.registries[0]
+        assert isinstance(registry, StandardContainerRegistry)
 
         plugin = Plugin(TEST_DISTRO, [])
-        plugin.login(DUMMY_STANDARD_MODEL)
+        plugin.login(DUMMY_STANDARD_REGISTRY)
         docker_mock.login.assert_called_once_with(
-            username=DUMMY_STANDARD_MODEL.registry.username,
-            password=DUMMY_STANDARD_MODEL.registry.password,
-            server=DUMMY_STANDARD_MODEL.registry.server
+            username=registry.username,
+            password=registry.password,
+            server=registry.server
         )
 
     @patch('rigel.plugins.core.buildx.plugin.DockerClient')
@@ -142,7 +146,7 @@ class BuildXPluginTesting(unittest.TestCase):
 
         with self.assertRaises(DockerAPIError) as context:
             plugin = Plugin(TEST_DISTRO, [])
-            plugin.login(DUMMY_STANDARD_MODEL)
+            plugin.login(DUMMY_STANDARD_REGISTRY)
 
         self.assertEqual(context.exception.exception, test_exception)
 
@@ -153,15 +157,16 @@ class BuildXPluginTesting(unittest.TestCase):
         """
         docker_mock.return_value = docker_mock
 
-        assert isinstance(DUMMY_ECR_MODEL.registry, ElasticContainerRegistry)
+        registry = DUMMY_ECR_MODEL.package.registries[0]
+        assert isinstance(registry, ElasticContainerRegistry)
 
         plugin = Plugin(TEST_DISTRO, [])
-        plugin.login(DUMMY_ECR_MODEL)
+        plugin.login(DUMMY_ECR)
         docker_mock.login_ecr.assert_called_once_with(
-            aws_access_key_id=DUMMY_ECR_MODEL.registry.aws_access_key_id,
-            aws_secret_access_key=DUMMY_ECR_MODEL.registry.aws_secret_access_key,
-            region_name=DUMMY_ECR_MODEL.registry.region_name,
-            registry=DUMMY_ECR_MODEL.registry.server
+            aws_access_key_id=registry.aws_access_key_id,
+            aws_secret_access_key=registry.aws_secret_access_key,
+            region_name=registry.region_name,
+            registry=registry.server
         )
 
     @patch('rigel.plugins.core.buildx.plugin.DockerClient')
@@ -176,7 +181,7 @@ class BuildXPluginTesting(unittest.TestCase):
 
         with self.assertRaises(DockerAPIError) as context:
             plugin = Plugin(TEST_DISTRO, [])
-            plugin.login(DUMMY_ECR_MODEL)
+            plugin.login(DUMMY_ECR)
 
         self.assertEqual(context.exception.exception, test_exception)
 
@@ -187,11 +192,12 @@ class BuildXPluginTesting(unittest.TestCase):
         """
         docker_mock.return_value = docker_mock
 
-        assert isinstance(DUMMY_ECR_MODEL.registry, ElasticContainerRegistry)
+        registry = DUMMY_ECR_MODEL.package.registries[0]
+        assert isinstance(registry, ElasticContainerRegistry)
 
         plugin = Plugin(TEST_DISTRO, [])
-        plugin.logout(DUMMY_ECR_MODEL)
-        docker_mock.logout.assert_called_once_with(DUMMY_ECR_MODEL.registry.server)
+        plugin.logout(DUMMY_ECR)
+        docker_mock.logout.assert_called_once_with(registry.server)
 
     @patch('rigel.plugins.core.buildx.plugin.DockerClient')
     def test_logout_error(self, docker_mock: Mock) -> None:
@@ -205,7 +211,7 @@ class BuildXPluginTesting(unittest.TestCase):
 
         with self.assertRaises(DockerAPIError) as context:
             plugin = Plugin(TEST_DISTRO, [])
-            plugin.logout(DUMMY_ECR_MODEL)
+            plugin.logout(DUMMY_ECR)
 
         self.assertEqual(context.exception.exception, test_exception)
 
@@ -284,7 +290,8 @@ class BuildXPluginTesting(unittest.TestCase):
 
         configure_qemu_files.assert_called_once_with()
         create_builder_mock.assert_called_once_with()
-        login_mock.assert_called_once_with(DUMMY_STANDARD_MODEL)
+
+        login_mock.assert_called_once_with(DUMMY_STANDARD_MODEL.package.registries[0])
 
     @patch('rigel.plugins.core.buildx.plugin.Plugin.logout')
     @patch('rigel.plugins.core.buildx.plugin.Plugin.delete_qemu_files')
@@ -301,7 +308,7 @@ class BuildXPluginTesting(unittest.TestCase):
 
         delete_qemu_files.assert_called_once_with()
         remove_builder_mock.assert_called_once_with()
-        logout_mock.assert_called_once_with(DUMMY_STANDARD_MODEL)
+        logout_mock.assert_called_once_with(DUMMY_STANDARD_MODEL.package.registries[0])
 
     @patch('rigel.plugins.core.buildx.plugin.DockerClient')
     def test_run_mechanism(self, docker_mock: Mock) -> None:
