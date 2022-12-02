@@ -5,7 +5,7 @@ from rigel.loggers import get_logger
 from rigel.models.package import Target
 from rigel.plugins import Plugin as PluginBase
 from typing import Dict, List, Optional, Tuple
-from .models import PluginModel
+from .models import PluginModel, TestComponent
 from .introspection.command import CommandHandler
 from .introspection.requirements.manager import SimulationRequirementsManager
 from .introspection.parser import SimulationRequirementsParser
@@ -21,8 +21,15 @@ class Plugin(PluginBase):
         self.__simulation_uuid = str(uuid.uuid1())
         self.__network_name = f'rigel-simulation-{self.__simulation_uuid}'
         self.__docker_client = DockerClient()
-        self.__requirements_manager = SimulationRequirementsManager(5 * 60.0)
+        self.__requirements_manager = SimulationRequirementsManager(10 * 60.0)
         self.__requirements_parser = SimulationRequirementsParser()
+
+        self.prepare_targets()
+
+    def prepare_targets(self) -> None:
+        self.__targets = [
+            (package_name, package, PluginModel(**plugin_data))
+            for package_name, package, plugin_data in self.targets]
 
     def create_simulation_network(self) -> None:
         """
@@ -98,75 +105,89 @@ class Plugin(PluginBase):
         master_ip = master_container.network_settings.networks[self.__network_name].ip_address
 
         # Start containerize ROS application
-        for package, plugin in self.__targets:
+        for _, _, plugin in self.__targets:
 
-            ros_common_env_variables = [f'ROS_MASTER_URI=http://{master_ip}:11311', f'ROS_HOSTNAME={package}']
+            for test_component in plugin.components:
 
-            # Ensure that all ROS nodes connect to the same ROS master node
-            assert plugin.environment is not None  # NOTE: required by mypy to ensure that the addition is possible
-            plugin.environment = plugin.environment + ros_common_env_variables
+                container = self.run_package_container(test_component, master_ip)
 
-            container = self.run_package_container(package, plugin)
+                if container:
 
-            if container:
+                    container_ip = container.network_settings.networks[self.__network_name].ip_address
+                    LOGGER.info(f"Created container '{test_component.name}' ({container_ip})")
 
-                container_ip = container.network_settings.networks[self.__network_name].ip_address
-                LOGGER.info(f"Created container '{package}' ({container_ip})")
+                    if test_component.introspection:
 
-                if plugin.introspection:
+                        requirements: List[CommandHandler] = [
+                            self.__requirements_parser.parse(req) for req in test_component.introspection.requirements
+                        ]
 
-                    requirements: List[CommandHandler] = [
-                        self.__requirements_parser.parse(requirement) for requirement in plugin.introspection
-                    ]
+                        self.__requirements_manager.children = requirements
 
-                    self.__requirements_manager.children = requirements
+                        # Connect to ROS bridge inside container
+                        hostname = test_component.introspection.hostname or container_ip
+                        port = test_component.introspection.publish[0]
+                        rosbridge_client = ROSBridgeClient(hostname, port)
+                        LOGGER.info(f"Connected to ROS bridge server at '{hostname}:{port}'")
 
-                    # Connect to ROS bridge inside container
-                    rosbridge_client = ROSBridgeClient(container_ip, 9090)
-                    LOGGER.info(f"Connected to ROS bridge server at '{container_ip}:9090'")
+                        self.__requirements_manager.connect_to_rosbridge(rosbridge_client)
 
-                    self.__requirements_manager.connect_to_rosbridge(rosbridge_client)
-
-    def run_package_container(self, package: str, plugin: PluginModel) -> Optional[Container]:
+    def run_package_container(self, component: TestComponent, master: str) -> Optional[Container]:
         """
         Launch a single containerized ROS node.
 
-        :type package: str
-        :param package: Identifier of the containerized package.
-        :type plugin: PluginModel
-        :param plugin: Information about the container.
+        :type component: TestComponent
+        :param component: Information about the test component.
+        :type master: str
+        :param master: The IP address of the ROS MASTER.
 
         :rtype: docker.models.containers.Container
         :return: The Docker container serving as ROS master.
         """
-        self.__docker_client.run_container(
-            package,
-            plugin.image,
-            command=plugin.command,
-            detach=True,
-            envs=self.convert_envs(plugin.environment),
-            hostname=package,
-            networks=[self.__network_name],
-            privileged=plugin.privileged,
-            volumes=self.convert_volumes(plugin.volumes),
-            restart='on-failure'
-        )
-        self.__docker_client.wait_for_container_status(package, 'running')
-        return self.__docker_client.get_container(package)  # this call to 'get_container' ensures updated container data
+        kwargs = component._kwargs.copy()
 
-    def remove_package_container(self, package: str) -> None:
+        kwargs['detach'] = True
+        kwargs['hostname'] = component.name
+
+        if 'envs' not in kwargs:
+            kwargs['envs'] = {}
+        kwargs['envs']['ROS_MASTER_URI'] = f'http://{master}:11311'
+        kwargs['envs']['ROS_HOSTNAME'] = f"{kwargs['hostname']}"
+
+        # TODO: ensure that networks can be costumized.
+        # Probably not required.
+        kwargs['networks'] = [self.__network_name]
+
+        if 'restart' not in kwargs:
+            kwargs['restart'] = 'on-failure'
+
+        if component.introspection:
+            if 'publish' not in kwargs:
+                kwargs['publish'] = [component.introspection.publish]
+            else:
+                kwargs['publish'] = kwargs['publish'] + [component.introspection.publish]
+
+        self.__docker_client.run_container(
+            component.name,
+            component.image,
+            **kwargs
+        )
+        self.__docker_client.wait_for_container_status(component.name, 'running')
+        return self.__docker_client.get_container(component.name)  # this call to 'get_container' ensures updated container data
+
+    def remove_package_containers(self, plugin: PluginModel) -> None:
         """Remove a single containerized ROS node.
 
-        :type package: str
-        :param package: Identifier of the containerized package.
+        :type plugin: PluginModel
+        :param plugin: Test components for this package.
         """
-        self.__docker_client.remove_container(package)
-        LOGGER.info(f"Removed Docker container '{package}'")
+        for test_component in plugin.components:
+            self.__docker_client.remove_container(test_component.name)
+            LOGGER.info(f"Removed Docker container '{test_component.name}'")
 
     def setup(self) -> None:
-        self.__targets = [
-            (package, PluginModel(**plugin_data))
-            for package, _, plugin_data in self.targets]
+        for _, package, _ in self.__targets:
+            package.login_registries()
 
         self.create_simulation_network()
         self.start_dns_server()
@@ -180,7 +201,7 @@ class Plugin(PluginBase):
         self.bringup_ros_nodes()
         LOGGER.info("Testing the application!")
 
-        while self.__requirements_manager.children and (not self.__requirements_manager.finished):
+        while self.__requirements_manager.children and (not self.__requirements_manager.assess_children_nodes()):
             pass  # TODO: separate this into a thread for efficiency
         print(self.__requirements_manager)
 
@@ -188,9 +209,9 @@ class Plugin(PluginBase):
         """
         Plugin graceful closing mechanism.
         """
-        # Remove containers
-        for package, _ in self.__targets:
-            self.remove_package_container(package)
+        for _, package, plugin in self.__targets:
+            self.remove_package_containers(plugin)  # Remove containers
+            package.logout_registries()  # Log out from image registries
 
         self.stop_ros_master()
         self.stop_dns_server()

@@ -19,6 +19,23 @@ class RigelError(Exception):
         return self.base
 
 
+# TODO: implemente tests for this error class
+class ClientError(RigelError):
+    """
+    Raised whenever an error occurs while using a client.
+
+    :type client: str
+    :ivar client: The client that raised the exception.
+    :type exception: Exception
+    :ivar exception: The exception raised by the client.
+    """
+    def __init__(self, client: str, exception: Exception) -> None:
+        super().__init__(f"An error was reported by the {client} client. {exception}")
+        self.client = client
+        self.exception = exception
+
+
+# TODO: replace this exception by ClientError instances
 class DockerAPIError(RigelError):
     """
     Raised whenever an exception is thrown while making a call to the Docker API.
@@ -99,6 +116,23 @@ class EmptyRigelfileError(RigelError):
         super().__init__("Provided Rigelfile is empty.")
 
 
+# TODO: implemen tests for this class
+class InvalidValueError(RigelError):
+    """
+    Raised whenever an attempt is made to pass an invalid value to a given field.
+
+    :type field: string
+    :ivar field: The name of the unsupported compiler.
+    :type value: string
+    :ivar value: The name of the unsupported compiler.
+    """
+    def __init__(self, field: str, value: str) -> None:
+        super().__init__(f"Field '{field}' has passed invalid value '{value}'.")
+        self.field = field
+        self.value = value
+
+
+# TODO: replace by InvalidValueError
 class UnsupportedCompilerError(RigelError):
     """
     Raised whenever an attempt is made to use an unsupported compiler.
@@ -111,6 +145,7 @@ class UnsupportedCompilerError(RigelError):
         self.compiler = compiler
 
 
+# TODO: replace by InvalidValueError
 class UnsupportedPlatformError(RigelError):
     """
     Raised whenever an attempt is build an image for an unsupported platform.

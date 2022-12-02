@@ -1,31 +1,49 @@
-from pydantic import BaseModel
-from typing import List
+from pydantic import BaseModel, PrivateAttr
+from typing import Any, Dict, List, Optional, Tuple
 
 
-class PluginModel(BaseModel):
+class Introspection(BaseModel):
+
+    # Required fields
+    requirements: List[str]
+
+    # Optional fields
+    publish: Tuple[int, int] = (9090, 9090)
+    hostname: Optional[str] = None
+
+
+class TestComponent(BaseModel):
     """
-    A placeholder for information regarding a containerized ROS package.
+    A placeholder for information regarding a containerized ROS package to include in the testing.
 
     :type image: string
-    :param name: The Docker image.
-    :type command: str
-    :param command: The command to be executed inside the container.
-    :type environment: List[str]
-    :param environment: The list of environment variables to set inside the container.
-    :type instrospection: List[str].
-    :param instrospection: The list of conditions that must be fulfilled.
-    :type network: str
-    :param network: The name of the network to connect the container to.
-    :type volumes: List[str]
-    :param volumes: The list of volumes to be mounted inside the container.
+    :param image: The Docker image.
+    :type name: string
+    :param name: The Docker container name.
+    :type instrospection: Instrospection.
+    :param instrospection: Information regarding test conditions.
+    :type _kwargs: Dict[str, Any]
+    :param _kwargs: Keyword arguments. Consult the documentation for more information
+    (https://gabrieldemarmiesse.github.io/python-on-whales/sub-commands/container/ - run function)
     """
     # Required fields
+    name: str
     image: str
 
     # Optional fields
-    command: List[str] = []
-    environment: List[str] = []
-    introspection: List[str] = []
-    network: str = ''
-    privileged: bool = False
-    volumes: List[str] = []
+    introspection: Optional[Introspection] = None
+
+    # Private fields.
+    _kwargs: Dict[str, Any] = PrivateAttr()
+
+    def __init__(self, **data):
+        super().__init__(**{
+            'name': data.pop('name', None),
+            'image': data.pop('image', None),
+            'introspection': data.pop('introspection', None)
+        })
+        self._kwargs = data
+
+
+class PluginModel(BaseModel):
+    components: List[TestComponent]

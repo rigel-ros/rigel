@@ -24,6 +24,7 @@ class Plugin:
         return self
 
     def stop_plugin(*args: Any) -> None:
+        print()
         exit(1)  # this will trigger __exit__
 
     def __exit__(

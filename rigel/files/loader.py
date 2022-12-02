@@ -30,7 +30,7 @@ class YAMLDataLoader:
         try:
 
             with open(self.filepath, 'r') as configuration_file:
-                yaml_data = yaml.safe_load(configuration_file)
+                yaml_data = yaml.full_load(configuration_file.read())
 
             # Ensure that the file contains some data.
             if not yaml_data:

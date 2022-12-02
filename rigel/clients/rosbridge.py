@@ -1,7 +1,9 @@
 import roslibpy
+from rigel.exceptions import ClientError
 from typing import Any, Callable, Dict, List, Tuple
 
 
+MAX_CONNECTION_ATTEMPTS = 15
 ROS_MESSAGE_TYPE = Dict[str, Any]
 ROS_MESSAGE_HANDLER_TYPE = Callable[[ROS_MESSAGE_TYPE], None]
 
@@ -15,7 +17,7 @@ class ROSBridgeClient:
     handlers: Dict[Tuple[str, str], List[ROS_MESSAGE_HANDLER_TYPE]]
     subscribers: Dict[Tuple[str, str], roslibpy.core.Topic]
 
-    def __init__(self, host: str = 'localhost', port: int = 9090) -> None:
+    def __init__(self, host: str = 'localhost', port: int = 9090, retries=MAX_CONNECTION_ATTEMPTS) -> None:
         """
         Class constructor.
         Connects to the ROS bridge websocket server.
@@ -28,8 +30,18 @@ class ROSBridgeClient:
         self.handlers = {}
         self.subscribers = {}
 
-        self.__rosbridge_client = roslibpy.Ros(host=host, port=port)
-        self.__rosbridge_client.run()
+        attempts = 0
+        while True:
+            try:
+                print(f"Attempting connection to {host}:{port}")
+                self.__rosbridge_client = roslibpy.Ros(host=host, port=port)
+                self.__rosbridge_client.run()
+                break
+            except Exception as exception:
+                if attempts < retries:
+                    attempts = attempts + 1
+                else:
+                    raise ClientError('ROS bridge', exception)
 
     def __create_generic_message_handler(self, topic: str, message_type: str) -> ROS_MESSAGE_HANDLER_TYPE:
         """

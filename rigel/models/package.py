@@ -1,9 +1,15 @@
+import python_on_whales.exceptions
 import os
-from pydantic import BaseModel, Field, validator
-from rigel.exceptions import UndeclaredEnvironmentVariableError
+from pydantic import BaseModel, Field, PrivateAttr, validator
+from rigel.clients import DockerClient
+from rigel.exceptions import DockerAPIError, UndeclaredEnvironmentVariableError
+from rigel.loggers import get_logger
 from typing import Any, Dict, Literal, List, Tuple, Union
 from typing_extensions import Annotated
 from .plugin import PluginDataSection
+
+
+LOGGER = get_logger()
 
 Target = Tuple[str, 'Package', PluginDataSection]
 
@@ -81,3 +87,76 @@ class Package(BaseModel):
     jobs: Dict[str, PluginDataSection] = {}
     ssh: List[SSHKey] = []
     registries: List[RegistryType] = []
+
+    # Private fields.
+    _docker: str = PrivateAttr()
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        self._docker: DockerClient = DockerClient()
+
+    def login_registries(self) -> None:
+        """
+        Login to all image registries.
+        """
+        for registry in self.registries:
+            if isinstance(registry, StandardContainerRegistry):
+                self.__login_standard(registry)
+            else:  # ElasticContainerRegistry
+                self.__login_ecr(registry)
+
+    def __login_standard(self, registry: StandardContainerRegistry) -> None:
+        """Login to a standard Docker image registry.
+
+        :param plugin: Standard image registry.
+        :type plugin: StandardContainerRegistry
+        """
+        assert isinstance(registry, StandardContainerRegistry)
+        server = registry.server
+        username = registry.username
+        LOGGER.debug(f"Attempting login '{username}' with registry '{server}'.")
+        try:
+            self._docker.login(
+                username=username,
+                password=registry.password,
+                server=server
+            )
+        except python_on_whales.exceptions.DockerException as exception:
+            raise DockerAPIError(exception)
+
+        LOGGER.info(f"Logged in with success as user '{username}' with registry '{server}'.")
+
+    def __login_ecr(self, registry: ElasticContainerRegistry) -> None:
+        """Login to a AWS Elastic Container Registry instance.
+
+        :param registry: AWS Elastic Container Registry registry.
+        :type registry: ElasticContainerRegistry
+        """
+        assert isinstance(registry, ElasticContainerRegistry)
+        server = registry.server
+        LOGGER.debug(f"Attempting login with registry '{server}'.")
+        try:
+            self._docker.login_ecr(
+                aws_access_key_id=registry.aws_access_key_id,
+                aws_secret_access_key=registry.aws_secret_access_key,
+                region_name=registry.region_name,
+                registry=server
+            )
+        except python_on_whales.exceptions.DockerException as exception:
+            raise DockerAPIError(exception)
+
+        LOGGER.info(f"Logged in with success to {server}.")
+
+    def logout_registries(self) -> None:
+        """
+        Logout from all image registries.
+        """
+        for registry in self.registries:
+            server = registry.server
+
+            try:
+                self._docker.logout(server)
+            except python_on_whales.exceptions.DockerException as exception:
+                raise DockerAPIError(exception)
+
+            LOGGER.info(f"Logged out with success from registry '{server}'.")

@@ -54,7 +54,7 @@ class PluginManager:
         if not self.is_plugin_compliant(cls):
             raise PluginNotCompliantError(
                 plugin_complete_name,
-                "entrypoint class must inherit functions 'setup','run', and 'stop' from class 'Pugin'."
+                "entrypoint class must inherit functions 'setup','run', and 'stop' from class 'Plugin'."
             )
 
         plugin = ModelBuilder(cls).build([distro, targets], {})
@@ -77,13 +77,10 @@ class PluginManager:
 
             with plugin:
                 plugin.run()
-            LOGGER.debug(f"Plugin '{identifier}' finished execution with success")
+                LOGGER.debug(f"Plugin '{identifier}' finished execution with success")
 
         except RigelError as err:
 
             LOGGER.warning(f"An error occured during the execution of plugin '{identifier}'")
             LOGGER.warning("Attempting to stop its executing gracefully before handling the error.")
-            plugin.stop()
-
-            LOGGER.error(err)
-            sys.exit()
+            raise err
