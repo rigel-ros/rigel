@@ -4,6 +4,26 @@ from rigel.models.package import Package
 from typing import Any, Dict, List
 
 
+class Compiler(BaseModel):
+
+    # Optional fields
+    name: str = 'catkin_make'
+    cmake_args: Dict[str, str] = {}
+
+    @validator('name')
+    def validate_compiler(cls, name: str) -> str:
+        """Ensure that the specified ROS package compiler used is supported by Rigel.
+
+        :type name: string
+        :param name: ROS package compiler.
+        """
+        print(name)
+        # NOTE: At the moment only "catkin" and "colcon" are supported.
+        if name not in ['catkin_make', 'colcon']:
+            raise UnsupportedCompilerError(name)
+        return name
+
+
 class PluginModel(BaseModel):
     """A plugin that creates a ready-to-use Dockerfile for an existing ROS package.
 
@@ -13,7 +33,7 @@ class PluginModel(BaseModel):
     :cvar distro: The target ROS distro. This field is automatically populated by Rigel.
     :type apt: List[string]
     :cvar apt: The name of dependencies to be installed using APT.
-    :type compiler: string
+    :type compiler: Compiler
     :cvar compiler: The tool with which to compile the containerized ROS workspace. Default value is 'catkin_make'.
     :type entrypoint: List[string]
     :cvar entrypoint: A list of commands to be run while executing the entrypoint script.
@@ -34,10 +54,10 @@ class PluginModel(BaseModel):
     command: str
     distro: str
     package: Package
+    compiler: Compiler
 
     # Optional fields.
     apt: List[str] = []
-    compiler: str = 'catkin_make'
 
     entrypoint: List[str] = []
     env: List[Dict[str, Any]] = []
@@ -52,15 +72,3 @@ class PluginModel(BaseModel):
             kwargs['ros_image'] = kwargs['distro']
 
         super().__init__(*args, **kwargs)
-
-    @validator('compiler')
-    def validate_compiler(cls, compiler: str) -> str:
-        """Ensure that the specified ROS package compiler used is supported by Rigel.
-
-        :type compiler: string
-        :param compiler: ROS package compiler.
-        """
-        # NOTE: At the moment only "catkin" and "colcon" are supported.
-        if compiler not in ['catkin_make', 'colcon']:
-            raise UnsupportedCompilerError(compiler)
-        return compiler

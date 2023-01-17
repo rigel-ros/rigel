@@ -82,7 +82,7 @@ RUN sudo apt clean && sudo apt update && sudo apt install -y \
         {{ package }} \
     {% endfor -%}
     {% endif -%}
-    {% if configuration.compiler == 'colcon' -%}
+    {% if configuration.compiler.name == 'colcon' -%}
         python3-colcon-common-extensions \
     {% endif -%}
     ssh
@@ -129,10 +129,10 @@ RUN /bin/bash -c "source /opt/ros/{{ configuration.distro }}/setup.bash \
     && sudo rosdep fix-permissions \
     && rosdep update \
     && rosdep install --rosdistro {{ configuration.distro }} --from-paths src --ignore-src -r -y \
-    {% if configuration.compiler == 'catkin_make' -%}
-        && catkin_make"
-    {% elif configuration.compiler == 'colcon' -%}
-        && colcon build"
+    {% if configuration.compiler.name == 'catkin_make' -%}
+        && catkin_make {{ cmake_args }}"
+    {% elif configuration.compiler.name == 'colcon' -%}
+        && colcon build {{ cmake_args }}"
     {%- endif %}
 
 # Give permissions to user
