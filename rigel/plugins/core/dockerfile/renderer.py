@@ -39,5 +39,4 @@ class Renderer:
             output_file.write(dockerfile_templater.render(
                 configuration=self.configuration_file.dict(),
                 cmake_args=cmake_args
-            )
-        )
+            ))
