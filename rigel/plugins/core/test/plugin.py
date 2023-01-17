@@ -1,3 +1,4 @@
+import threading
 import uuid
 from python_on_whales.components.container.cli_wrapper import Container
 from rigel.clients import DockerClient, ROSBridgeClient
@@ -13,23 +14,15 @@ from .introspection.parser import SimulationRequirementsParser
 LOGGER = get_logger()
 
 
-class Plugin(PluginBase):
+class TestCase(threading.Thread):
 
-    def __init__(self, distro: str, targets: List[Target]) -> None:
-        super().__init__(distro, targets)
+    def __init__(self) -> None:
 
+        threading.Thread.__init__(self)
         self.__simulation_uuid = str(uuid.uuid1())
         self.__network_name = f'rigel-simulation-{self.__simulation_uuid}'
-        self.__docker_client = DockerClient()
         self.__requirements_manager = SimulationRequirementsManager(10 * 60.0)
         self.__requirements_parser = SimulationRequirementsParser()
-
-        self.prepare_targets()
-
-    def prepare_targets(self) -> None:
-        self.__targets = [
-            (package_name, package, PluginModel(**plugin_data))
-            for package_name, package, plugin_data in self.targets]
 
     def create_simulation_network(self) -> None:
         """
@@ -154,8 +147,6 @@ class Plugin(PluginBase):
         kwargs['envs']['ROS_MASTER_URI'] = f'http://{master}:11311'
         kwargs['envs']['ROS_HOSTNAME'] = f"{kwargs['hostname']}"
 
-        # TODO: ensure that networks can be costumized.
-        # Probably not required.
         kwargs['networks'] = [self.__network_name]
 
         if 'restart' not in kwargs:
@@ -186,24 +177,53 @@ class Plugin(PluginBase):
             LOGGER.info(f"Removed Docker container '{test_component.name}'")
 
     def setup(self) -> None:
-        for _, package, _ in self.__targets:
-            package.login_registries()
-
         self.create_simulation_network()
         self.start_dns_server()
         self.start_ros_master()
+        self.bringup_ros_nodes()
+
+    def run(self) -> None:
+        self.setup()
+        LOGGER.info("Testing the application!")
+        while self.__requirements_manager.children and (not self.__requirements_manager.assess_children_nodes()):
+            pass
+        print(self.__requirements_manager)
+        self.stop()
+
+    def stop(self) -> None:
+        self.stop_ros_master()
+        self.stop_dns_server()
+        self.remove_simulation_network()
+
+
+class Plugin(PluginBase):
+
+    def __init__(self, distro: str, targets: List[Target]) -> None:
+        super().__init__(distro, targets)
+
+        self.__docker_client = DockerClient()
+        self.prepare_targets()
+
+    def prepare_targets(self) -> None:
+        self.__targets = [
+            (package_name, package, PluginModel(**plugin_data))
+            for package_name, package, plugin_data in self.targets]
+
+    def setup(self) -> None:
+        for _, package, plugin in self.__targets:
+            package.login_registries()
+
+            # Pull all required images before creating threads
+            for component in plugin.components:
+                self.__docker_client.pull(component.image)
 
     def run(self) -> None:
         """
         Plugin entrypoint.
         Create simulation network and all containers required for a given simulation.
         """
-        self.bringup_ros_nodes()
-        LOGGER.info("Testing the application!")
-
-        while self.__requirements_manager.children and (not self.__requirements_manager.assess_children_nodes()):
-            pass  # TODO: separate this into a thread for efficiency
-        print(self.__requirements_manager)
+        # TODO: create threads
+        pass
 
     def stop(self) -> None:
         """
@@ -213,6 +233,4 @@ class Plugin(PluginBase):
             self.remove_package_containers(plugin)  # Remove containers
             package.logout_registries()  # Log out from image registries
 
-        self.stop_ros_master()
-        self.stop_dns_server()
-        self.remove_simulation_network()
+            # TODO: remove images if so specified with dedicated flag
