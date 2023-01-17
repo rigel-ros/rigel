@@ -156,16 +156,11 @@ class Plugin(PluginBase):
                     'tools': [tool.dict() for tool in plugin.simulation_application.tools]
                 }
             ],
+            'dataSources': [source.dict() for source in plugin.data_sources],
             'vpcConfig': {
-                # 'vpcId': 'vpc-0c0e0c8103ed9348a',
-                'subnets': [
-                    'subnet-0c31fe89fff4cda00',
-                    'subnet-0229c1b42075fddf3'
-                ],
-                'securityGroups': [
-                    'sg-06f70b36208dde8bc'
-                ],
-                'assignPublicIp': True
+                'subnets': plugin.vpc_config.subnets,
+                'securityGroups': plugin.vpc_config.securityGroups,
+                'assignPublicIp': plugin.vpc_config.assignPublicIp
             },
         }
         simulation_job = self.__robomaker_client.create_simulation_job(**kwargs)

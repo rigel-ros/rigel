@@ -77,6 +77,33 @@ class RoboMakerApplication(BaseModel):
     ports: List[Tuple[int, int]] = []
 
 
+class DataSource(BaseModel):
+    """A data source consists of read-only files from S3
+    used into RoboMaker simulations.
+    """
+
+    # Required field
+    name: str
+    s3Bucket: str = Field(alias='s3_bucket')
+    s3Keys: List[str] = Field(alias='s3_keys')
+
+    # Optional fields:
+    type: str = 'File'
+    destination: str
+
+    @validator('type')
+    def validate_data_source_type(cls, ds_type: str) -> str:
+        """
+        Ensure that field 'type' is valid.
+        """
+        if ds_type not in ['Prefix', 'Archive', 'File']:
+            raise InvalidValueError(field='type', value=ds_type)
+        return ds_type
+
+    # TODO: add validator to ensure that field 'destination'
+    # is set according to the value of field 'type'
+
+
 class PluginModel(BaseModel):
 
     # Required fields
@@ -89,3 +116,4 @@ class PluginModel(BaseModel):
     output_location: Optional[str] = None
     simulation_duration: int = 300  # seconds
     vpc_config: Optional[VPCConfig] = None
+    data_sources: List[DataSource] = []
