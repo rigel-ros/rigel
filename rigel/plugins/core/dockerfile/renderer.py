@@ -27,7 +27,7 @@ class Renderer:
         # Process CMake arguments for compiler, if any.
         cmake_args = ''
         if self.configuration_file.compiler.cmake_args:
-            cmake_args = '--cmake_args'
+            cmake_args = '--cmake-args'
             for name, value in self.configuration_file.compiler.cmake_args.items():
                 cmake_args = cmake_args + f' {name}={value}'
 
