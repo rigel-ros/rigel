@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, validator
 from rigel.exceptions import InvalidValueError
-from typing import List, Optional, Tuple
+from typing import Dict, List, Literal, Optional, Tuple
 
 
 class VPCConfig(BaseModel):
@@ -64,7 +64,7 @@ class Tool(BaseModel):
         return exitBehavior
 
 
-class RoboMakerApplication(BaseModel):
+class RobotApplication(BaseModel):
 
     # Required fields
     ecr: str
@@ -75,6 +75,12 @@ class RoboMakerApplication(BaseModel):
     tools: List[Tool] = []
     requirements: List[str] = []
     ports: List[Tuple[int, int]] = []
+
+
+class SimulationApplication(RobotApplication):
+
+    # Optional fields
+    worldConfigs: List[Dict[Literal["world"], str]] = Field(alias='world_configs', default=[])
 
 
 class DataSource(BaseModel):
@@ -109,8 +115,8 @@ class PluginModel(BaseModel):
     # Required fields
     iam_role: str
     credentials: Credentials
-    robot_application: RoboMakerApplication
-    simulation_application: RoboMakerApplication
+    robot_application: RobotApplication
+    simulation_application: SimulationApplication
 
     # Optional fields
     output_location: Optional[str] = None

@@ -153,16 +153,19 @@ class Plugin(PluginBase):
                             ]
                         },
                     },
+                    'worldConfigs': [config.dict() for config in plugin.simulation_application.worldConfigs],
                     'tools': [tool.dict() for tool in plugin.simulation_application.tools]
                 }
             ],
-            'dataSources': [source.dict() for source in plugin.data_sources],
             'vpcConfig': {
                 'subnets': plugin.vpc_config.subnets,
                 'securityGroups': plugin.vpc_config.securityGroups,
                 'assignPublicIp': plugin.vpc_config.assignPublicIp
             },
         }
+        if plugin.data_sources:
+            kwargs['dataSources'] = [source.dict() for source in plugin.data_sources]
+
         simulation_job = self.__robomaker_client.create_simulation_job(**kwargs)
         LOGGER.info('Created simulation job')
         return simulation_job
