@@ -120,6 +120,7 @@ class Plugin(PluginBase):
                 {
                     'application': self.__robot_application['arn'],
                     'launchConfig': {
+                        'streamUI': plugin.robot_application.streamUI,
                         'command': plugin.robot_application.command,
                         'environmentVariables': self.convert_envs(plugin.robot_application.environment),
                         'portForwardingConfig': {
@@ -140,6 +141,7 @@ class Plugin(PluginBase):
                 {
                     'application': self.__simulation_application['arn'],
                     'launchConfig': {
+                        'streamUI': plugin.simulation_application.streamUI,
                         'command': plugin.simulation_application.command,
                         'environmentVariables': self.convert_envs(plugin.simulation_application.environment),
                         'portForwardingConfig': {

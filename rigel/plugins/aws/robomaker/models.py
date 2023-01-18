@@ -75,6 +75,7 @@ class RobotApplication(BaseModel):
     tools: List[Tool] = []
     requirements: List[str] = []
     ports: List[Tuple[int, int]] = []
+    streamUI: bool = Field(alias='stream_ui', default=False)
 
 
 class SimulationApplication(RobotApplication):
