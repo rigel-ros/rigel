@@ -69,6 +69,6 @@ class PluginModel(BaseModel):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
 
         if not kwargs.get('ros_image') and kwargs.get('distro'):
-            kwargs['ros_image'] = kwargs['distro']
+            kwargs['ros_image'] = f'ros:{kwargs["distro"]}'
 
         super().__init__(*args, **kwargs)
