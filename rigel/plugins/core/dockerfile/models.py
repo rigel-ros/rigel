@@ -17,7 +17,6 @@ class Compiler(BaseModel):
         :type name: string
         :param name: ROS package compiler.
         """
-        print(name)
         # NOTE: At the moment only "catkin" and "colcon" are supported.
         if name not in ['catkin_make', 'colcon']:
             raise UnsupportedCompilerError(name)
