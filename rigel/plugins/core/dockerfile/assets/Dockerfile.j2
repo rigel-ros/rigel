@@ -140,5 +140,7 @@ RUN sh -c 'sudo chmod +x /home/{{ configuration.username }}/robot-entrypoint.sh'
 RUN sh -c 'sudo chown {{ configuration.username }}:{{ configuration.username }} /home/{{ configuration.username }}/robot-entrypoint.sh'
 
 # Launch ROS application.
+{%- if configuration.command %}
 CMD {{ configuration.command }}
+{%- endif %}
 ENTRYPOINT [ "/home/{{ configuration.username }}/robot-entrypoint.sh" ]

@@ -1,4 +1,3 @@
-import sys
 from importlib import import_module
 from rigel.exceptions import (
     PluginNotCompliantError,

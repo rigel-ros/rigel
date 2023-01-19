@@ -31,11 +31,11 @@ class PluginModel(BaseModel):
     :cvar username: The desired username. Defaults to 'user'.
     """
     # Required fields.
-    command: str
     distro: str
     package: Package
 
     # Optional fields.
+    command: str = ''
     apt: List[str] = []
     compiler: str = 'catkin_make'
 
