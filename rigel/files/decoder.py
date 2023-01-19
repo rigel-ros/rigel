@@ -166,5 +166,7 @@ class YAMLDataDecoder:
 
         # Function entry point.
         variables = data.get('vars') or {}
+        if variables:
+            self.__aux_decode(variables, variables)
         self.__aux_decode(data, variables)
         return data

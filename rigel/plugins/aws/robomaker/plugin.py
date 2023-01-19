@@ -120,6 +120,7 @@ class Plugin(PluginBase):
                 {
                     'application': self.__robot_application['arn'],
                     'launchConfig': {
+                        'streamUI': plugin.robot_application.streamUI,
                         'command': plugin.robot_application.command,
                         'environmentVariables': self.convert_envs(plugin.robot_application.environment),
                         'portForwardingConfig': {
@@ -140,6 +141,7 @@ class Plugin(PluginBase):
                 {
                     'application': self.__simulation_application['arn'],
                     'launchConfig': {
+                        'streamUI': plugin.simulation_application.streamUI,
                         'command': plugin.simulation_application.command,
                         'environmentVariables': self.convert_envs(plugin.simulation_application.environment),
                         'portForwardingConfig': {
@@ -153,21 +155,19 @@ class Plugin(PluginBase):
                             ]
                         },
                     },
+                    'worldConfigs': [config.dict() for config in plugin.simulation_application.worldConfigs],
                     'tools': [tool.dict() for tool in plugin.simulation_application.tools]
                 }
             ],
             'vpcConfig': {
-                # 'vpcId': 'vpc-0c0e0c8103ed9348a',
-                'subnets': [
-                    'subnet-0c31fe89fff4cda00',
-                    'subnet-0229c1b42075fddf3'
-                ],
-                'securityGroups': [
-                    'sg-06f70b36208dde8bc'
-                ],
-                'assignPublicIp': True
+                'subnets': plugin.vpc_config.subnets,
+                'securityGroups': plugin.vpc_config.securityGroups,
+                'assignPublicIp': plugin.vpc_config.assignPublicIp
             },
         }
+        if plugin.data_sources:
+            kwargs['dataSources'] = [source.dict() for source in plugin.data_sources]
+
         simulation_job = self.__robomaker_client.create_simulation_job(**kwargs)
         LOGGER.info('Created simulation job')
         return simulation_job

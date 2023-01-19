@@ -4,9 +4,9 @@
 
 cd ~/ros_workspace/
 source /opt/ros/{{ configuration.distro }}/setup.bash
-{% if configuration.compiler == 'catkin_make' -%}
+{% if configuration.compiler.name == 'catkin_make' -%}
 source ./devel/setup.bash
-{% elif configuration.compiler == 'colcon' -%}
+{% elif configuration.compiler.name == 'colcon' -%}
 source ./install/setup.bash
 {% endif -%}
 {% if configuration.entrypoint is defined and configuration.entrypoint|length > 0 -%}

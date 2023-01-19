@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, validator
 from rigel.exceptions import InvalidValueError
-from typing import List, Optional, Tuple
+from typing import Dict, List, Literal, Optional, Tuple
 
 
 class VPCConfig(BaseModel):
@@ -64,7 +64,7 @@ class Tool(BaseModel):
         return exitBehavior
 
 
-class RoboMakerApplication(BaseModel):
+class RobotApplication(BaseModel):
 
     # Required fields
     ecr: str
@@ -75,6 +75,40 @@ class RoboMakerApplication(BaseModel):
     tools: List[Tool] = []
     requirements: List[str] = []
     ports: List[Tuple[int, int]] = []
+    streamUI: bool = Field(alias='stream_ui', default=False)
+
+
+class SimulationApplication(RobotApplication):
+
+    # Optional fields
+    worldConfigs: List[Dict[Literal["world"], str]] = Field(alias='world_configs', default=[])
+
+
+class DataSource(BaseModel):
+    """A data source consists of read-only files from S3
+    used into RoboMaker simulations.
+    """
+
+    # Required field
+    name: str
+    s3Bucket: str = Field(alias='s3_bucket')
+    s3Keys: List[str] = Field(alias='s3_keys')
+
+    # Optional fields:
+    type: str = 'File'
+    destination: str
+
+    @validator('type')
+    def validate_data_source_type(cls, ds_type: str) -> str:
+        """
+        Ensure that field 'type' is valid.
+        """
+        if ds_type not in ['Prefix', 'Archive', 'File']:
+            raise InvalidValueError(field='type', value=ds_type)
+        return ds_type
+
+    # TODO: add validator to ensure that field 'destination'
+    # is set according to the value of field 'type'
 
 
 class PluginModel(BaseModel):
@@ -82,10 +116,11 @@ class PluginModel(BaseModel):
     # Required fields
     iam_role: str
     credentials: Credentials
-    robot_application: RoboMakerApplication
-    simulation_application: RoboMakerApplication
+    robot_application: RobotApplication
+    simulation_application: SimulationApplication
 
     # Optional fields
     output_location: Optional[str] = None
     simulation_duration: int = 300  # seconds
     vpc_config: Optional[VPCConfig] = None
+    data_sources: List[DataSource] = []
