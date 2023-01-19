@@ -87,9 +87,9 @@ RUN sudo apt clean && sudo apt update && sudo apt install -y \
     {% endif -%}
     ssh
 
-{% if configuration.run is defined and configuration.run|length > 0 -%}
+{% if configuration.docker_run is defined and configuration.docker_run|length > 0 -%}
 # Execute additional commands.
-{% for cmd in configuration.run -%}
+{% for cmd in configuration.docker_run -%}
 RUN {{ cmd }}
 {% endfor -%}
 {%- endif %}
