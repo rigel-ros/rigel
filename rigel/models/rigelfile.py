@@ -1,10 +1,10 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Extra
 from typing import Any, List, Dict
 from .package import Package
 from .plugin import PluginSection
 
 
-class Rigelfile(BaseModel):
+class Rigelfile(BaseModel, extra=Extra.forbid):
     """A placeholder for information regarding a set of ROS packages.
 
     Each set may contain multiple ROS packages

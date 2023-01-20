@@ -1,9 +1,9 @@
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Extra, Field, validator
 from rigel.exceptions import InvalidValueError
 from typing import Dict, List, Literal, Optional, Tuple
 
 
-class VPCConfig(BaseModel):
+class VPCConfig(BaseModel, extra=Extra.forbid):
 
     # Required fields
     subnets: List[str]
@@ -13,7 +13,7 @@ class VPCConfig(BaseModel):
     assignPublicIp: bool = Field(alias='assign_public_ip', default=False)
 
 
-class Credentials(BaseModel):
+class Credentials(BaseModel, extra=Extra.forbid):
 
     # Required fields
     aws_access_key_id: str
@@ -21,7 +21,7 @@ class Credentials(BaseModel):
     region_name: str
 
 
-class Tool(BaseModel):
+class Tool(BaseModel, extra=Extra.forbid):
 
     """Information about tools configured for the robot application.
     :param command: Command-line arguments for the tool. It must include the tool executable name.
@@ -64,7 +64,7 @@ class Tool(BaseModel):
         return exitBehavior
 
 
-class RobotApplication(BaseModel):
+class RobotApplication(BaseModel, extra=Extra.forbid):
 
     # Required fields
     ecr: str
@@ -84,7 +84,7 @@ class SimulationApplication(RobotApplication):
     worldConfigs: List[Dict[Literal["world"], str]] = Field(alias='world_configs', default=[])
 
 
-class DataSource(BaseModel):
+class DataSource(BaseModel, extra=Extra.forbid):
     """A data source consists of read-only files from S3
     used into RoboMaker simulations.
     """
@@ -111,7 +111,7 @@ class DataSource(BaseModel):
     # is set according to the value of field 'type'
 
 
-class PluginModel(BaseModel):
+class PluginModel(BaseModel, extra=Extra.forbid):
 
     # Required fields
     iam_role: str

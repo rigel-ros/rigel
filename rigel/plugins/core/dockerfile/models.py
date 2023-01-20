@@ -1,10 +1,10 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, Extra, validator
 from rigel.exceptions import UnsupportedCompilerError
 from rigel.models.package import Package
 from typing import Any, Dict, List
 
 
-class Compiler(BaseModel):
+class Compiler(BaseModel, extra=Extra.forbid):
 
     # Optional fields
     name: str = 'catkin_make'
@@ -23,7 +23,7 @@ class Compiler(BaseModel):
         return name
 
 
-class PluginModel(BaseModel):
+class PluginModel(BaseModel, extra=Extra.forbid):
     """A plugin that creates a ready-to-use Dockerfile for an existing ROS package.
 
     :type command: string
@@ -69,5 +69,8 @@ class PluginModel(BaseModel):
 
         if not kwargs.get('ros_image') and kwargs.get('distro'):
             kwargs['ros_image'] = f'ros:{kwargs["distro"]}'
+
+        # from pprint import pprint
+        # pprint(kwargs)
 
         super().__init__(*args, **kwargs)

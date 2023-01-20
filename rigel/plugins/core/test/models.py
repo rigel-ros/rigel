@@ -1,8 +1,8 @@
-from pydantic import BaseModel, PrivateAttr
+from pydantic import BaseModel, Extra, PrivateAttr
 from typing import Any, Dict, List, Optional, Tuple
 
 
-class Introspection(BaseModel):
+class Introspection(BaseModel, extra=Extra.forbid):
 
     # Required fields
     requirements: List[str]
@@ -12,7 +12,7 @@ class Introspection(BaseModel):
     hostname: Optional[str] = None
 
 
-class TestComponent(BaseModel):
+class TestComponent(BaseModel, extra=Extra.forbid):
     """
     A placeholder for information regarding a containerized ROS package to include in the testing.
 
@@ -45,5 +45,5 @@ class TestComponent(BaseModel):
         self._kwargs = data
 
 
-class PluginModel(BaseModel):
+class PluginModel(BaseModel, extra=Extra.forbid):
     components: List[TestComponent]

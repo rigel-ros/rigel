@@ -17,7 +17,7 @@ class Plugin(PluginBase):
 
     def prepare_targets(self) -> None:
         self.__targets = [
-            (package, package_data, PluginModel(distro=self.distro, package=package_data, **plugin_data))
+            (package, package_data, PluginModel(laranjas='sdjkfsjdhfsj', distro=self.distro, package=package_data, **plugin_data))
             for package, package_data, plugin_data in self.targets]
 
     def setup(self) -> None:

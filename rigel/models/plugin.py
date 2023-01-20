@@ -1,10 +1,10 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Extra
 from typing import Any, Dict, List, Union
 
 PluginDataSection = Dict[str, Any]
 
 
-class PluginSection(BaseModel):
+class PluginSection(BaseModel, extra=Extra.forbid):
     """A placeholder for information regarding a single plugin.
 
     Each plugin consists of a Python module installed in the system

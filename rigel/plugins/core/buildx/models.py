@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, Extra, validator
 from rigel.exceptions import UnsupportedPlatformError
 from rigel.models.package import Package
 from typing import Dict, List
@@ -10,7 +10,7 @@ SUPPORTED_PLATFORMS: List[str] = [
 ]
 
 
-class PluginModel(BaseModel):
+class PluginModel(BaseModel, extra=Extra.forbid):
     """A plugin to build Docker images using Docker BuildX.
 
     :type distro: string

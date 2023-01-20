@@ -1,6 +1,6 @@
 import python_on_whales.exceptions
 import os
-from pydantic import BaseModel, Field, PrivateAttr, validator
+from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 from rigel.clients import DockerClient
 from rigel.exceptions import DockerAPIError, UndeclaredEnvironmentVariableError
 from rigel.loggers import get_logger
@@ -14,7 +14,7 @@ LOGGER = get_logger()
 Target = Tuple[str, 'Package', PluginDataSection]
 
 
-class SSHKey(BaseModel):
+class SSHKey(BaseModel, extra=Extra.forbid):
     """Information placeholder regarding a given private SSH key.
 
     :type hostname: string
@@ -50,14 +50,14 @@ class SSHKey(BaseModel):
         return v
 
 
-class StandardContainerRegistry(BaseModel):
+class StandardContainerRegistry(BaseModel, extra=Extra.forbid):
     type: Literal['standard']
     server: str
     password: str
     username: str
 
 
-class ElasticContainerRegistry(BaseModel):
+class ElasticContainerRegistry(BaseModel, extra=Extra.forbid):
     type: Literal['ecr']
     server: str
     aws_access_key_id: str
@@ -68,7 +68,7 @@ class ElasticContainerRegistry(BaseModel):
 RegistryType = Annotated[Union[StandardContainerRegistry, ElasticContainerRegistry], Field(discriminator='type')]
 
 
-class Package(BaseModel):
+class Package(BaseModel, extra=Extra.forbid):
     """A placeholder for information regarding a single ROS package.
 
     Each ROS package may support the execution of individual jobs.
