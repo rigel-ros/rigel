@@ -27,6 +27,10 @@ class WorkspaceManager:
 
         _instance = ModelBuilder(Rigelfile).build([], yaml_data)
         assert isinstance(_instance, Rigelfile)
+
+        from pprint import pprint
+        pprint(_instance)
+
         self.workspace: Rigelfile = _instance
 
     def get_job_data(self, job: str) -> Tuple[str, PluginSection]:

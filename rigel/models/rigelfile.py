@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Extra
-from typing import Any, List, Dict
+from typing import List, Dict, Union
+from .data import ComplexDataModel, SimpleDataModel
 from .package import Package
 from .plugin import PluginSection
 
@@ -28,4 +29,4 @@ class Rigelfile(BaseModel, extra=Extra.forbid):
     jobs: Dict[str, PluginSection] = {}
     packages: Dict[str, Package] = {}
     sequences: Dict[str, List[str]] = {}
-    vars: Dict[str, Any] = {}
+    vars: Dict[str, Union[ComplexDataModel, SimpleDataModel]] = {}
