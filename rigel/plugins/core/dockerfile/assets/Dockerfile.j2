@@ -99,6 +99,7 @@ ARG USERNAME={{ configuration.username }}
 RUN groupadd $USERNAME
 RUN useradd -ms /bin/bash -g $USERNAME $USERNAME
 RUN sh -c 'echo "$USERNAME ALL=(root) NOPASSWD:ALL" >> /etc/sudoers'
+RUN sh -c 'sudo chown -R {{ configuration.username }}:{{ configuration.username }} /home/{{ configuration.username }}'
 USER $USERNAME
 
 # Create ROS workspace folder
