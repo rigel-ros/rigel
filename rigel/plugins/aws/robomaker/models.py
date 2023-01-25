@@ -79,7 +79,7 @@ class RobotApplication(BaseModel, extra=Extra.forbid):
     streamUI: bool = Field(alias='stream_ui', default=False)
 
 
-class SimulationAppliscation(RobotApplication):
+class SimulationApplication(RobotApplication):
 
     # Optional fields
     worldConfigs: List[Dict[Literal["world"], str]] = Field(alias='world_configs', default=[])
