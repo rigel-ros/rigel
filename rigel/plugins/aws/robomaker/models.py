@@ -21,7 +21,7 @@ class Credentials(BaseModel, extra=Extra.forbid):
     region_name: str
 
 
-class Tool(BaseModel, extra=Extra.forbid):
+class Tool(BaseModel):
 
     """Information about tools configured for the robot application.
     :param command: Command-line arguments for the tool. It must include the tool executable name.
@@ -44,6 +44,7 @@ class Tool(BaseModel, extra=Extra.forbid):
 
     class Config:
         allow_population_by_field_name = True
+        extra = Extra.forbid
 
     # Required fields
     name: str
@@ -78,7 +79,7 @@ class RobotApplication(BaseModel, extra=Extra.forbid):
     streamUI: bool = Field(alias='stream_ui', default=False)
 
 
-class SimulationApplication(RobotApplication):
+class SimulationAppliscation(RobotApplication):
 
     # Optional fields
     worldConfigs: List[Dict[Literal["world"], str]] = Field(alias='world_configs', default=[])
