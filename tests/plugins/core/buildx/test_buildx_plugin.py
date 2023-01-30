@@ -2,7 +2,7 @@ import os
 import unittest
 from python_on_whales.exceptions import DockerException
 from rigel.exceptions import DockerAPIError
-from rigel.models.package import (
+from rigel.models.application import (
     Package,
     ElasticContainerRegistry,
     StandardContainerRegistry,

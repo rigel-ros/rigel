@@ -1,8 +1,10 @@
 from pydantic import BaseModel, Extra
 from typing import List, Dict, Union
+from .application import Application
 from .data import ComplexDataModel, SimpleDataModel
-from .package import Package
-from .plugin import PluginSection
+from .provider import ProviderDataModel
+
+RigelfileGlobalData = Dict[str, Union[ComplexDataModel, SimpleDataModel]]
 
 
 class Rigelfile(BaseModel, extra=Extra.forbid):
@@ -11,22 +13,20 @@ class Rigelfile(BaseModel, extra=Extra.forbid):
     Each set may contain multiple ROS packages
     supporting the execution of individual jobs and job sequences.
 
-    :type distro: str
-    :cvar distro: Target ROS distro.
-    :type jobs: Dict[str, PluginSection]
-    :cvar jobs: The supported individual jobs.
-    :type packages: Dict[str, Package]
-    :cvar packages: The set of relevant ROS packages.
+    :type applications: Dict[str, Application]
+    :cvar applications: The set of relevant ROS applications.
     :type sequences: Dict[str, List[str]]
     :cvar sequences: The supported sequence of jobs.
+    :type providers: Dict[str, ProviderDataModel]
+    :cvar providers: A list of required providers.
     :type vars: Dict[str, Any]
     :cvar vars: Section containing the values of global variables.
     """
+
     # Required fields.
-    distro: str
+    applications: Dict[str, Application]
 
     # Optional fields.
-    jobs: Dict[str, PluginSection] = {}
-    packages: Dict[str, Package] = {}
+    providers: Dict[str, ProviderDataModel] = {}
     sequences: Dict[str, List[str]] = {}
-    vars: Dict[str, Union[ComplexDataModel, SimpleDataModel]] = {}
+    vars: RigelfileGlobalData = {}

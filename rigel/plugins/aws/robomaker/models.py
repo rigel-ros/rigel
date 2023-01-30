@@ -13,15 +13,7 @@ class VPCConfig(BaseModel, extra=Extra.forbid):
     assignPublicIp: bool = Field(alias='assign_public_ip', default=False)
 
 
-class Credentials(BaseModel, extra=Extra.forbid):
-
-    # Required fields
-    aws_access_key_id: str
-    aws_secret_access_key: str
-    region_name: str
-
-
-class Tool(BaseModel, extra=Extra.forbid):
+class Tool(BaseModel):
 
     """Information about tools configured for the robot application.
     :param command: Command-line arguments for the tool. It must include the tool executable name.
@@ -44,6 +36,7 @@ class Tool(BaseModel, extra=Extra.forbid):
 
     class Config:
         allow_population_by_field_name = True
+        extra = Extra.forbid
 
     # Required fields
     name: str
@@ -115,7 +108,6 @@ class PluginModel(BaseModel, extra=Extra.forbid):
 
     # Required fields
     iam_role: str
-    credentials: Credentials
     robot_application: RobotApplication
     simulation_application: SimulationApplication
 

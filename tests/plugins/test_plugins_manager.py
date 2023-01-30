@@ -5,7 +5,7 @@ from rigel.exceptions import (
     PluginNotCompliantError,
     RigelError
 )
-from rigel.models.package import Package, Target
+from rigel.models.application import Package, Target
 from rigel.plugins.manager import PluginManager
 from rigel.plugins.plugin import Plugin
 from typing import List

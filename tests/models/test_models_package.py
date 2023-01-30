@@ -1,6 +1,6 @@
 import unittest
 from rigel.exceptions import UndeclaredEnvironmentVariableError
-from rigel.models.package import SSHKey
+from rigel.models.application import SSHKey
 from unittest.mock import Mock, patch
 
 

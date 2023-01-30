@@ -2,9 +2,12 @@ import uuid
 from python_on_whales.components.container.cli_wrapper import Container
 from rigel.clients import DockerClient, ROSBridgeClient
 from rigel.loggers import get_logger
-from rigel.models.package import Target
+from rigel.models.application import Application
+from rigel.models.builder import ModelBuilder
+from rigel.models.plugin import PluginRawData
+from rigel.models.rigelfile import RigelfileGlobalData
 from rigel.plugins import Plugin as PluginBase
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 from .models import PluginModel, TestComponent
 from .introspection.command import CommandHandler
 from .introspection.requirements.manager import SimulationRequirementsManager
@@ -15,21 +18,29 @@ LOGGER = get_logger()
 
 class Plugin(PluginBase):
 
-    def __init__(self, distro: str, targets: List[Target]) -> None:
-        super().__init__(distro, targets)
+    def __init__(
+        self,
+        raw_data: PluginRawData,
+        global_data: RigelfileGlobalData,
+        application: Application,
+        providers_data: Dict[str, Any]
+    ) -> None:
+        super().__init__(
+            raw_data,
+            global_data,
+            application,
+            providers_data
+        )
+
+        # Ensure model instance was properly initialized
+        self.model = ModelBuilder(PluginModel).build([], self.raw_data)
+        assert isinstance(self.model, PluginModel)
 
         self.__simulation_uuid = str(uuid.uuid1())
         self.__network_name = f'rigel-simulation-{self.__simulation_uuid}'
         self.__docker_client = DockerClient()
         self.__requirements_manager = SimulationRequirementsManager(10 * 60.0)
         self.__requirements_parser = SimulationRequirementsParser()
-
-        self.prepare_targets()
-
-    def prepare_targets(self) -> None:
-        self.__targets = [
-            (package_name, package, PluginModel(**plugin_data))
-            for package_name, package, plugin_data in self.targets]
 
     def create_simulation_network(self) -> None:
         """
@@ -59,7 +70,7 @@ class Plugin(PluginBase):
     def start_ros_master(self) -> None:
         self.__docker_client.run_container(
             'master',
-            f'ros:{self.distro}',
+            f'ros:{self.application.distro}',
             hostname='master',
             command=['roscore'],
             envs={
@@ -105,32 +116,30 @@ class Plugin(PluginBase):
         master_ip = master_container.network_settings.networks[self.__network_name].ip_address
 
         # Start containerize ROS application
-        for _, _, plugin in self.__targets:
+        for test_component in self.model.components:
 
-            for test_component in plugin.components:
+            container = self.run_package_container(test_component, master_ip)
 
-                container = self.run_package_container(test_component, master_ip)
+            if container:
 
-                if container:
+                container_ip = container.network_settings.networks[self.__network_name].ip_address
+                LOGGER.info(f"Created container '{test_component.name}' ({container_ip})")
 
-                    container_ip = container.network_settings.networks[self.__network_name].ip_address
-                    LOGGER.info(f"Created container '{test_component.name}' ({container_ip})")
+                if test_component.introspection:
 
-                    if test_component.introspection:
+                    requirements: List[CommandHandler] = [
+                        self.__requirements_parser.parse(req) for req in test_component.introspection.requirements
+                    ]
 
-                        requirements: List[CommandHandler] = [
-                            self.__requirements_parser.parse(req) for req in test_component.introspection.requirements
-                        ]
+                    self.__requirements_manager.children = requirements
 
-                        self.__requirements_manager.children = requirements
+                    # Connect to ROS bridge inside container
+                    hostname = test_component.introspection.hostname or container_ip
+                    port = test_component.introspection.publish[0]
+                    rosbridge_client = ROSBridgeClient(hostname, port)
+                    LOGGER.info(f"Connected to ROS bridge server at '{hostname}:{port}'")
 
-                        # Connect to ROS bridge inside container
-                        hostname = test_component.introspection.hostname or container_ip
-                        port = test_component.introspection.publish[0]
-                        rosbridge_client = ROSBridgeClient(hostname, port)
-                        LOGGER.info(f"Connected to ROS bridge server at '{hostname}:{port}'")
-
-                        self.__requirements_manager.connect_to_rosbridge(rosbridge_client)
+                    self.__requirements_manager.connect_to_rosbridge(rosbridge_client)
 
     def run_package_container(self, component: TestComponent, master: str) -> Optional[Container]:
         """
@@ -186,9 +195,6 @@ class Plugin(PluginBase):
             LOGGER.info(f"Removed Docker container '{test_component.name}'")
 
     def setup(self) -> None:
-        for _, package, _ in self.__targets:
-            package.login_registries()
-
         self.create_simulation_network()
         self.start_dns_server()
         self.start_ros_master()
@@ -209,10 +215,6 @@ class Plugin(PluginBase):
         """
         Plugin graceful closing mechanism.
         """
-        for _, package, plugin in self.__targets:
-            self.remove_package_containers(plugin)  # Remove containers
-            package.logout_registries()  # Log out from image registries
-
         self.stop_ros_master()
         self.stop_dns_server()
         self.remove_simulation_network()

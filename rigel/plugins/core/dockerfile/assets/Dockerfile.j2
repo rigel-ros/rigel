@@ -3,11 +3,11 @@
 
 # Use an intermediate stage to clone external repositories without
 # compromising the security of any private SSH key.
-FROM ros:{{ configuration.distro }} as intermediate
+FROM ros:{{ distro }} as intermediate
 
 RUN apt clean && apt update && apt install -y \
     git \
-{%- if 'melodic' == configuration.distro %}
+{%- if 'melodic' == distro %}
     python-rosinstall \
     python-vcstool \
 {%- else %}
@@ -18,18 +18,19 @@ RUN apt clean && apt update && apt install -y \
 
 RUN mkdir -p /root/.ssh/
 
-{% if configuration.package.ssh is defined and configuration.package.ssh|length > 0 -%}
+{% if ssh_keys['keys'] is defined and ssh_keys['keys'] | length > 0 -%}
 # Add SSH keys and set their permissions.
-{% for key in configuration.package.ssh -%}
-{%- if key.file == False -%}
-ARG {{ key.value }}
+{% for key in ssh_keys['keys'] -%}
+{%- if key.env -%}
+ARG {{ key.env }}
 {%- endif %}
 {%- endfor %}
-{%- for key in configuration.package.ssh %}
-{% if key.file -%}
-COPY {{ key.value }} /root/.ssh/{{ key.value }}
+{%- for key in ssh_keys['keys'] %}
+{% if key.path -%}
+{% set filename = key.path.split('/') %}
+COPY {{ key.path }} /root/.ssh/{{ filename|last }}
 {%- else -%}
-RUN echo "${{ key.value }}" > /root/.ssh/{{ key.value }} && chmod 600 /root/.ssh/{{ key.value }}
+RUN echo "${{ key.env }}" > /root/.ssh/{{ key.env }} && chmod 600 /root/.ssh/{{ key.env }}
 {%- endif %}
 {%- endfor %}
 
@@ -40,8 +41,8 @@ RUN chmod 600 /root/.ssh/config
 
 # Ensure hosts are accepted.
 RUN touch /root/.ssh/known_hosts
-{%- if configuration.package.ssh is defined and configuration.package.ssh|length > 0 -%}
-{%- for key in configuration.package.ssh %}
+{%- if ssh_keys['keys'] is defined and ssh_keys['keys'] |length > 0 -%}
+{%- for key in ssh_keys['keys'] %}
 RUN ssh-keyscan {{ key.hostname }} >> /root/.ssh/known_hosts
 {%- endfor %}
 {%- endif %}
@@ -58,7 +59,7 @@ COPY {{ file}} /ros_workspace/src/{{ file }}
 
 # Clone repositories.
 RUN cd /ros_workspace \ 
-    && /bin/bash -c "source /opt/ros/{{ configuration.distro }}/setup.bash \
+    && /bin/bash -c "source /opt/ros/{{ distro }}/setup.bash \
 {%- for file in configuration.rosinstall %}
     && vcs import src < src/{{ file }} \
 {%- endfor %}
@@ -121,14 +122,14 @@ COPY . /home/{{ configuration.username }}/ros_workspace/src/rigel_local_packages
 COPY dockerfile_entrypoint.sh /home/{{ configuration.username }}/robot-entrypoint.sh
 
 # Compile ROS workspace.
-RUN /bin/bash -c "source /opt/ros/{{ configuration.distro }}/setup.bash \ 
+RUN /bin/bash -c "source /opt/ros/{{ distro }}/setup.bash \ 
     && cd /home/{{ configuration.username }}/ros_workspace \
     {% if 'core' in configuration.ros_image -%}
         && sudo rosdep init \
     {%- endif %}
     && sudo rosdep fix-permissions \
     && rosdep update \
-    && rosdep install --rosdistro {{ configuration.distro }} --from-paths src --ignore-src -r -y \
+    && rosdep install --rosdistro {{ distro }} --from-paths src --ignore-src -r -y \
     {% if configuration.compiler.name == 'catkin_make' -%}
         && catkin_make {{ cmake_args }}"
     {% elif configuration.compiler.name == 'colcon' -%}

@@ -1,8 +1,13 @@
 from pathlib import Path
+from rigel.exceptions import RigelError
 from rigel.loggers import get_logger
-from rigel.models.package import Target
+from rigel.models.application import Application
+from rigel.models.builder import ModelBuilder
+from rigel.models.plugin import PluginRawData
+from rigel.models.rigelfile import RigelfileGlobalData
+from rigel.providers.core import SSHProviderOutputModel
 from rigel.plugins import Plugin as PluginBase
-from typing import List
+from typing import Any, Dict
 from .models import PluginModel
 from .renderer import Renderer
 
@@ -11,37 +16,48 @@ LOGGER = get_logger()
 
 class Plugin(PluginBase):
 
-    def __init__(self, distro: str, targets: List[Target]) -> None:
-        super().__init__(distro, targets)
-        self.prepare_targets()
+    def __init__(
+        self,
+        raw_data: PluginRawData,
+        global_data: RigelfileGlobalData,
+        application: Application,
+        providers_data: Dict[str, Any]
+    ) -> None:
+        super().__init__(
+            raw_data,
+            global_data,
+            application,
+            providers_data
+        )
 
-    def prepare_targets(self) -> None:
-        self.__targets = [
-            (package, package_data, PluginModel(distro=self.distro, package=package_data, **plugin_data))
-            for package, package_data, plugin_data in self.targets]
+        # Ensure model instance was properly initialized
+        self.raw_data['distro'] = application.distro
+        self.model = ModelBuilder(PluginModel).build([], self.raw_data)
+        assert isinstance(self.model, PluginModel)
+
+        self.__ssh_keys: SSHProviderOutputModel = None
 
     def setup(self) -> None:
-        pass  # do nothing
+        providers = [provider for _, provider in self.providers_data.items() if isinstance(provider, SSHProviderOutputModel)]
+        if len(providers) > 1:
+            raise RigelError(base='Multiple SSH key providers were found. Please specify which provider you want to use.')
+        else:
+            self.__ssh_keys = providers[0]
 
     def run(self) -> None:
 
-        for package, package_data, plugin_model in self.__targets:
+        dir = self.application.dir
 
-            LOGGER.warning(f"Creating files for package '{package}'")
+        Path(dir).mkdir(parents=True, exist_ok=True)
 
-            Path(package_data.dir).mkdir(parents=True, exist_ok=True)
+        renderer = Renderer(self.application.distro, self.model, self.__ssh_keys)
 
-            renderer = Renderer(plugin_model)
+        renderer.render('Dockerfile.j2', f'{dir}/Dockerfile')
+        LOGGER.info(f"Created file {dir}/Dockerfile")
 
-            renderer.render('Dockerfile.j2', f'{package_data.dir}/Dockerfile')
-            LOGGER.info(f"Created file {package_data.dir}/Dockerfile")
+        renderer.render('entrypoint.j2', f'{dir}/dockerfile_entrypoint.sh')
+        LOGGER.info(f"Created file {dir}/entrypoint.sh")
 
-            renderer.render('entrypoint.j2', f'{package_data.dir}/dockerfile_entrypoint.sh')
-            LOGGER.info(f"Created file {package_data.dir}/entrypoint.sh")
-
-            if package_data.ssh:
-                renderer.render('config.j2', f'{package_data.dir}/dockerfile_config')
-                LOGGER.info(f"Created file {package_data.dir}/config")
-
-    def stop(self) -> None:
-        pass  # do nothing
+        if self.__ssh_keys:
+            renderer.render('config.j2', f'{dir}/dockerfile_config')
+            LOGGER.info(f"Created file {dir}/config")

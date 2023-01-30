@@ -12,7 +12,7 @@ class Introspection(BaseModel, extra=Extra.forbid):
     hostname: Optional[str] = None
 
 
-class TestComponent(BaseModel, extra=Extra.forbid):
+class TestComponent(BaseModel):
     """
     A placeholder for information regarding a containerized ROS package to include in the testing.
 
@@ -45,5 +45,5 @@ class TestComponent(BaseModel, extra=Extra.forbid):
         self._kwargs = data
 
 
-class PluginModel(BaseModel, extra=Extra.forbid):
+class PluginModel(BaseModel):
     components: List[TestComponent]

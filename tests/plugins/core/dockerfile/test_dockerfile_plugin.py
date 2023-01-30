@@ -1,6 +1,6 @@
 import os
 import unittest
-from rigel.models.package import Package, SSHKey
+from rigel.models.application import Package, SSHKey
 from rigel.plugins import Plugin as PluginBase
 from rigel.plugins.core.dockerfile.models import PluginModel
 from rigel.plugins.core.dockerfile.plugin import Plugin

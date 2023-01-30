@@ -1,22 +1,10 @@
-from pydantic import BaseModel, Extra
-from typing import Any, Dict, List, Union
+from pydantic import BaseModel, Extra, Field
+from typing import Any, Dict
 
-PluginDataSection = Dict[str, Any]
+PluginRawData = Dict[str, Any]
 
 
-class PluginSection(BaseModel, extra=Extra.forbid):
-    """A placeholder for information regarding a single plugin.
+class PluginDataModel(BaseModel, extra=Extra.forbid):
 
-    Each plugin consists of a Python module installed in the system
-    and then loaded at runtime by Rigel.
-
-    :type plugin: string
-    :cvar plugin: The Python module to import.
-    :type target: Union[List[str], str]
-    :cvar target: The target ROS packages.
-    """
-    # Required fields.
     plugin: str
-
-    # Optional fields.
-    targets: Union[List[str], str] = 'all'
+    with_: PluginRawData = Field(..., alias='with')

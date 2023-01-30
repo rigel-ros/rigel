@@ -1,5 +1,5 @@
 import unittest
-from rigel.models.package import Package
+from rigel.models.application import Package
 from rigel.plugins.core.dockerfile.models import PluginModel
 from rigel.plugins.core.dockerfile.renderer import Renderer
 from unittest.mock import MagicMock, Mock, mock_open, patch

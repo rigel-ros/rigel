@@ -1,6 +1,5 @@
 from pydantic import BaseModel, Extra, validator
 from rigel.exceptions import UnsupportedPlatformError
-from rigel.models.package import Package
 from typing import Dict, List
 
 
@@ -13,14 +12,10 @@ SUPPORTED_PLATFORMS: List[str] = [
 class PluginModel(BaseModel, extra=Extra.forbid):
     """A plugin to build Docker images using Docker BuildX.
 
-    :type distro: string
-    :cvar distro: The target ROS distro. This field is automatically populated by Rigel.
     :type image: str
     :cvar image: The name for the final Docker image.
     :type load: bool
     :cvar load: Flag to store built image locally. Defaults to False,
-    :type package: str
-    :cvar package: The target package identifier. This field is automatically populated by Rigel.
     :type platforms: List[str]
     :cvar platforms: A list of architectures for which to build the Docker image.
     :type push: bool
@@ -28,9 +23,7 @@ class PluginModel(BaseModel, extra=Extra.forbid):
     """
 
     # Required fields.
-    distro: str
     image: str
-    package: Package
 
     # Optional fields.
     buildargs: Dict[str, str] = {}
