@@ -1,13 +1,15 @@
+import signal
 from rigel.files.decoder import YAMLDataDecoder
 from rigel.files.loader import YAMLDataLoader
 from rigel.loggers import get_logger
 from rigel.models.builder import ModelBuilder
-from rigel.models.package import Target
-from rigel.models.plugin import PluginSection
+from rigel.models.plugin import PluginDataModel
 from rigel.models.rigelfile import Rigelfile
 from rigel.plugins.manager import PluginManager
-from typing import List, Tuple
-
+from rigel.plugins.plugin import Plugin
+from rigel.providers.manager import ProviderManager
+from rigel.providers.provider import Provider
+from typing import Any, Dict, List, Optional
 
 LOGGER = get_logger()
 
@@ -21,96 +23,106 @@ class WorkspaceManager:
         :path: path to Rigelfile.
         :type: str
         """
+        # Parse YAML Rigelfile
         loader = YAMLDataLoader(path)
         decoder = YAMLDataDecoder()
         yaml_data = decoder.decode(loader.load())
 
-        _instance = ModelBuilder(Rigelfile).build([], yaml_data)
-        assert isinstance(_instance, Rigelfile)
-        self.workspace: Rigelfile = _instance
+        # Initialize internal data structures
+        self.workspace: Rigelfile = ModelBuilder(Rigelfile).build([], yaml_data)
+        assert isinstance(self.workspace, Rigelfile)
 
-    def get_job_data(self, job: str) -> Tuple[str, PluginSection]:
-        """Retrieve a listed job, if existent.
+        self.providers: List[Provider] = []
+        self.providers_data: Dict[str, Any] = {}
+        self.__active_plugin: Optional[Plugin] = None
+        self.__plugin_manager: PluginManager = PluginManager()
+        self.__provider_manager: ProviderManager = ProviderManager()
+
+        # Initialize providers
+        self.initializate_providers()
+
+    def initializate_providers(self) -> None:
+        for provider_id, provider_data in self.workspace.providers.items():
+            self.providers.append(
+                self.__provider_manager.load(
+                    provider_data.provider,
+                    provider_id,
+                    provider_data.with_,
+                    self.workspace.vars,
+                    self.providers_data
+                )
+            )
+
+    def connect_providers(self) -> None:
+        """Initialize and connect to all declared providers.
+        """
+        LOGGER.info("Connecting to providers")
+        for provider in self.providers:
+            provider.connect()
+
+    def disconnect_providers(self) -> None:
+        """Disconnect from all declared providers.
+        """
+        LOGGER.info("Disconnecting from providers")
+        for provider in self.providers:
+            provider.disconnect()
+
+    def handle_signals(self) -> None:
+        """Start listening for abort (CTRL-C and CTRL-Z) events.
+        """
+        signal.signal(signal.SIGINT, self.handle_abort)
+        signal.signal(signal.SIGTSTP, self.handle_abort)
+        LOGGER.warning("Press CTRL-C / CTRL-Z to stop execution")
+
+    def handle_abort(self, *args: Any) -> None:
+        """Handle abort events.
+        Ensure that executing plugin is properly terminated and disconnect
+        from all declared providers.
+        """
+        print('Stopping execution...')
+        if self.__active_plugin:
+            self.__active_plugin.stop()
+            self.__active_plugin = None
+        self.disconnect_providers()
+        exit(1)
+
+    def execute_plugin(self, job: str) -> None:
+        """Run the plugin associated with a given job.
 
         :param job: The job identifier.
         :type job: str
-        :return: The job information.
-        :rtype: PluginSection
         """
-        try:
-            return job, self.workspace.jobs[job]
-        except KeyError:
-            raise Exception(f"Job '{job}' was not found")
+        for application_id, application_data in self.workspace.applications.items():
 
-    def get_sequence_data(self, sequence: str) -> List[str]:
-        """Retrieve a sequence of jobs, if existent.
+            LOGGER.info(f"Working with application '{application_id}'")
 
-        :param sequence: The sequence identifier.
-        :type sequence: str
-        :return: The sequence of jobs.
-        :rtype: List[str]
-        """
-        try:
-            return self.workspace.sequences[sequence]
-        except KeyError:
-            raise Exception(f"Sequence '{sequence}' was not found")
+            if job in application_data.jobs:
 
-    def get_target_packages(self, job: Tuple[str, PluginSection]) -> List[Target]:
-        """Obtain information about the targets of a given job.
+                job_data = application_data.jobs[job]
+                assert isinstance(job_data, PluginDataModel)
 
-        :param job: A tuple containing the job identifier and global job information.
-        :type job: Tuple[str, PluginSection]
-        :return: A list of targets.
-        :rtype: List[Target]
-        """
-
-        job_identifier, job_data = job
-        targets = job_data.targets
-
-        if isinstance(targets, str):
-
-            if targets == 'all':
-
-                return [
-                    (name, data, data.jobs[job_identifier]) for name, data in self.workspace.packages.items()
-                    if data.jobs.get(job_identifier)
-                ]
-
-            else:
-
-                return [
-                    (name, data, data.jobs[job_identifier]) for name, data in self.workspace.packages.items()
-                    if data.jobs.get(job_identifier) and name == targets
-                ]
-
-        # else:  # a list of targets was provided
-        return [
-            (name, data, data.jobs[job_identifier]) for name, data in self.workspace.packages.items()
-            if data.jobs.get(job_identifier) and name in targets
-        ]
-
-    def execute_job(self, job: Tuple[str, PluginSection]) -> None:
-        """Execute a single job.
-
-        :param job: A tuple containing the job identifier and global job information.
-        :type job: Tuple[str, PluginSection]
-        """
-        job_identifier, job_data = job
-        targets = self.get_target_packages(job)
-        if not targets:
-            LOGGER.warning(f"No target package was found for job '{job_identifier}'.")
-        else:
-            manager = PluginManager()
-            plugin = manager.load(job_data.plugin, self.workspace.distro, targets)
-            manager.run(plugin)
+                self.__active_plugin = self.__plugin_manager.load(
+                    job_data.plugin,
+                    job_data.with_,
+                    self.workspace.vars,
+                    application_data,
+                    self.providers_data
+                )
+                self.__active_plugin.setup()
+                self.__active_plugin.run()
+                self.__active_plugin.stop()
+                self.__active_plugin = None
 
     def run_job(self, job: str) -> None:
         """Run a single job.
 
-        :param sequence: The job identifier.
-        :type sequence: str
+        :param job: The job identifier.
+        :type job: str
         """
-        self.execute_job(self.get_job_data(job))
+        self.handle_signals()
+        self.connect_providers()
+        self.execute_plugin(job)
+        self.disconnect_providers()
 
     def run_sequence(self, sequence: str) -> None:
         """Run a sequence of jobs.
@@ -118,12 +130,9 @@ class WorkspaceManager:
         :param sequence: The sequence identifier.
         :type sequence: str
         """
-        jobs = [self.get_job_data(job) for job in self.get_sequence_data(sequence)]
-        for job in jobs:
-            self.execute_job(job)
-
-
-if __name__ == '__main__':
-
-    manager = WorkspaceManager('./Rigelfile')
-    print(manager.workspace)
+        self.handle_signals()
+        self.connect_providers()
+        if sequence in self.workspace.sequences:
+            for job in self.workspace.sequences[sequence]:
+                self.execute_plugin(job)
+        self.disconnect_providers()

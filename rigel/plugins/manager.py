@@ -1,13 +1,14 @@
 from importlib import import_module
 from rigel.exceptions import (
     PluginNotCompliantError,
-    PluginNotFoundError,
-    RigelError
+    PluginNotFoundError
 )
 from rigel.loggers import get_logger
+from rigel.models.application import Application
 from rigel.models.builder import ModelBuilder
-from rigel.models.package import Target
-from typing import List, Type
+from rigel.models.plugin import PluginRawData
+from rigel.models.rigelfile import RigelfileGlobalData
+from typing import Any, Dict, Type
 from .plugin import Plugin
 
 LOGGER = get_logger()
@@ -28,15 +29,26 @@ class PluginManager:
         """
         return issubclass(entrypoint, Plugin)
 
-    def load(self, entrypoint: str, distro: str, targets: List[Target]) -> Plugin:
+    def load(
+        self,
+        entrypoint: str,
+        plugin_raw_data: PluginRawData,
+        global_data: RigelfileGlobalData,
+        application: Application,
+        providers_data: Dict[str, Any]
+    ) -> Plugin:
         """Parse a list of plugins.
 
-        :type distro: str
-        :param distro: The target ROS distro.
-        :type package: Package
-        :param package: The target package.
         :type entrypoint: str
         :param entrypoint: The plugin entrypoint.
+        :type plugin_raw_data: PluginRawData
+        :param plugin_raw_data: The unprocessed plugin configuration data.
+        :type global_data: RigelfileGlobalData
+        :param global_data: The global data.
+        :type application: Application
+        :param application: The ROS application.
+        :type providers_data: Dict[str, Any]
+        :param providers_data: Dynamic data bank for providers.
 
         :rtype: Plugin
         :return: An instance of the specified plugin.
@@ -56,30 +68,12 @@ class PluginManager:
                 "entrypoint class must inherit functions 'setup','run', and 'stop' from class 'Plugin'."
             )
 
-        plugin = ModelBuilder(cls).build([distro, targets], {})
+        plugin = ModelBuilder(cls).build([
+            plugin_raw_data,
+            global_data,
+            application,
+            providers_data
+        ], {})
         assert isinstance(plugin, Plugin)
 
         return plugin
-
-    def run(self, plugin: Plugin) -> None:
-        """Run an external Rigel plugin.
-
-        :type plugin: Tuple[str, rigel.plugin.Plugin]
-        :param plugin: A plugin to be run..
-        """
-
-        identifier = plugin.__module__
-
-        LOGGER.debug(f"Plugin '{identifier}' started executing.")
-
-        try:
-
-            with plugin:
-                plugin.run()
-                LOGGER.debug(f"Plugin '{identifier}' finished execution with success")
-
-        except RigelError as err:
-
-            LOGGER.warning(f"An error occured during the execution of plugin '{identifier}'")
-            LOGGER.warning("Attempting to stop its executing gracefully before handling the error.")
-            raise err

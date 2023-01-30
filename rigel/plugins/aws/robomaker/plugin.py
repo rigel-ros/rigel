@@ -1,10 +1,13 @@
 import boto3
 import time
-from botocore.exceptions import ClientError as BotocoreClientError
 from rigel.clients import ROSBridgeClient
-from rigel.exceptions import ClientError
+from rigel.exceptions import RigelError
 from rigel.loggers import get_logger
-from rigel.models.package import Target
+from rigel.models.application import Application
+from rigel.models.builder import ModelBuilder
+from rigel.models.plugin import PluginRawData
+from rigel.models.rigelfile import RigelfileGlobalData
+from rigel.providers.aws import AWSProviderOutputModel
 from rigel.plugins.plugin import Plugin as PluginBase
 from rigel.plugins.core.test.introspection.command import CommandHandler
 from rigel.plugins.core.test.introspection.parser import SimulationRequirementsParser
@@ -20,39 +23,41 @@ SIMULATION_APPLICATION = 'rigel_robomaker_simulation_application'
 
 class Plugin(PluginBase):
 
-    def __init__(self, distro: str, targets: List[Target]) -> None:
-        super().__init__(distro, targets)
-        self.prepare_targets()
+    def __init__(
+        self,
+        raw_data: PluginRawData,
+        global_data: RigelfileGlobalData,
+        application: Application,
+        providers_data: Dict[str, Any]
+    ) -> None:
+        super().__init__(
+            raw_data,
+            global_data,
+            application,
+            providers_data
+        )
 
-    def prepare_targets(self) -> None:
-        self.__targets = [
-            (package_name, package, PluginModel(**plugin_data))
-            for package_name, package, plugin_data in self.targets]
+        # Ensure model instance was properly initialized
+        self.model = ModelBuilder(PluginModel).build([], self.raw_data)
+        assert isinstance(self.model, PluginModel)
 
-    def authenticate(self, plugin: PluginModel) -> boto3.session.Session.client:
-        """
-        Authenticate with AWS RoboMaker.
-        """
-        try:
+    def retrieve_robomaker_client(self) -> boto3.session.Session.client:
 
-            # Obtain Robomaker authentication token
-            robomaker_client = boto3.client(
-                'robomaker',
-                aws_access_key_id=plugin.credentials.aws_access_key_id,
-                aws_secret_access_key=plugin.credentials.aws_secret_access_key,
-                region_name=plugin.credentials.region_name
-            )
+        providers = [provider for _, provider in self.providers_data.items() if isinstance(provider, AWSProviderOutputModel)]
 
-        except BotocoreClientError as err:
-            raise ClientError('AWS', err)
-
-        LOGGER.info('Authenticated with AWS RoboMaker.')
-        return robomaker_client
+        if not providers:
+            raise RigelError(base='No AWS provider were found. This plugin requires a connection to AWS RoboMaker.')
+        elif len(providers) > 1:
+            raise RigelError(base='Multiple AWS providers was found. Please specify which provider you want to use.')
+        else:
+            client = providers[0].robomaker_client
+            if not client:
+                raise RigelError(base='Selected AWS provider is not configured to work with AWS RoboMaker.')
+            return client
 
     def create_robot_application(
         self,
-        application_name: str,
-        plugin: PluginModel
+        application_name: str
     ) -> Dict[str, Any]:
         kwargs = {
             'name': application_name,
@@ -60,7 +65,7 @@ class Plugin(PluginBase):
                 'name': 'General'
             },
             'environment': {
-                'uri': plugin.robot_application.ecr
+                'uri': self.model.robot_application.ecr
             }
         }
         robot_application = self.__robomaker_client.create_robot_application(**kwargs)
@@ -77,8 +82,7 @@ class Plugin(PluginBase):
 
     def create_simulation_application(
         self,
-        application_name: str,
-        plugin: PluginModel
+        application_name: str
     ) -> Dict[str, Any]:
         kwargs = {
             'name': application_name,
@@ -89,7 +93,7 @@ class Plugin(PluginBase):
                 'name': 'SimulationRuntime'
             },
             'environment': {
-                'uri': plugin.simulation_application.ecr
+                'uri': self.model.simulation_application.ecr
             }
         }
         simulation_application = self.__robomaker_client.create_simulation_application(**kwargs)
@@ -111,18 +115,18 @@ class Plugin(PluginBase):
             result[key.strip()] = value.strip()
         return result
 
-    def create_simulation_job(self, plugin: PluginModel) -> Dict[str, Any]:
+    def create_simulation_job(self) -> Dict[str, Any]:
         kwargs = {
-            'iamRole': plugin.iam_role,
-            'outputLocation': {'s3Bucket': plugin.output_location} if plugin.output_location else {},
-            'maxJobDurationInSeconds': plugin.simulation_duration,
+            'iamRole': self.model.iam_role,
+            'outputLocation': {'s3Bucket': self.model.output_location} if self.model.output_location else {},
+            'maxJobDurationInSeconds': self.model.simulation_duration,
             'robotApplications': [
                 {
                     'application': self.__robot_application['arn'],
                     'launchConfig': {
-                        'streamUI': plugin.robot_application.streamUI,
-                        'command': plugin.robot_application.command,
-                        'environmentVariables': self.convert_envs(plugin.robot_application.environment),
+                        'streamUI': self.model.robot_application.streamUI,
+                        'command': self.model.robot_application.command,
+                        'environmentVariables': self.convert_envs(self.model.robot_application.environment),
                         'portForwardingConfig': {
                             'portMappings': [
                                 {
@@ -130,20 +134,20 @@ class Plugin(PluginBase):
                                     'applicationPort': ports[1],
                                     'enableOnPublicIp': True
                                 }
-                                for ports in plugin.robot_application.ports
+                                for ports in self.model.robot_application.ports
                             ]
                         },
                     },
-                    'tools': [tool.dict() for tool in plugin.robot_application.tools]
+                    'tools': [tool.dict() for tool in self.model.robot_application.tools]
                 }
             ],
             'simulationApplications': [
                 {
                     'application': self.__simulation_application['arn'],
                     'launchConfig': {
-                        'streamUI': plugin.simulation_application.streamUI,
-                        'command': plugin.simulation_application.command,
-                        'environmentVariables': self.convert_envs(plugin.simulation_application.environment),
+                        'streamUI': self.model.simulation_application.streamUI,
+                        'command': self.model.simulation_application.command,
+                        'environmentVariables': self.convert_envs(self.model.simulation_application.environment),
                         'portForwardingConfig': {
                             'portMappings': [
                                 {
@@ -151,22 +155,22 @@ class Plugin(PluginBase):
                                     'applicationPort': ports[1],
                                     'enableOnPublicIp': True
                                 }
-                                for ports in plugin.simulation_application.ports
+                                for ports in self.model.simulation_application.ports
                             ]
                         },
                     },
-                    'worldConfigs': [config.dict() for config in plugin.simulation_application.worldConfigs],
-                    'tools': [tool.dict() for tool in plugin.simulation_application.tools]
+                    'worldConfigs': [config.dict() for config in self.model.simulation_application.worldConfigs],
+                    'tools': [tool.dict() for tool in self.model.simulation_application.tools]
                 }
             ],
             'vpcConfig': {
-                'subnets': plugin.vpc_config.subnets,
-                'securityGroups': plugin.vpc_config.securityGroups,
-                'assignPublicIp': plugin.vpc_config.assignPublicIp
+                'subnets': self.model.vpc_config.subnets,
+                'securityGroups': self.model.vpc_config.securityGroups,
+                'assignPublicIp': self.model.vpc_config.assignPublicIp
             },
         }
-        if plugin.data_sources:
-            kwargs['dataSources'] = [source.dict() for source in plugin.data_sources]
+        if self.model.data_sources:
+            kwargs['dataSources'] = [source.dict() for source in self.model.data_sources]
 
         simulation_job = self.__robomaker_client.create_simulation_job(**kwargs)
         LOGGER.info('Created simulation job')
@@ -188,52 +192,42 @@ class Plugin(PluginBase):
             time.sleep(0.5)
 
     def setup(self) -> None:
-        assert len(self.__targets) == 1, "RoboMakerPlugin does not support multiple targets!"
-        for _, _, plugin_model in self.__targets:
-            self.__robomaker_client = self.authenticate(plugin_model)
-
-            self.__robot_application = self.create_robot_application(ROBOT_APPLICATION, plugin_model)
-            self.__simulation_application = self.create_simulation_application(SIMULATION_APPLICATION, plugin_model)
-            self.__simulation_job = self.create_simulation_job(plugin_model)
+        self.__robomaker_client = self.retrieve_robomaker_client()
+        self.__robot_application = self.create_robot_application(ROBOT_APPLICATION)
+        self.__simulation_application = self.create_simulation_application(SIMULATION_APPLICATION)
+        self.__simulation_job = self.create_simulation_job()
 
     def run(self) -> None:
-        """
-        Plugin entry point.
-        """
-        assert len(self.__targets) == 1, "RoboMakerPlugin does not support multiple targets!"
-        for _, _, plugin_model in self.__targets:
+        self.wait_simulation_job_status('Running')
+        simulation_job_public_ip = self.__simulation_job['networkInterface']['publicIpAddress']
+        print(f'Simulation job can be accessed on {simulation_job_public_ip}')
 
-            self.wait_simulation_job_status('Running')
-            simulation_job_public_ip = self.__simulation_job['networkInterface']['publicIpAddress']
-            print(f'Simulation job can be accessed on {simulation_job_public_ip}')
+        self.__requirements_manager = SimulationRequirementsManager(self.model.simulation_duration * 1.0)
+        self.__requirements_parser = SimulationRequirementsParser()
 
-            self.__requirements_manager = SimulationRequirementsManager(plugin_model.simulation_duration * 1.0)
-            self.__requirements_parser = SimulationRequirementsParser()
+        requirements = self.model.robot_application.requirements
+        if requirements:
 
-            requirements = plugin_model.robot_application.requirements
-            if requirements:
+            nodes: List[CommandHandler] = [
+                self.__requirements_parser.parse(req) for req in requirements
+            ]
 
-                nodes: List[CommandHandler] = [
-                    self.__requirements_parser.parse(req) for req in requirements
-                ]
+            self.__requirements_manager.children = nodes
 
-                self.__requirements_manager.children = nodes
+            # Connect to ROS bridge inside container
+            port = self.model.robot_application.ports[0][0]
+            rosbridge_client = ROSBridgeClient(simulation_job_public_ip, port)
+            LOGGER.info(f"Connected to ROS bridge server at '{simulation_job_public_ip}:{port}'")
 
-                # Connect to ROS bridge inside container
-                port = plugin_model.robot_application.ports[0][0]
-                rosbridge_client = ROSBridgeClient(simulation_job_public_ip, port)
-                LOGGER.info(f"Connected to ROS bridge server at '{simulation_job_public_ip}:{port}'")
+            self.__requirements_manager.connect_to_rosbridge(rosbridge_client)
 
-                self.__requirements_manager.connect_to_rosbridge(rosbridge_client)
+        LOGGER.info("Testing the application!")
 
-            LOGGER.info("Testing the application!")
-
-            while self.__requirements_manager.children and (not self.__requirements_manager.assess_children_nodes()):
-                pass  # TODO: separate this into a thread for efficiency
-            print(self.__requirements_manager)
+        while self.__requirements_manager.children and (not self.__requirements_manager.assess_children_nodes()):
+            pass  # TODO: separate this into a thread for efficiency
+        print(self.__requirements_manager)
 
     def stop(self) -> None:
-        assert len(self.__targets) == 1, "RoboMakerPlugin does not support multiple targets!"
         self.cancel_simulation_job(self.__simulation_job['arn'])
         self.delete_robot_application(self.__robot_application['arn'])
         self.delete_simulation_application(self.__simulation_application['arn'])

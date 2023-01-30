@@ -13,14 +13,6 @@ class VPCConfig(BaseModel, extra=Extra.forbid):
     assignPublicIp: bool = Field(alias='assign_public_ip', default=False)
 
 
-class Credentials(BaseModel, extra=Extra.forbid):
-
-    # Required fields
-    aws_access_key_id: str
-    aws_secret_access_key: str
-    region_name: str
-
-
 class Tool(BaseModel):
 
     """Information about tools configured for the robot application.
@@ -116,7 +108,6 @@ class PluginModel(BaseModel, extra=Extra.forbid):
 
     # Required fields
     iam_role: str
-    credentials: Credentials
     robot_application: RobotApplication
     simulation_application: SimulationApplication
 

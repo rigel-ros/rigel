@@ -1,7 +1,8 @@
-import signal
 from rigel.loggers import get_logger
-from rigel.models.package import Target
-from typing import Any, List
+from rigel.models.application import Application
+from rigel.models.plugin import PluginRawData
+from rigel.models.rigelfile import RigelfileGlobalData
+from typing import Any, Dict
 
 LOGGER = get_logger()
 
@@ -10,30 +11,17 @@ class Plugin:
     """This class specifies the interface that all plugins must comply with.
     """
 
-    def __init__(self, distro: str, targets: List[Target]) -> None:
-        self.distro = distro
-        self.targets = targets
-
-    def handle_signals(self) -> None:
-        signal.signal(signal.SIGINT, self.stop_plugin)
-        signal.signal(signal.SIGTSTP, self.stop_plugin)
-
-    def __enter__(self) -> Any:
-        self.handle_signals()
-        self.setup()
-        return self
-
-    def stop_plugin(*args: Any) -> None:
-        print()
-        exit(1)  # this will trigger __exit__
-
-    def __exit__(
+    def __init__(
         self,
-        exc_type: Any,  # ideally -> type[BaseException]
-        exc_val: Any,  # ideally -> Optional[BaseException]
-        exc_tb: Any  # ideally -> Optional[TracebackType]
+        raw_data: PluginRawData,
+        global_data: RigelfileGlobalData,
+        application: Application,
+        providers_data: Dict[str, Any],
     ) -> None:
-        self.stop()
+        self.raw_data = raw_data
+        self.global_data = global_data
+        self.application = application
+        self.providers_data = providers_data
 
     def setup(self) -> None:
         """Use this function to allocate plugin resoures.

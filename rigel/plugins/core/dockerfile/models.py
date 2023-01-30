@@ -1,6 +1,5 @@
 from pydantic import BaseModel, Extra, validator
 from rigel.exceptions import UnsupportedCompilerError
-from rigel.models.package import Package
 from typing import Any, Dict, List
 
 
@@ -28,8 +27,6 @@ class PluginModel(BaseModel, extra=Extra.forbid):
 
     :type command: string
     :cvar command: The command to be executed once a container starts executing.
-    :type distro: string
-    :cvar distro: The target ROS distro. This field is automatically populated by Rigel.
     :type apt: List[string]
     :cvar apt: The name of dependencies to be installed using APT.
     :type compiler: Compiler
@@ -38,8 +35,6 @@ class PluginModel(BaseModel, extra=Extra.forbid):
     :cvar entrypoint: A list of commands to be run while executing the entrypoint script.
     :type env: List[Dict[str, Any]]
     :cvar env: A list of environment variables to be set inside the Docker image.
-    :type package: Package
-    :cvar package: The target package identifier. This field is automatically populated by Rigel.
     :type rosinstall: List[string]
     :cvar rosinstall: A list of all required .rosinstall files.
     :type ros_image: string
@@ -49,12 +44,8 @@ class PluginModel(BaseModel, extra=Extra.forbid):
     :type username: string
     :cvar username: The desired username. Defaults to 'user'.
     """
-    # Required fields.
-    distro: str
-    package: Package
-    compiler: Compiler
-
     # Optional fields.
+    compiler: Compiler
     command: str = ''
     apt: List[str] = []
 
@@ -67,10 +58,8 @@ class PluginModel(BaseModel, extra=Extra.forbid):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
 
-        if not kwargs.get('ros_image') and kwargs.get('distro'):
+        if not kwargs.get('ros_image'):
             kwargs['ros_image'] = f'ros:{kwargs["distro"]}'
-
-        # from pprint import pprint
-        # pprint(kwargs)
+        del kwargs['distro']
 
         super().__init__(*args, **kwargs)
