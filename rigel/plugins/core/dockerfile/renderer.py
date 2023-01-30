@@ -1,6 +1,8 @@
 from jinja2 import Template
 from pkg_resources import resource_string
+from rigel.models.builder import ModelBuilder
 from rigel.providers.core import SSHProviderOutputModel
+from typing import Optional
 from .models import PluginModel
 
 
@@ -12,7 +14,7 @@ class Renderer:
         self,
         distro: str,
         configuration_file: PluginModel,
-        ssh_keys: SSHProviderOutputModel
+        ssh_keys: Optional[SSHProviderOutputModel]
     ) -> None:
         """
         :type configuration_file: pydantic.BaseModel
@@ -20,7 +22,10 @@ class Renderer:
         """
         self.distro = distro
         self.configuration_file = configuration_file
-        self.ssh_keys = ssh_keys.dict()
+        if ssh_keys:
+            self.ssh_keys = ssh_keys.dict()
+        else:
+            self.ssh_keys = ModelBuilder(SSHProviderOutputModel).build([], {'keys': []}).dict()
 
     def render(self, template: str, output: str) -> None:
         """
