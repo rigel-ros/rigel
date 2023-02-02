@@ -17,9 +17,6 @@ from .models import PluginModel
 
 LOGGER = get_logger()
 
-ROBOT_APPLICATION = 'rigel_robomaker_robot_application'
-SIMULATION_APPLICATION = 'rigel_robomaker_simulation_application'
-
 
 class Plugin(PluginBase):
 
@@ -55,12 +52,9 @@ class Plugin(PluginBase):
                 raise RigelError(base='Selected AWS provider is not configured to work with AWS RoboMaker.')
             return client
 
-    def create_robot_application(
-        self,
-        application_name: str
-    ) -> Dict[str, Any]:
+    def create_robot_application(self) -> Dict[str, Any]:
         kwargs = {
-            'name': application_name,
+            'name': self.model.robot_application.name,
             'robotSoftwareSuite': {
                 'name': 'General'
             },
@@ -80,12 +74,9 @@ class Plugin(PluginBase):
         self.__robomaker_client.delete_robot_application(**kwargs)
         LOGGER.info("Robot application deleted with success")
 
-    def create_simulation_application(
-        self,
-        application_name: str
-    ) -> Dict[str, Any]:
+    def create_simulation_application(self) -> Dict[str, Any]:
         kwargs = {
-            'name': application_name,
+            'name': self.model.simulation_application.name,
             'robotSoftwareSuite': {
                 'name': 'General'
             },
@@ -193,8 +184,8 @@ class Plugin(PluginBase):
 
     def setup(self) -> None:
         self.__robomaker_client = self.retrieve_robomaker_client()
-        self.__robot_application = self.create_robot_application(ROBOT_APPLICATION)
-        self.__simulation_application = self.create_simulation_application(SIMULATION_APPLICATION)
+        self.__robot_application = self.create_robot_application()
+        self.__simulation_application = self.create_simulation_application()
         self.__simulation_job = self.create_simulation_job()
 
     def run(self) -> None:

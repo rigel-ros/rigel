@@ -2,6 +2,9 @@ from pydantic import BaseModel, Extra, Field, validator
 from rigel.exceptions import InvalidValueError
 from typing import Dict, List, Literal, Optional, Tuple
 
+DEFAULT_ROBOT_APPLICATION_NAME: str = 'rigel_robomaker_robot_application'
+DEFAULT_SIMULATION_APPLICATION_NAME: str = 'rigel_robomaker_simulation_application'
+
 
 class VPCConfig(BaseModel, extra=Extra.forbid):
 
@@ -64,16 +67,18 @@ class RobotApplication(BaseModel, extra=Extra.forbid):
     command: List[str]
 
     # Optional fields
+    name: str = DEFAULT_ROBOT_APPLICATION_NAME
     environment: List[str] = []
-    tools: List[Tool] = []
-    requirements: List[str] = []
     ports: List[Tuple[int, int]] = []
+    requirements: List[str] = []
     streamUI: bool = Field(alias='stream_ui', default=False)
+    tools: List[Tool] = []
 
 
 class SimulationApplication(RobotApplication):
 
     # Optional fields
+    name: str = DEFAULT_SIMULATION_APPLICATION_NAME
     worldConfigs: List[Dict[Literal["world"], str]] = Field(alias='world_configs', default=[])
 
 
