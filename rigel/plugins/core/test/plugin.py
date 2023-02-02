@@ -184,13 +184,13 @@ class Plugin(PluginBase):
         self.__docker_client.wait_for_container_status(component.name, 'running')
         return self.__docker_client.get_container(component.name)  # this call to 'get_container' ensures updated container data
 
-    def remove_package_containers(self, plugin: PluginModel) -> None:
+    def remove_package_containers(self) -> None:
         """Remove a single containerized ROS node.
 
         :type plugin: PluginModel
         :param plugin: Test components for this package.
         """
-        for test_component in plugin.components:
+        for test_component in self.model.components:
             self.__docker_client.remove_container(test_component.name)
             LOGGER.info(f"Removed Docker container '{test_component.name}'")
 
@@ -217,4 +217,5 @@ class Plugin(PluginBase):
         """
         self.stop_ros_master()
         self.stop_dns_server()
+        self.remove_package_containers()
         self.remove_simulation_network()
