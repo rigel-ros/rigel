@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rigel package &mdash; Rigel 0.3.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Rigel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">rigel package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-rigel.exceptions">rigel.exceptions module</a><ul>
+<li><a class="reference internal" href="#rigel.exceptions.ClientError"><code class="docutils literal notranslate"><span class="pre">ClientError</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.exceptions.ClientError.base"><code class="docutils literal notranslate"><span class="pre">ClientError.base</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.exceptions.DockerAPIError"><code class="docutils literal notranslate"><span class="pre">DockerAPIError</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.exceptions.DockerAPIError.base"><code class="docutils literal notranslate"><span class="pre">DockerAPIError.base</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.exceptions.EmptyRigelfileError"><code class="docutils literal notranslate"><span class="pre">EmptyRigelfileError</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.exceptions.EmptyRigelfileError.base"><code class="docutils literal notranslate"><span class="pre">EmptyRigelfileError.base</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.exceptions.InvalidValueError"><code class="docutils literal notranslate"><span class="pre">InvalidValueError</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.exceptions.InvalidValueError.base"><code class="docutils literal notranslate"><span class="pre">InvalidValueError.base</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.exceptions.PluginNotCompliantError"><code class="docutils literal notranslate"><span class="pre">PluginNotCompliantError</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.exceptions.PluginNotCompliantError.base"><code class="docutils literal notranslate"><span class="pre">PluginNotCompliantError.base</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.exceptions.PluginNotFoundError"><code class="docutils literal notranslate"><span class="pre">PluginNotFoundError</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.exceptions.PluginNotFoundError.base"><code class="docutils literal notranslate"><span class="pre">PluginNotFoundError.base</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.exceptions.PydanticValidationError"><code class="docutils literal notranslate"><span class="pre">PydanticValidationError</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.exceptions.PydanticValidationError.base"><code class="docutils literal notranslate"><span class="pre">PydanticValidationError.base</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.exceptions.RigelError"><code class="docutils literal notranslate"><span class="pre">RigelError</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.exceptions.RigelError.base"><code class="docutils literal notranslate"><span class="pre">RigelError.base</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.exceptions.RigelfileNotFoundError"><code class="docutils literal notranslate"><span class="pre">RigelfileNotFoundError</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.exceptions.RigelfileNotFoundError.base"><code class="docutils literal notranslate"><span class="pre">RigelfileNotFoundError.base</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.exceptions.UndeclaredEnvironmentVariableError"><code class="docutils literal notranslate"><span class="pre">UndeclaredEnvironmentVariableError</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.exceptions.UndeclaredEnvironmentVariableError.base"><code class="docutils literal notranslate"><span class="pre">UndeclaredEnvironmentVariableError.base</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.exceptions.UndeclaredGlobalVariableError"><code class="docutils literal notranslate"><span class="pre">UndeclaredGlobalVariableError</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.exceptions.UndeclaredGlobalVariableError.base"><code class="docutils literal notranslate"><span class="pre">UndeclaredGlobalVariableError.base</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.exceptions.UnformattedRigelfileError"><code class="docutils literal notranslate"><span class="pre">UnformattedRigelfileError</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.exceptions.UnformattedRigelfileError.base"><code class="docutils literal notranslate"><span class="pre">UnformattedRigelfileError.base</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.exceptions.UnsupportedCompilerError"><code class="docutils literal notranslate"><span class="pre">UnsupportedCompilerError</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.exceptions.UnsupportedCompilerError.base"><code class="docutils literal notranslate"><span class="pre">UnsupportedCompilerError.base</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.exceptions.UnsupportedPlatformError"><code class="docutils literal notranslate"><span class="pre">UnsupportedPlatformError</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.exceptions.UnsupportedPlatformError.base"><code class="docutils literal notranslate"><span class="pre">UnsupportedPlatformError.base</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.main">rigel.main module</a><ul>
+<li><a class="reference internal" href="#rigel.main.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.workspace">rigel.workspace module</a><ul>
+<li><a class="reference internal" href="#rigel.workspace.WorkspaceManager"><code class="docutils literal notranslate"><span class="pre">WorkspaceManager</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.workspace.WorkspaceManager.connect_providers"><code class="docutils literal notranslate"><span class="pre">WorkspaceManager.connect_providers()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.workspace.WorkspaceManager.disconnect_providers"><code class="docutils literal notranslate"><span class="pre">WorkspaceManager.disconnect_providers()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.workspace.WorkspaceManager.execute_plugin"><code class="docutils literal notranslate"><span class="pre">WorkspaceManager.execute_plugin()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.workspace.WorkspaceManager.handle_abort"><code class="docutils literal notranslate"><span class="pre">WorkspaceManager.handle_abort()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.workspace.WorkspaceManager.handle_signals"><code class="docutils literal notranslate"><span class="pre">WorkspaceManager.handle_signals()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.workspace.WorkspaceManager.initializate_providers"><code class="docutils literal notranslate"><span class="pre">WorkspaceManager.initializate_providers()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.workspace.WorkspaceManager.run_job"><code class="docutils literal notranslate"><span class="pre">WorkspaceManager.run_job()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.workspace.WorkspaceManager.run_sequence"><code class="docutils literal notranslate"><span class="pre">WorkspaceManager.run_sequence()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Rigel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">rigel package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/rigel.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rigel-package">
+<h1>rigel package<a class="headerlink" href="#rigel-package" title="Permalink to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="rigel.cli.html">rigel.cli package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rigel.cli.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.cli.html#module-rigel.cli.command">rigel.cli.command module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.cli.html#rigel.cli.command.CLICommand"><code class="docutils literal notranslate"><span class="pre">CLICommand</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.cli.html#rigel.cli.command.CLICommand.add_to_group"><code class="docutils literal notranslate"><span class="pre">CLICommand.add_to_group()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.cli.html#module-rigel.cli.run">rigel.cli.run module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.cli.html#rigel.cli.run.RunJobCommand"><code class="docutils literal notranslate"><span class="pre">RunJobCommand</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.cli.html#rigel.cli.run.RunJobCommand.job"><code class="docutils literal notranslate"><span class="pre">RunJobCommand.job</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.cli.html#rigel.cli.run.RunJobCommand.sequence"><code class="docutils literal notranslate"><span class="pre">RunJobCommand.sequence</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.cli.html#module-rigel.cli">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rigel.clients.html">rigel.clients package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rigel.clients.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.clients.html#module-rigel.clients.docker">rigel.clients.docker module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.clients.html#rigel.clients.docker.DockerClient"><code class="docutils literal notranslate"><span class="pre">DockerClient</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.clients.html#rigel.clients.docker.DockerClient.DOCKER_CONTAINER_ID_DISPLAY_SIZE"><code class="docutils literal notranslate"><span class="pre">DockerClient.DOCKER_CONTAINER_ID_DISPLAY_SIZE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.clients.html#rigel.clients.docker.DockerClient.DOCKER_RUN_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">DockerClient.DOCKER_RUN_TIMEOUT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.clients.html#rigel.clients.docker.DockerClient.DOCKER_RUN_WAIT_STATUS"><code class="docutils literal notranslate"><span class="pre">DockerClient.DOCKER_RUN_WAIT_STATUS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.clients.html#rigel.clients.docker.DockerClient.client"><code class="docutils literal notranslate"><span class="pre">DockerClient.client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.clients.html#rigel.clients.docker.DockerClient.create_builder"><code class="docutils literal notranslate"><span class="pre">DockerClient.create_builder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.clients.html#rigel.clients.docker.DockerClient.create_network"><code class="docutils literal notranslate"><span class="pre">DockerClient.create_network()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.clients.html#rigel.clients.docker.DockerClient.get_builder"><code class="docutils literal notranslate"><span class="pre">DockerClient.get_builder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.clients.html#rigel.clients.docker.DockerClient.get_container"><code class="docutils literal notranslate"><span class="pre">DockerClient.get_container()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.clients.html#rigel.clients.docker.DockerClient.get_network"><code class="docutils literal notranslate"><span class="pre">DockerClient.get_network()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.clients.html#rigel.clients.docker.DockerClient.remove_builder"><code class="docutils literal notranslate"><span class="pre">DockerClient.remove_builder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.clients.html#rigel.clients.docker.DockerClient.remove_container"><code class="docutils literal notranslate"><span class="pre">DockerClient.remove_container()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.clients.html#rigel.clients.docker.DockerClient.remove_network"><code class="docutils literal notranslate"><span class="pre">DockerClient.remove_network()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.clients.html#rigel.clients.docker.DockerClient.run_container"><code class="docutils literal notranslate"><span class="pre">DockerClient.run_container()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.clients.html#rigel.clients.docker.DockerClient.wait_for_container_status"><code class="docutils literal notranslate"><span class="pre">DockerClient.wait_for_container_status()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.clients.html#module-rigel.clients.rosbridge">rigel.clients.rosbridge module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.clients.html#rigel.clients.rosbridge.ROSBridgeClient"><code class="docutils literal notranslate"><span class="pre">ROSBridgeClient</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.clients.html#rigel.clients.rosbridge.ROSBridgeClient.close"><code class="docutils literal notranslate"><span class="pre">ROSBridgeClient.close()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.clients.html#rigel.clients.rosbridge.ROSBridgeClient.handlers"><code class="docutils literal notranslate"><span class="pre">ROSBridgeClient.handlers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.clients.html#rigel.clients.rosbridge.ROSBridgeClient.register_message_handler"><code class="docutils literal notranslate"><span class="pre">ROSBridgeClient.register_message_handler()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.clients.html#rigel.clients.rosbridge.ROSBridgeClient.remove_message_handler"><code class="docutils literal notranslate"><span class="pre">ROSBridgeClient.remove_message_handler()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.clients.html#rigel.clients.rosbridge.ROSBridgeClient.subscribers"><code class="docutils literal notranslate"><span class="pre">ROSBridgeClient.subscribers</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.clients.html#module-rigel.clients">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rigel.files.html">rigel.files package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rigel.files.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.files.html#module-rigel.files.decoder">rigel.files.decoder module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.files.html#rigel.files.decoder.YAMLDataDecoder"><code class="docutils literal notranslate"><span class="pre">YAMLDataDecoder</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.files.html#rigel.files.decoder.YAMLDataDecoder.decode"><code class="docutils literal notranslate"><span class="pre">YAMLDataDecoder.decode()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.files.html#module-rigel.files.loader">rigel.files.loader module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.files.html#rigel.files.loader.YAMLDataLoader"><code class="docutils literal notranslate"><span class="pre">YAMLDataLoader</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.files.html#rigel.files.loader.YAMLDataLoader.load"><code class="docutils literal notranslate"><span class="pre">YAMLDataLoader.load()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.files.html#module-rigel.files">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rigel.loggers.html">rigel.loggers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rigel.loggers.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.loggers.html#module-rigel.loggers.logger">rigel.loggers.logger module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.loggers.html#rigel.loggers.logger.RigelFormatter"><code class="docutils literal notranslate"><span class="pre">RigelFormatter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.loggers.html#rigel.loggers.logger.RigelFormatter.format"><code class="docutils literal notranslate"><span class="pre">RigelFormatter.format()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.loggers.html#rigel.loggers.logger.RigelFormatter.formats"><code class="docutils literal notranslate"><span class="pre">RigelFormatter.formats</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="rigel.loggers.html#rigel.loggers.logger.get_logger"><code class="docutils literal notranslate"><span class="pre">get_logger()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.loggers.html#module-rigel.loggers">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rigel.models.html">rigel.models package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rigel.models.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.models.core.html">rigel.models.core package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.core.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.core.html#module-rigel.models.core.registry">rigel.models.core.registry module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.core.html#module-rigel.models.core.ssh">rigel.models.core.ssh module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.core.html#module-rigel.models.core">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.models.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.models.html#module-rigel.models.application">rigel.models.application module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.models.html#rigel.models.application.Application"><code class="docutils literal notranslate"><span class="pre">Application</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.html#rigel.models.application.Application.dir"><code class="docutils literal notranslate"><span class="pre">Application.dir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.html#rigel.models.application.Application.distro"><code class="docutils literal notranslate"><span class="pre">Application.distro</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.html#rigel.models.application.Application.jobs"><code class="docutils literal notranslate"><span class="pre">Application.jobs</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.models.html#module-rigel.models.builder">rigel.models.builder module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.models.html#rigel.models.builder.ModelBuilder"><code class="docutils literal notranslate"><span class="pre">ModelBuilder</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.html#rigel.models.builder.ModelBuilder.build"><code class="docutils literal notranslate"><span class="pre">ModelBuilder.build()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.models.html#module-rigel.models.data">rigel.models.data module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.models.html#rigel.models.data.ComplexDataModel"><code class="docutils literal notranslate"><span class="pre">ComplexDataModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.html#rigel.models.data.ComplexDataModel.type"><code class="docutils literal notranslate"><span class="pre">ComplexDataModel.type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.html#rigel.models.data.ComplexDataModel.with_"><code class="docutils literal notranslate"><span class="pre">ComplexDataModel.with_</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.models.html#module-rigel.models.plugin">rigel.models.plugin module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.models.html#rigel.models.plugin.PluginDataModel"><code class="docutils literal notranslate"><span class="pre">PluginDataModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.html#rigel.models.plugin.PluginDataModel.plugin"><code class="docutils literal notranslate"><span class="pre">PluginDataModel.plugin</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.html#rigel.models.plugin.PluginDataModel.with_"><code class="docutils literal notranslate"><span class="pre">PluginDataModel.with_</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.models.html#module-rigel.models.provider">rigel.models.provider module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.models.html#rigel.models.provider.ProviderDataModel"><code class="docutils literal notranslate"><span class="pre">ProviderDataModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.html#rigel.models.provider.ProviderDataModel.provider"><code class="docutils literal notranslate"><span class="pre">ProviderDataModel.provider</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.html#rigel.models.provider.ProviderDataModel.with_"><code class="docutils literal notranslate"><span class="pre">ProviderDataModel.with_</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.models.html#module-rigel.models.rigelfile">rigel.models.rigelfile module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.models.html#rigel.models.rigelfile.Rigelfile"><code class="docutils literal notranslate"><span class="pre">Rigelfile</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.html#rigel.models.rigelfile.Rigelfile.applications"><code class="docutils literal notranslate"><span class="pre">Rigelfile.applications</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.html#rigel.models.rigelfile.Rigelfile.providers"><code class="docutils literal notranslate"><span class="pre">Rigelfile.providers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.html#rigel.models.rigelfile.Rigelfile.sequences"><code class="docutils literal notranslate"><span class="pre">Rigelfile.sequences</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.html#rigel.models.rigelfile.Rigelfile.vars"><code class="docutils literal notranslate"><span class="pre">Rigelfile.vars</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.models.html#module-rigel.models">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rigel.plugins.html">rigel.plugins package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.aws.html">rigel.plugins.aws package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.aws.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.aws.html#module-rigel.plugins.aws">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.html">rigel.plugins.core package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.html#module-rigel.plugins.core">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.html#module-rigel.plugins.manager">rigel.plugins.manager module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.html#rigel.plugins.manager.PluginManager"><code class="docutils literal notranslate"><span class="pre">PluginManager</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.html#rigel.plugins.manager.PluginManager.is_plugin_compliant"><code class="docutils literal notranslate"><span class="pre">PluginManager.is_plugin_compliant()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.html#rigel.plugins.manager.PluginManager.load"><code class="docutils literal notranslate"><span class="pre">PluginManager.load()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.html#module-rigel.plugins.plugin">rigel.plugins.plugin module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.html#rigel.plugins.plugin.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.html#rigel.plugins.plugin.Plugin.run"><code class="docutils literal notranslate"><span class="pre">Plugin.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.html#rigel.plugins.plugin.Plugin.setup"><code class="docutils literal notranslate"><span class="pre">Plugin.setup()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.html#rigel.plugins.plugin.Plugin.stop"><code class="docutils literal notranslate"><span class="pre">Plugin.stop()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.html#module-rigel.plugins">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rigel.providers.html">rigel.providers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rigel.providers.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.providers.aws.html">rigel.providers.aws package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.providers.aws.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.providers.aws.html#module-rigel.providers.aws.models">rigel.providers.aws.models module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.providers.aws.html#module-rigel.providers.aws.provider">rigel.providers.aws.provider module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.providers.aws.html#module-rigel.providers.aws">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="rigel.providers.core.html">rigel.providers.core package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.providers.core.html#module-rigel.providers.core">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.providers.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.providers.html#module-rigel.providers.manager">rigel.providers.manager module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.providers.html#rigel.providers.manager.ProviderManager"><code class="docutils literal notranslate"><span class="pre">ProviderManager</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.providers.html#rigel.providers.manager.ProviderManager.is_provider_compliant"><code class="docutils literal notranslate"><span class="pre">ProviderManager.is_provider_compliant()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.providers.html#rigel.providers.manager.ProviderManager.load"><code class="docutils literal notranslate"><span class="pre">ProviderManager.load()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.providers.html#module-rigel.providers.provider">rigel.providers.provider module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.providers.html#rigel.providers.provider.Provider"><code class="docutils literal notranslate"><span class="pre">Provider</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.providers.html#rigel.providers.provider.Provider.connect"><code class="docutils literal notranslate"><span class="pre">Provider.connect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.providers.html#rigel.providers.provider.Provider.disconnect"><code class="docutils literal notranslate"><span class="pre">Provider.disconnect()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.providers.html#module-rigel.providers">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-rigel.exceptions">
+<span id="rigel-exceptions-module"></span><h2>rigel.exceptions module<a class="headerlink" href="#module-rigel.exceptions" title="Permalink to this heading"></a></h2>
+<dl class="py exception">
+<dt class="sig sig-object py" id="rigel.exceptions.ClientError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.exceptions.</span></span><span class="sig-name descname"><span class="pre">ClientError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exception</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Exception</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/exceptions.html#ClientError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.exceptions.ClientError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.exceptions.RigelError" title="rigel.exceptions.RigelError"><code class="xref py py-class docutils literal notranslate"><span class="pre">RigelError</span></code></a></p>
+<p>Raised whenever an error occurs while using a client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> – The client that raised the exception.</p></li>
+<li><p><strong>exception</strong> – The exception raised by the client.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.exceptions.ClientError.base">
+<span class="sig-name descname"><span class="pre">base</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.exceptions.ClientError.base" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="rigel.exceptions.DockerAPIError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.exceptions.</span></span><span class="sig-name descname"><span class="pre">DockerAPIError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exception</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Exception</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/exceptions.html#DockerAPIError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.exceptions.DockerAPIError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.exceptions.RigelError" title="rigel.exceptions.RigelError"><code class="xref py py-class docutils literal notranslate"><span class="pre">RigelError</span></code></a></p>
+<p>Raised whenever an exception is thrown while making a call to the Docker API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>exception</strong> – The exception thrown by the Docker API.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.exceptions.DockerAPIError.base">
+<span class="sig-name descname"><span class="pre">base</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.exceptions.DockerAPIError.base" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="rigel.exceptions.EmptyRigelfileError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.exceptions.</span></span><span class="sig-name descname"><span class="pre">EmptyRigelfileError</span></span><a class="reference internal" href="_modules/rigel/exceptions.html#EmptyRigelfileError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.exceptions.EmptyRigelfileError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.exceptions.RigelError" title="rigel.exceptions.RigelError"><code class="xref py py-class docutils literal notranslate"><span class="pre">RigelError</span></code></a></p>
+<p>Raised whenever an empty Rigelfile is found.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.exceptions.EmptyRigelfileError.base">
+<span class="sig-name descname"><span class="pre">base</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.exceptions.EmptyRigelfileError.base" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="rigel.exceptions.InvalidValueError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidValueError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/exceptions.html#InvalidValueError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.exceptions.InvalidValueError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.exceptions.RigelError" title="rigel.exceptions.RigelError"><code class="xref py py-class docutils literal notranslate"><span class="pre">RigelError</span></code></a></p>
+<p>Raised whenever an attempt is made to pass an invalid value to a given field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> – The name of the unsupported compiler.</p></li>
+<li><p><strong>value</strong> – The name of the unsupported compiler.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.exceptions.InvalidValueError.base">
+<span class="sig-name descname"><span class="pre">base</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.exceptions.InvalidValueError.base" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="rigel.exceptions.PluginNotCompliantError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.exceptions.</span></span><span class="sig-name descname"><span class="pre">PluginNotCompliantError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cause</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/exceptions.html#PluginNotCompliantError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.exceptions.PluginNotCompliantError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.exceptions.RigelError" title="rigel.exceptions.RigelError"><code class="xref py py-class docutils literal notranslate"><span class="pre">RigelError</span></code></a></p>
+<p>Raised whenever an plugin is loaded that is not compliant with
+the rigel.plugins.Protocol class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plugin</strong> – Name of the plugin</p></li>
+<li><p><strong>cause</strong> – Reason why plugin is not compliant.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.exceptions.PluginNotCompliantError.base">
+<span class="sig-name descname"><span class="pre">base</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.exceptions.PluginNotCompliantError.base" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="rigel.exceptions.PluginNotFoundError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.exceptions.</span></span><span class="sig-name descname"><span class="pre">PluginNotFoundError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/exceptions.html#PluginNotFoundError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.exceptions.PluginNotFoundError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.exceptions.RigelError" title="rigel.exceptions.RigelError"><code class="xref py py-class docutils literal notranslate"><span class="pre">RigelError</span></code></a></p>
+<p>Raised whenever an attempt is made to load a plugin that is not installed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plugin</strong> – Name of the plugin.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.exceptions.PluginNotFoundError.base">
+<span class="sig-name descname"><span class="pre">base</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.exceptions.PluginNotFoundError.base" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="rigel.exceptions.PydanticValidationError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.exceptions.</span></span><span class="sig-name descname"><span class="pre">PydanticValidationError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exception</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ValidationError</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/exceptions.html#PydanticValidationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.exceptions.PydanticValidationError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.exceptions.RigelError" title="rigel.exceptions.RigelError"><code class="xref py py-class docutils literal notranslate"><span class="pre">RigelError</span></code></a></p>
+<p>Raised whenever a ValidationError is thrown
+while creating instances of pydantic.BaseModel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>exception</strong> – The exception thrown.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.exceptions.PydanticValidationError.base">
+<span class="sig-name descname"><span class="pre">base</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.exceptions.PydanticValidationError.base" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="rigel.exceptions.RigelError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.exceptions.</span></span><span class="sig-name descname"><span class="pre">RigelError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Generic</span> <span class="pre">Rigel</span> <span class="pre">error.'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/exceptions.html#RigelError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.exceptions.RigelError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>The base exception class for all Rigel errors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base</strong> – The error message.</p></li>
+<li><p><strong>code</strong> – The error code.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.exceptions.RigelError.base">
+<span class="sig-name descname"><span class="pre">base</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.exceptions.RigelError.base" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="rigel.exceptions.RigelfileNotFoundError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.exceptions.</span></span><span class="sig-name descname"><span class="pre">RigelfileNotFoundError</span></span><a class="reference internal" href="_modules/rigel/exceptions.html#RigelfileNotFoundError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.exceptions.RigelfileNotFoundError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.exceptions.RigelError" title="rigel.exceptions.RigelError"><code class="xref py py-class docutils literal notranslate"><span class="pre">RigelError</span></code></a></p>
+<p>Raised whenever a Rigelfile is required but is not found.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.exceptions.RigelfileNotFoundError.base">
+<span class="sig-name descname"><span class="pre">base</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.exceptions.RigelfileNotFoundError.base" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="rigel.exceptions.UndeclaredEnvironmentVariableError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.exceptions.</span></span><span class="sig-name descname"><span class="pre">UndeclaredEnvironmentVariableError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/exceptions.html#UndeclaredEnvironmentVariableError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.exceptions.UndeclaredEnvironmentVariableError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.exceptions.RigelError" title="rigel.exceptions.RigelError"><code class="xref py py-class docutils literal notranslate"><span class="pre">RigelError</span></code></a></p>
+<p>Raised whenever an attempt is made to use the value of an undeclared environment variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>env</strong> – The undeclared environment variable.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.exceptions.UndeclaredEnvironmentVariableError.base">
+<span class="sig-name descname"><span class="pre">base</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.exceptions.UndeclaredEnvironmentVariableError.base" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="rigel.exceptions.UndeclaredGlobalVariableError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.exceptions.</span></span><span class="sig-name descname"><span class="pre">UndeclaredGlobalVariableError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/exceptions.html#UndeclaredGlobalVariableError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.exceptions.UndeclaredGlobalVariableError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.exceptions.RigelError" title="rigel.exceptions.RigelError"><code class="xref py py-class docutils literal notranslate"><span class="pre">RigelError</span></code></a></p>
+<p>Raised whenever an undeclared global variable is referenced.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> – Path for the field referencing the global varialble.</p></li>
+<li><p><strong>var</strong> – Global variable identifier.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.exceptions.UndeclaredGlobalVariableError.base">
+<span class="sig-name descname"><span class="pre">base</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.exceptions.UndeclaredGlobalVariableError.base" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="rigel.exceptions.UnformattedRigelfileError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnformattedRigelfileError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/exceptions.html#UnformattedRigelfileError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.exceptions.UnformattedRigelfileError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.exceptions.RigelError" title="rigel.exceptions.RigelError"><code class="xref py py-class docutils literal notranslate"><span class="pre">RigelError</span></code></a></p>
+<p>Raised whenever an attempt is made to use an unformatted Rigelfile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>trace</strong> – A message detailing what format error was found and where.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.exceptions.UnformattedRigelfileError.base">
+<span class="sig-name descname"><span class="pre">base</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.exceptions.UnformattedRigelfileError.base" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="rigel.exceptions.UnsupportedCompilerError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedCompilerError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compiler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/exceptions.html#UnsupportedCompilerError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.exceptions.UnsupportedCompilerError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.exceptions.RigelError" title="rigel.exceptions.RigelError"><code class="xref py py-class docutils literal notranslate"><span class="pre">RigelError</span></code></a></p>
+<p>Raised whenever an attempt is made to use an unsupported compiler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>compiler</strong> – The name of the unsupported compiler.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.exceptions.UnsupportedCompilerError.base">
+<span class="sig-name descname"><span class="pre">base</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.exceptions.UnsupportedCompilerError.base" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="rigel.exceptions.UnsupportedPlatformError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedPlatformError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">platform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/exceptions.html#UnsupportedPlatformError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.exceptions.UnsupportedPlatformError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.exceptions.RigelError" title="rigel.exceptions.RigelError"><code class="xref py py-class docutils literal notranslate"><span class="pre">RigelError</span></code></a></p>
+<p>Raised whenever an attempt is build an image for an unsupported platform.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>compiler</strong> – The unsupported platform.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.exceptions.UnsupportedPlatformError.base">
+<span class="sig-name descname"><span class="pre">base</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.exceptions.UnsupportedPlatformError.base" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.main">
+<span id="rigel-main-module"></span><h2>rigel.main module<a class="headerlink" href="#module-rigel.main" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="rigel.main.main">
+<span class="sig-prename descclassname"><span class="pre">rigel.main.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/main.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.main.main" title="Permalink to this definition"></a></dt>
+<dd><p>Rigel application entry point.</p>
+</dd></dl>
+
+</section>
+<section id="module-rigel.workspace">
+<span id="rigel-workspace-module"></span><h2>rigel.workspace module<a class="headerlink" href="#module-rigel.workspace" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.workspace.WorkspaceManager">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.workspace.</span></span><span class="sig-name descname"><span class="pre">WorkspaceManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/workspace.html#WorkspaceManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.workspace.WorkspaceManager" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.workspace.WorkspaceManager.connect_providers">
+<span class="sig-name descname"><span class="pre">connect_providers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/workspace.html#WorkspaceManager.connect_providers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.workspace.WorkspaceManager.connect_providers" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize and connect to all declared providers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.workspace.WorkspaceManager.disconnect_providers">
+<span class="sig-name descname"><span class="pre">disconnect_providers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/workspace.html#WorkspaceManager.disconnect_providers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.workspace.WorkspaceManager.disconnect_providers" title="Permalink to this definition"></a></dt>
+<dd><p>Disconnect from all declared providers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.workspace.WorkspaceManager.execute_plugin">
+<span class="sig-name descname"><span class="pre">execute_plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/workspace.html#WorkspaceManager.execute_plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.workspace.WorkspaceManager.execute_plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Run the plugin associated with a given job.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>job</strong> (<em>str</em>) – The job identifier.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.workspace.WorkspaceManager.handle_abort">
+<span class="sig-name descname"><span class="pre">handle_abort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/workspace.html#WorkspaceManager.handle_abort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.workspace.WorkspaceManager.handle_abort" title="Permalink to this definition"></a></dt>
+<dd><p>Handle abort events.
+Ensure that executing plugin is properly terminated and disconnect
+from all declared providers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.workspace.WorkspaceManager.handle_signals">
+<span class="sig-name descname"><span class="pre">handle_signals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/workspace.html#WorkspaceManager.handle_signals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.workspace.WorkspaceManager.handle_signals" title="Permalink to this definition"></a></dt>
+<dd><p>Start listening for abort (CTRL-C and CTRL-Z) events.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.workspace.WorkspaceManager.initializate_providers">
+<span class="sig-name descname"><span class="pre">initializate_providers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/workspace.html#WorkspaceManager.initializate_providers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.workspace.WorkspaceManager.initializate_providers" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.workspace.WorkspaceManager.run_job">
+<span class="sig-name descname"><span class="pre">run_job</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/workspace.html#WorkspaceManager.run_job"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.workspace.WorkspaceManager.run_job" title="Permalink to this definition"></a></dt>
+<dd><p>Run a single job.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>job</strong> (<em>str</em>) – The job identifier.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.workspace.WorkspaceManager.run_sequence">
+<span class="sig-name descname"><span class="pre">run_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sequence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/workspace.html#WorkspaceManager.run_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.workspace.WorkspaceManager.run_sequence" title="Permalink to this definition"></a></dt>
+<dd><p>Run a sequence of jobs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sequence</strong> (<em>str</em>) – The sequence identifier.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-rigel" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Pedro Pereira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

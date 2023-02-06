@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rigel.plugins.aws.robomaker package &mdash; Rigel 0.3.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Rigel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">rigel.plugins.aws.robomaker package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-rigel.plugins.aws.robomaker.models">rigel.plugins.aws.robomaker.models module</a><ul>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.DataSource"><code class="docutils literal notranslate"><span class="pre">DataSource</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.DataSource.destination"><code class="docutils literal notranslate"><span class="pre">DataSource.destination</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.DataSource.name"><code class="docutils literal notranslate"><span class="pre">DataSource.name</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.DataSource.s3Bucket"><code class="docutils literal notranslate"><span class="pre">DataSource.s3Bucket</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.DataSource.s3Keys"><code class="docutils literal notranslate"><span class="pre">DataSource.s3Keys</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.DataSource.type"><code class="docutils literal notranslate"><span class="pre">DataSource.type</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.DataSource.validate_data_source_type"><code class="docutils literal notranslate"><span class="pre">DataSource.validate_data_source_type()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.PluginModel"><code class="docutils literal notranslate"><span class="pre">PluginModel</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.PluginModel.data_sources"><code class="docutils literal notranslate"><span class="pre">PluginModel.data_sources</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.PluginModel.iam_role"><code class="docutils literal notranslate"><span class="pre">PluginModel.iam_role</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.PluginModel.output_location"><code class="docutils literal notranslate"><span class="pre">PluginModel.output_location</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.PluginModel.robot_application"><code class="docutils literal notranslate"><span class="pre">PluginModel.robot_application</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.PluginModel.simulation_application"><code class="docutils literal notranslate"><span class="pre">PluginModel.simulation_application</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.PluginModel.simulation_duration"><code class="docutils literal notranslate"><span class="pre">PluginModel.simulation_duration</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.PluginModel.vpc_config"><code class="docutils literal notranslate"><span class="pre">PluginModel.vpc_config</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.RobotApplication"><code class="docutils literal notranslate"><span class="pre">RobotApplication</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.RobotApplication.command"><code class="docutils literal notranslate"><span class="pre">RobotApplication.command</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.RobotApplication.ecr"><code class="docutils literal notranslate"><span class="pre">RobotApplication.ecr</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.RobotApplication.environment"><code class="docutils literal notranslate"><span class="pre">RobotApplication.environment</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.RobotApplication.name"><code class="docutils literal notranslate"><span class="pre">RobotApplication.name</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.RobotApplication.ports"><code class="docutils literal notranslate"><span class="pre">RobotApplication.ports</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.RobotApplication.requirements"><code class="docutils literal notranslate"><span class="pre">RobotApplication.requirements</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.RobotApplication.streamUI"><code class="docutils literal notranslate"><span class="pre">RobotApplication.streamUI</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.RobotApplication.tools"><code class="docutils literal notranslate"><span class="pre">RobotApplication.tools</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.SimulationApplication"><code class="docutils literal notranslate"><span class="pre">SimulationApplication</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.SimulationApplication.name"><code class="docutils literal notranslate"><span class="pre">SimulationApplication.name</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.SimulationApplication.worldConfigs"><code class="docutils literal notranslate"><span class="pre">SimulationApplication.worldConfigs</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.Tool"><code class="docutils literal notranslate"><span class="pre">Tool</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.Tool.Config"><code class="docutils literal notranslate"><span class="pre">Tool.Config</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.Tool.Config.allow_population_by_field_name"><code class="docutils literal notranslate"><span class="pre">Tool.Config.allow_population_by_field_name</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.Tool.Config.extra"><code class="docutils literal notranslate"><span class="pre">Tool.Config.extra</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.Tool.command"><code class="docutils literal notranslate"><span class="pre">Tool.command</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.Tool.exitBehavior"><code class="docutils literal notranslate"><span class="pre">Tool.exitBehavior</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.Tool.name"><code class="docutils literal notranslate"><span class="pre">Tool.name</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.Tool.streamOutputToCloudWatch"><code class="docutils literal notranslate"><span class="pre">Tool.streamOutputToCloudWatch</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.Tool.streamUI"><code class="docutils literal notranslate"><span class="pre">Tool.streamUI</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.Tool.validate_exit_behavior"><code class="docutils literal notranslate"><span class="pre">Tool.validate_exit_behavior()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.VPCConfig"><code class="docutils literal notranslate"><span class="pre">VPCConfig</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.VPCConfig.assignPublicIp"><code class="docutils literal notranslate"><span class="pre">VPCConfig.assignPublicIp</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.VPCConfig.securityGroups"><code class="docutils literal notranslate"><span class="pre">VPCConfig.securityGroups</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.VPCConfig.subnets"><code class="docutils literal notranslate"><span class="pre">VPCConfig.subnets</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.plugins.aws.robomaker.plugin">rigel.plugins.aws.robomaker.plugin module</a><ul>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.plugin.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.plugin.Plugin.cancel_simulation_job"><code class="docutils literal notranslate"><span class="pre">Plugin.cancel_simulation_job()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.plugin.Plugin.convert_envs"><code class="docutils literal notranslate"><span class="pre">Plugin.convert_envs()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.plugin.Plugin.create_robot_application"><code class="docutils literal notranslate"><span class="pre">Plugin.create_robot_application()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.plugin.Plugin.create_simulation_application"><code class="docutils literal notranslate"><span class="pre">Plugin.create_simulation_application()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.plugin.Plugin.create_simulation_job"><code class="docutils literal notranslate"><span class="pre">Plugin.create_simulation_job()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.plugin.Plugin.delete_robot_application"><code class="docutils literal notranslate"><span class="pre">Plugin.delete_robot_application()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.plugin.Plugin.delete_simulation_application"><code class="docutils literal notranslate"><span class="pre">Plugin.delete_simulation_application()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.plugin.Plugin.retrieve_robomaker_client"><code class="docutils literal notranslate"><span class="pre">Plugin.retrieve_robomaker_client()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.plugin.Plugin.run"><code class="docutils literal notranslate"><span class="pre">Plugin.run()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.plugin.Plugin.setup"><code class="docutils literal notranslate"><span class="pre">Plugin.setup()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.plugin.Plugin.stop"><code class="docutils literal notranslate"><span class="pre">Plugin.stop()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.aws.robomaker.plugin.Plugin.wait_simulation_job_status"><code class="docutils literal notranslate"><span class="pre">Plugin.wait_simulation_job_status()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.plugins.aws.robomaker">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Rigel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">rigel.plugins.aws.robomaker package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/rigel.plugins.aws.robomaker.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rigel-plugins-aws-robomaker-package">
+<h1>rigel.plugins.aws.robomaker package<a class="headerlink" href="#rigel-plugins-aws-robomaker-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-rigel.plugins.aws.robomaker.models">
+<span id="rigel-plugins-aws-robomaker-models-module"></span><h2>rigel.plugins.aws.robomaker.models module<a class="headerlink" href="#module-rigel.plugins.aws.robomaker.models" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.DataSource">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.aws.robomaker.models.</span></span><span class="sig-name descname"><span class="pre">DataSource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3_bucket</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'File'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/models.html#DataSource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.DataSource" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>A data source consists of read-only files from S3
+used into RoboMaker simulations.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.DataSource.destination">
+<span class="sig-name descname"><span class="pre">destination</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.DataSource.destination" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.DataSource.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.DataSource.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.DataSource.s3Bucket">
+<span class="sig-name descname"><span class="pre">s3Bucket</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.DataSource.s3Bucket" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.DataSource.s3Keys">
+<span class="sig-name descname"><span class="pre">s3Keys</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.DataSource.s3Keys" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.DataSource.type">
+<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.DataSource.type" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.DataSource.validate_data_source_type">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_data_source_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/models.html#DataSource.validate_data_source_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.DataSource.validate_data_source_type" title="Permalink to this definition"></a></dt>
+<dd><p>Ensure that field ‘type’ is valid.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.PluginModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.aws.robomaker.models.</span></span><span class="sig-name descname"><span class="pre">PluginModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iam_role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robot_application</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.RobotApplication" title="rigel.plugins.aws.robomaker.models.RobotApplication"><span class="pre">RobotApplication</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulation_application</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.SimulationApplication" title="rigel.plugins.aws.robomaker.models.SimulationApplication"><span class="pre">SimulationApplication</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulation_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpc_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.VPCConfig" title="rigel.plugins.aws.robomaker.models.VPCConfig"><span class="pre">VPCConfig</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_sources</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.DataSource" title="rigel.plugins.aws.robomaker.models.DataSource"><span class="pre">DataSource</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/models.html#PluginModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.PluginModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.PluginModel.data_sources">
+<span class="sig-name descname"><span class="pre">data_sources</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.DataSource" title="rigel.plugins.aws.robomaker.models.DataSource"><span class="pre">DataSource</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.PluginModel.data_sources" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.PluginModel.iam_role">
+<span class="sig-name descname"><span class="pre">iam_role</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.PluginModel.iam_role" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.PluginModel.output_location">
+<span class="sig-name descname"><span class="pre">output_location</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.PluginModel.output_location" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.PluginModel.robot_application">
+<span class="sig-name descname"><span class="pre">robot_application</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.RobotApplication" title="rigel.plugins.aws.robomaker.models.RobotApplication"><span class="pre">RobotApplication</span></a></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.PluginModel.robot_application" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.PluginModel.simulation_application">
+<span class="sig-name descname"><span class="pre">simulation_application</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.SimulationApplication" title="rigel.plugins.aws.robomaker.models.SimulationApplication"><span class="pre">SimulationApplication</span></a></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.PluginModel.simulation_application" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.PluginModel.simulation_duration">
+<span class="sig-name descname"><span class="pre">simulation_duration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.PluginModel.simulation_duration" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.PluginModel.vpc_config">
+<span class="sig-name descname"><span class="pre">vpc_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.VPCConfig" title="rigel.plugins.aws.robomaker.models.VPCConfig"><span class="pre">VPCConfig</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.PluginModel.vpc_config" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.RobotApplication">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.aws.robomaker.models.</span></span><span class="sig-name descname"><span class="pre">RobotApplication</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'rigel_robomaker_robot_application'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">environment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ports</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requirements</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream_ui</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tools</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.Tool" title="rigel.plugins.aws.robomaker.models.Tool"><span class="pre">Tool</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/models.html#RobotApplication"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.RobotApplication" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.RobotApplication.command">
+<span class="sig-name descname"><span class="pre">command</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.RobotApplication.command" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.RobotApplication.ecr">
+<span class="sig-name descname"><span class="pre">ecr</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.RobotApplication.ecr" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.RobotApplication.environment">
+<span class="sig-name descname"><span class="pre">environment</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.RobotApplication.environment" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.RobotApplication.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.RobotApplication.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.RobotApplication.ports">
+<span class="sig-name descname"><span class="pre">ports</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.RobotApplication.ports" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.RobotApplication.requirements">
+<span class="sig-name descname"><span class="pre">requirements</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.RobotApplication.requirements" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.RobotApplication.streamUI">
+<span class="sig-name descname"><span class="pre">streamUI</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.RobotApplication.streamUI" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.RobotApplication.tools">
+<span class="sig-name descname"><span class="pre">tools</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.Tool" title="rigel.plugins.aws.robomaker.models.Tool"><span class="pre">Tool</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.RobotApplication.tools" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.SimulationApplication">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.aws.robomaker.models.</span></span><span class="sig-name descname"><span class="pre">SimulationApplication</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'rigel_robomaker_simulation_application'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">environment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ports</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requirements</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream_ui</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tools</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#rigel.plugins.aws.robomaker.models.Tool" title="rigel.plugins.aws.robomaker.models.Tool"><span class="pre">Tool</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world_configs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'world'</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/models.html#SimulationApplication"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.SimulationApplication" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.plugins.aws.robomaker.models.RobotApplication" title="rigel.plugins.aws.robomaker.models.RobotApplication"><code class="xref py py-class docutils literal notranslate"><span class="pre">RobotApplication</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.SimulationApplication.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.SimulationApplication.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.SimulationApplication.worldConfigs">
+<span class="sig-name descname"><span class="pre">worldConfigs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'world'</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.SimulationApplication.worldConfigs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.Tool">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.aws.robomaker.models.</span></span><span class="sig-name descname"><span class="pre">Tool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exit_behaviour</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'RESTART'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream_output_to_cloud_watch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream_ui</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/models.html#Tool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.Tool" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Information about tools configured for the robot application.
+:param command: Command-line arguments for the tool. It must include the tool executable name.
+:type command: str
+:param exit_behavior: Exit behavior determines what happens when your tool quits running.</p>
+<blockquote>
+<div><p>RESTART will cause your tool to be restarted.
+FAIL will cause your job to exit. The default is RESTART .</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the tool.</p></li>
+<li><p><strong>streamOutputToCloudWatch</strong> (<em>bool</em>) – Boolean indicating whether logs will be recorded in CloudWatch for the tool.
+The default is False.</p></li>
+<li><p><strong>streamUI</strong> (<em>bool</em>) – Boolean indicating whether a streaming session will be configured for the tool.
+If True, AWS RoboMaker will configure a connection so you can interact with the tool as it is running in the simulation.
+It must have a graphical user interface. The default is False.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.Tool.Config">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Config</span></span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/models.html#Tool.Config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.Tool.Config" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.Tool.Config.allow_population_by_field_name">
+<span class="sig-name descname"><span class="pre">allow_population_by_field_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.Tool.Config.allow_population_by_field_name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.Tool.Config.extra">
+<span class="sig-name descname"><span class="pre">extra</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'forbid'</span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.Tool.Config.extra" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.Tool.command">
+<span class="sig-name descname"><span class="pre">command</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.Tool.command" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.Tool.exitBehavior">
+<span class="sig-name descname"><span class="pre">exitBehavior</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.Tool.exitBehavior" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.Tool.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.Tool.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.Tool.streamOutputToCloudWatch">
+<span class="sig-name descname"><span class="pre">streamOutputToCloudWatch</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.Tool.streamOutputToCloudWatch" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.Tool.streamUI">
+<span class="sig-name descname"><span class="pre">streamUI</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.Tool.streamUI" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.Tool.validate_exit_behavior">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_exit_behavior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exitBehavior</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/models.html#Tool.validate_exit_behavior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.Tool.validate_exit_behavior" title="Permalink to this definition"></a></dt>
+<dd><p>Ensure that field ‘exitBehavior’ is valid.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.VPCConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.aws.robomaker.models.</span></span><span class="sig-name descname"><span class="pre">VPCConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subnets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">security_groups</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assign_public_ip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/models.html#VPCConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.VPCConfig" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.VPCConfig.assignPublicIp">
+<span class="sig-name descname"><span class="pre">assignPublicIp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.VPCConfig.assignPublicIp" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.VPCConfig.securityGroups">
+<span class="sig-name descname"><span class="pre">securityGroups</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.VPCConfig.securityGroups" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.models.VPCConfig.subnets">
+<span class="sig-name descname"><span class="pre">subnets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.aws.robomaker.models.VPCConfig.subnets" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.plugins.aws.robomaker.plugin">
+<span id="rigel-plugins-aws-robomaker-plugin-module"></span><h2>rigel.plugins.aws.robomaker.plugin module<a class="headerlink" href="#module-rigel.plugins.aws.robomaker.plugin" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.plugin.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.aws.robomaker.plugin.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="rigel.models.html#rigel.models.data.ComplexDataModel" title="rigel.models.data.ComplexDataModel"><span class="pre">ComplexDataModel</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">application</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.models.html#rigel.models.application.Application" title="rigel.models.application.Application"><span class="pre">Application</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">providers_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/plugin.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.plugin.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="rigel.plugins.html#rigel.plugins.plugin.Plugin" title="rigel.plugins.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">Plugin</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.plugin.Plugin.cancel_simulation_job">
+<span class="sig-name descname"><span class="pre">cancel_simulation_job</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/plugin.html#Plugin.cancel_simulation_job"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.plugin.Plugin.cancel_simulation_job" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.plugin.Plugin.convert_envs">
+<span class="sig-name descname"><span class="pre">convert_envs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">envs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/plugin.html#Plugin.convert_envs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.plugin.Plugin.convert_envs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.plugin.Plugin.create_robot_application">
+<span class="sig-name descname"><span class="pre">create_robot_application</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/plugin.html#Plugin.create_robot_application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.plugin.Plugin.create_robot_application" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.plugin.Plugin.create_simulation_application">
+<span class="sig-name descname"><span class="pre">create_simulation_application</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/plugin.html#Plugin.create_simulation_application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.plugin.Plugin.create_simulation_application" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.plugin.Plugin.create_simulation_job">
+<span class="sig-name descname"><span class="pre">create_simulation_job</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/plugin.html#Plugin.create_simulation_job"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.plugin.Plugin.create_simulation_job" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.plugin.Plugin.delete_robot_application">
+<span class="sig-name descname"><span class="pre">delete_robot_application</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/plugin.html#Plugin.delete_robot_application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.plugin.Plugin.delete_robot_application" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.plugin.Plugin.delete_simulation_application">
+<span class="sig-name descname"><span class="pre">delete_simulation_application</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/plugin.html#Plugin.delete_simulation_application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.plugin.Plugin.delete_simulation_application" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.plugin.Plugin.retrieve_robomaker_client">
+<span class="sig-name descname"><span class="pre">retrieve_robomaker_client</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">client</span></span></span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/plugin.html#Plugin.retrieve_robomaker_client"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.plugin.Plugin.retrieve_robomaker_client" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.plugin.Plugin.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/plugin.html#Plugin.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.plugin.Plugin.run" title="Permalink to this definition"></a></dt>
+<dd><p>Use this function as an entry point for your plugin.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.plugin.Plugin.setup">
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/plugin.html#Plugin.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.plugin.Plugin.setup" title="Permalink to this definition"></a></dt>
+<dd><p>Use this function to allocate plugin resoures.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.plugin.Plugin.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/plugin.html#Plugin.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.plugin.Plugin.stop" title="Permalink to this definition"></a></dt>
+<dd><p>Use this function to gracefully clean plugin resources.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.aws.robomaker.plugin.Plugin.wait_simulation_job_status">
+<span class="sig-name descname"><span class="pre">wait_simulation_job_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/aws/robomaker/plugin.html#Plugin.wait_simulation_job_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.aws.robomaker.plugin.Plugin.wait_simulation_job_status" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.plugins.aws.robomaker">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-rigel.plugins.aws.robomaker" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Pedro Pereira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

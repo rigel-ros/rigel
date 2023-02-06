@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rigel.plugins.aws.robomaker.plugin &mdash; Rigel 0.3.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> Rigel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Rigel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">rigel.plugins.aws.robomaker.plugin</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for rigel.plugins.aws.robomaker.plugin</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">boto3</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">rigel.clients</span> <span class="kn">import</span> <span class="n">ROSBridgeClient</span>
+<span class="kn">from</span> <span class="nn">rigel.exceptions</span> <span class="kn">import</span> <span class="n">RigelError</span>
+<span class="kn">from</span> <span class="nn">rigel.loggers</span> <span class="kn">import</span> <span class="n">get_logger</span>
+<span class="kn">from</span> <span class="nn">rigel.models.application</span> <span class="kn">import</span> <span class="n">Application</span>
+<span class="kn">from</span> <span class="nn">rigel.models.builder</span> <span class="kn">import</span> <span class="n">ModelBuilder</span>
+<span class="kn">from</span> <span class="nn">rigel.models.plugin</span> <span class="kn">import</span> <span class="n">PluginRawData</span>
+<span class="kn">from</span> <span class="nn">rigel.models.rigelfile</span> <span class="kn">import</span> <span class="n">RigelfileGlobalData</span>
+<span class="kn">from</span> <span class="nn">rigel.providers.aws</span> <span class="kn">import</span> <span class="n">AWSProviderOutputModel</span>
+<span class="kn">from</span> <span class="nn">rigel.plugins.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span> <span class="k">as</span> <span class="n">PluginBase</span>
+<span class="kn">from</span> <span class="nn">rigel.plugins.core.test.introspection.command</span> <span class="kn">import</span> <span class="n">CommandHandler</span>
+<span class="kn">from</span> <span class="nn">rigel.plugins.core.test.introspection.parser</span> <span class="kn">import</span> <span class="n">SimulationRequirementsParser</span>
+<span class="kn">from</span> <span class="nn">rigel.plugins.core.test.introspection.requirements.manager</span> <span class="kn">import</span> <span class="n">SimulationRequirementsManager</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">PluginModel</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="Plugin"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.plugin.Plugin">[docs]</a><span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="n">PluginBase</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">raw_data</span><span class="p">:</span> <span class="n">PluginRawData</span><span class="p">,</span>
+        <span class="n">global_data</span><span class="p">:</span> <span class="n">RigelfileGlobalData</span><span class="p">,</span>
+        <span class="n">application</span><span class="p">:</span> <span class="n">Application</span><span class="p">,</span>
+        <span class="n">providers_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">raw_data</span><span class="p">,</span>
+            <span class="n">global_data</span><span class="p">,</span>
+            <span class="n">application</span><span class="p">,</span>
+            <span class="n">providers_data</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Ensure model instance was properly initialized</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">ModelBuilder</span><span class="p">(</span><span class="n">PluginModel</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">([],</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_data</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">PluginModel</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Plugin.retrieve_robomaker_client"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.plugin.Plugin.retrieve_robomaker_client">[docs]</a>    <span class="k">def</span> <span class="nf">retrieve_robomaker_client</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">boto3</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">client</span><span class="p">:</span>
+
+        <span class="n">providers</span> <span class="o">=</span> <span class="p">[</span><span class="n">provider</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">provider</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">providers_data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">provider</span><span class="p">,</span> <span class="n">AWSProviderOutputModel</span><span class="p">)]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">providers</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">RigelError</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="s1">&#39;No AWS provider were found. This plugin requires a connection to AWS RoboMaker.&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">providers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">RigelError</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="s1">&#39;Multiple AWS providers was found. Please specify which provider you want to use.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">client</span> <span class="o">=</span> <span class="n">providers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">robomaker_client</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">client</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">RigelError</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="s1">&#39;Selected AWS provider is not configured to work with AWS RoboMaker.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">client</span></div>
+
+<div class="viewcode-block" id="Plugin.create_robot_application"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.plugin.Plugin.create_robot_application">[docs]</a>    <span class="k">def</span> <span class="nf">create_robot_application</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">robot_application</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="s1">&#39;robotSoftwareSuite&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;General&#39;</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;environment&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;uri&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">robot_application</span><span class="o">.</span><span class="n">ecr</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="n">robot_application</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__robomaker_client</span><span class="o">.</span><span class="n">create_robot_application</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Robot application created with success&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">robot_application</span></div>
+
+<div class="viewcode-block" id="Plugin.delete_robot_application"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.plugin.Plugin.delete_robot_application">[docs]</a>    <span class="k">def</span> <span class="nf">delete_robot_application</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">arn</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;application&#39;</span><span class="p">:</span> <span class="n">arn</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__robomaker_client</span><span class="o">.</span><span class="n">delete_robot_application</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Robot application deleted with success&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Plugin.create_simulation_application"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.plugin.Plugin.create_simulation_application">[docs]</a>    <span class="k">def</span> <span class="nf">create_simulation_application</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">simulation_application</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="s1">&#39;robotSoftwareSuite&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;General&#39;</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;simulationSoftwareSuite&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;SimulationRuntime&#39;</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;environment&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;uri&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">simulation_application</span><span class="o">.</span><span class="n">ecr</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="n">simulation_application</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__robomaker_client</span><span class="o">.</span><span class="n">create_simulation_application</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Simulation application created with success&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">simulation_application</span></div>
+
+<div class="viewcode-block" id="Plugin.delete_simulation_application"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.plugin.Plugin.delete_simulation_application">[docs]</a>    <span class="k">def</span> <span class="nf">delete_simulation_application</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">arn</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;application&#39;</span><span class="p">:</span> <span class="n">arn</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__robomaker_client</span><span class="o">.</span><span class="n">delete_simulation_application</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Simulation application deleted with success&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Plugin.convert_envs"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.plugin.Plugin.convert_envs">[docs]</a>    <span class="k">def</span> <span class="nf">convert_envs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">envs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">env</span> <span class="ow">in</span> <span class="n">envs</span><span class="p">:</span>
+            <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="Plugin.create_simulation_job"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.plugin.Plugin.create_simulation_job">[docs]</a>    <span class="k">def</span> <span class="nf">create_simulation_job</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;iamRole&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">iam_role</span><span class="p">,</span>
+            <span class="s1">&#39;outputLocation&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;s3Bucket&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">output_location</span><span class="p">}</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">output_location</span> <span class="k">else</span> <span class="p">{},</span>
+            <span class="s1">&#39;maxJobDurationInSeconds&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">simulation_duration</span><span class="p">,</span>
+            <span class="s1">&#39;robotApplications&#39;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s1">&#39;application&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__robot_application</span><span class="p">[</span><span class="s1">&#39;arn&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;launchConfig&#39;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s1">&#39;streamUI&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">robot_application</span><span class="o">.</span><span class="n">streamUI</span><span class="p">,</span>
+                        <span class="s1">&#39;command&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">robot_application</span><span class="o">.</span><span class="n">command</span><span class="p">,</span>
+                        <span class="s1">&#39;environmentVariables&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_envs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">robot_application</span><span class="o">.</span><span class="n">environment</span><span class="p">),</span>
+                        <span class="s1">&#39;portForwardingConfig&#39;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s1">&#39;portMappings&#39;</span><span class="p">:</span> <span class="p">[</span>
+                                <span class="p">{</span>
+                                    <span class="s1">&#39;jobPort&#39;</span><span class="p">:</span> <span class="n">ports</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                    <span class="s1">&#39;applicationPort&#39;</span><span class="p">:</span> <span class="n">ports</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                    <span class="s1">&#39;enableOnPublicIp&#39;</span><span class="p">:</span> <span class="kc">True</span>
+                                <span class="p">}</span>
+                                <span class="k">for</span> <span class="n">ports</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">robot_application</span><span class="o">.</span><span class="n">ports</span>
+                            <span class="p">]</span>
+                        <span class="p">},</span>
+                    <span class="p">},</span>
+                    <span class="s1">&#39;tools&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">robot_application</span><span class="o">.</span><span class="n">tools</span><span class="p">]</span>
+                <span class="p">}</span>
+            <span class="p">],</span>
+            <span class="s1">&#39;simulationApplications&#39;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s1">&#39;application&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__simulation_application</span><span class="p">[</span><span class="s1">&#39;arn&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;launchConfig&#39;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s1">&#39;streamUI&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">simulation_application</span><span class="o">.</span><span class="n">streamUI</span><span class="p">,</span>
+                        <span class="s1">&#39;command&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">simulation_application</span><span class="o">.</span><span class="n">command</span><span class="p">,</span>
+                        <span class="s1">&#39;environmentVariables&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_envs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">simulation_application</span><span class="o">.</span><span class="n">environment</span><span class="p">),</span>
+                        <span class="s1">&#39;portForwardingConfig&#39;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s1">&#39;portMappings&#39;</span><span class="p">:</span> <span class="p">[</span>
+                                <span class="p">{</span>
+                                    <span class="s1">&#39;jobPort&#39;</span><span class="p">:</span> <span class="n">ports</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                    <span class="s1">&#39;applicationPort&#39;</span><span class="p">:</span> <span class="n">ports</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                    <span class="s1">&#39;enableOnPublicIp&#39;</span><span class="p">:</span> <span class="kc">True</span>
+                                <span class="p">}</span>
+                                <span class="k">for</span> <span class="n">ports</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">simulation_application</span><span class="o">.</span><span class="n">ports</span>
+                            <span class="p">]</span>
+                        <span class="p">},</span>
+                    <span class="p">},</span>
+                    <span class="s1">&#39;worldConfigs&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">config</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">simulation_application</span><span class="o">.</span><span class="n">worldConfigs</span><span class="p">],</span>
+                    <span class="s1">&#39;tools&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">simulation_application</span><span class="o">.</span><span class="n">tools</span><span class="p">]</span>
+                <span class="p">}</span>
+            <span class="p">],</span>
+            <span class="s1">&#39;vpcConfig&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;subnets&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">vpc_config</span><span class="o">.</span><span class="n">subnets</span><span class="p">,</span>
+                <span class="s1">&#39;securityGroups&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">vpc_config</span><span class="o">.</span><span class="n">securityGroups</span><span class="p">,</span>
+                <span class="s1">&#39;assignPublicIp&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">vpc_config</span><span class="o">.</span><span class="n">assignPublicIp</span>
+            <span class="p">},</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">data_sources</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;dataSources&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">source</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">data_sources</span><span class="p">]</span>
+
+        <span class="n">simulation_job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__robomaker_client</span><span class="o">.</span><span class="n">create_simulation_job</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Created simulation job&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">simulation_job</span></div>
+
+<div class="viewcode-block" id="Plugin.cancel_simulation_job"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.plugin.Plugin.cancel_simulation_job">[docs]</a>    <span class="k">def</span> <span class="nf">cancel_simulation_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arn</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;job&#39;</span><span class="p">:</span> <span class="n">arn</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__robomaker_client</span><span class="o">.</span><span class="n">cancel_simulation_job</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Simulation job canceled with success&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Plugin.wait_simulation_job_status"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.plugin.Plugin.wait_simulation_job_status">[docs]</a>    <span class="k">def</span> <span class="nf">wait_simulation_job_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;job&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__simulation_job</span><span class="p">[</span><span class="s1">&#39;arn&#39;</span><span class="p">]}</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Waiting for simulation job status to be &#39;</span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">simulation_job_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__robomaker_client</span><span class="o">.</span><span class="n">describe_simulation_job</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">simulation_job_data</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">status</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__simulation_job</span> <span class="o">=</span> <span class="n">simulation_job_data</span>
+                <span class="k">break</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Plugin.setup"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.plugin.Plugin.setup">[docs]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__robomaker_client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">retrieve_robomaker_client</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__robot_application</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_robot_application</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__simulation_application</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_simulation_application</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__simulation_job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_simulation_job</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Plugin.run"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.plugin.Plugin.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wait_simulation_job_status</span><span class="p">(</span><span class="s1">&#39;Running&#39;</span><span class="p">)</span>
+        <span class="n">simulation_job_public_ip</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__simulation_job</span><span class="p">[</span><span class="s1">&#39;networkInterface&#39;</span><span class="p">][</span><span class="s1">&#39;publicIpAddress&#39;</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Simulation job can be accessed on </span><span class="si">{</span><span class="n">simulation_job_public_ip</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__requirements_manager</span> <span class="o">=</span> <span class="n">SimulationRequirementsManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">simulation_duration</span> <span class="o">*</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__requirements_parser</span> <span class="o">=</span> <span class="n">SimulationRequirementsParser</span><span class="p">()</span>
+
+        <span class="n">requirements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">robot_application</span><span class="o">.</span><span class="n">requirements</span>
+        <span class="k">if</span> <span class="n">requirements</span><span class="p">:</span>
+
+            <span class="n">nodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CommandHandler</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__requirements_parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">req</span><span class="p">)</span> <span class="k">for</span> <span class="n">req</span> <span class="ow">in</span> <span class="n">requirements</span>
+            <span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">__requirements_manager</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">nodes</span>
+
+            <span class="c1"># Connect to ROS bridge inside container</span>
+            <span class="n">port</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">robot_application</span><span class="o">.</span><span class="n">ports</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">rosbridge_client</span> <span class="o">=</span> <span class="n">ROSBridgeClient</span><span class="p">(</span><span class="n">simulation_job_public_ip</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connected to ROS bridge server at &#39;</span><span class="si">{</span><span class="n">simulation_job_public_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">__requirements_manager</span><span class="o">.</span><span class="n">connect_to_rosbridge</span><span class="p">(</span><span class="n">rosbridge_client</span><span class="p">)</span>
+
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Testing the application!&quot;</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__requirements_manager</span><span class="o">.</span><span class="n">children</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__requirements_manager</span><span class="o">.</span><span class="n">assess_children_nodes</span><span class="p">()):</span>
+            <span class="k">pass</span>  <span class="c1"># TODO: separate this into a thread for efficiency</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__requirements_manager</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Plugin.stop"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.plugin.Plugin.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancel_simulation_job</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__simulation_job</span><span class="p">[</span><span class="s1">&#39;arn&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delete_robot_application</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__robot_application</span><span class="p">[</span><span class="s1">&#39;arn&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delete_simulation_application</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__simulation_application</span><span class="p">[</span><span class="s1">&#39;arn&#39;</span><span class="p">])</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Pedro Pereira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

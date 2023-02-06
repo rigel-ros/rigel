@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rigel.providers.aws.provider &mdash; Rigel 0.3.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> Rigel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Rigel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">rigel.providers.aws.provider</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for rigel.providers.aws.provider</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">boto3</span>
+<span class="kn">from</span> <span class="nn">botocore.exceptions</span> <span class="kn">import</span> <span class="n">ClientError</span> <span class="k">as</span> <span class="n">BotocoreClientError</span>
+<span class="kn">from</span> <span class="nn">python_on_whales.exceptions</span> <span class="kn">import</span> <span class="n">DockerException</span>
+<span class="kn">from</span> <span class="nn">rigel.clients</span> <span class="kn">import</span> <span class="n">DockerClient</span>
+<span class="kn">from</span> <span class="nn">rigel.exceptions</span> <span class="kn">import</span> <span class="n">ClientError</span><span class="p">,</span> <span class="n">DockerAPIError</span><span class="p">,</span> <span class="n">RigelError</span>
+<span class="kn">from</span> <span class="nn">rigel.loggers</span> <span class="kn">import</span> <span class="n">get_logger</span>
+<span class="kn">from</span> <span class="nn">rigel.models.builder</span> <span class="kn">import</span> <span class="n">ModelBuilder</span>
+<span class="kn">from</span> <span class="nn">rigel.models.provider</span> <span class="kn">import</span> <span class="n">ProviderRawData</span>
+<span class="kn">from</span> <span class="nn">rigel.models.rigelfile</span> <span class="kn">import</span> <span class="n">RigelfileGlobalData</span>
+<span class="kn">from</span> <span class="nn">rigel.providers</span> <span class="kn">import</span> <span class="n">Provider</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">AWSProviderModel</span><span class="p">,</span> <span class="n">AWSProviderOutputModel</span>
+
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="AWSProvider"><a class="viewcode-back" href="../../../../rigel.providers.aws.html#rigel.providers.aws.provider.AWSProvider">[docs]</a><span class="k">class</span> <span class="nc">AWSProvider</span><span class="p">(</span><span class="n">Provider</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">raw_data</span><span class="p">:</span> <span class="n">ProviderRawData</span><span class="p">,</span>
+        <span class="n">global_data</span><span class="p">:</span> <span class="n">RigelfileGlobalData</span><span class="p">,</span>
+        <span class="n">providers_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">identifier</span><span class="p">,</span>
+            <span class="n">raw_data</span><span class="p">,</span>
+            <span class="n">global_data</span><span class="p">,</span>
+            <span class="n">providers_data</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Ensure model instance was properly initialized</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">ModelBuilder</span><span class="p">(</span><span class="n">AWSProviderModel</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">([],</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_data</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">AWSProviderModel</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__docker</span><span class="p">:</span> <span class="n">DockerClient</span> <span class="o">=</span> <span class="n">DockerClient</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__raw_output_model</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="AWSProvider.connect"><a class="viewcode-back" href="../../../../rigel.providers.aws.html#rigel.providers.aws.provider.AWSProvider.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">service</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">services</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">service</span> <span class="o">==</span> <span class="s1">&#39;ecr&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">connect_ecr</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">service</span> <span class="o">==</span> <span class="s1">&#39;robomaker&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">connect_robomaker</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">RigelError</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Unable to connect. Service &#39;</span><span class="si">{</span><span class="n">service</span><span class="si">}</span><span class="s2">&#39; is invalid or not supported.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">providers_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="n">ModelBuilder</span><span class="p">(</span><span class="n">AWSProviderOutputModel</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">([],</span> <span class="bp">self</span><span class="o">.</span><span class="n">__raw_output_model</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AWSProvider.disconnect"><a class="viewcode-back" href="../../../../rigel.providers.aws.html#rigel.providers.aws.provider.AWSProvider.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">service</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">services</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">service</span> <span class="o">==</span> <span class="s1">&#39;ecr&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">disconnect_ecr</span>
+            <span class="k">elif</span> <span class="n">service</span> <span class="o">==</span> <span class="s1">&#39;robomaker&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">disconnect_robomaker</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">RigelError</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Unable to disconnect. Service &#39;</span><span class="si">{</span><span class="n">service</span><span class="si">}</span><span class="s2">&#39; is invalid or not supported.&quot;</span><span class="p">)</span></div>
+        <span class="c1"># del self.providers_data[self.identifier]</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># ELASTIC CONTAINER REGISTRY (ECR)</span>
+    <span class="c1">#</span>
+
+<div class="viewcode-block" id="AWSProvider.connect_ecr"><a class="viewcode-back" href="../../../../rigel.providers.aws.html#rigel.providers.aws.provider.AWSProvider.connect_ecr">[docs]</a>    <span class="k">def</span> <span class="nf">connect_ecr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">ecr_servers</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No ECR server was declared while using the &#39;ecr&#39; service&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">server</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">ecr_servers</span><span class="p">:</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempting login with ECR &#39;</span><span class="si">{</span><span class="n">server</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__docker</span><span class="o">.</span><span class="n">login_ecr</span><span class="p">(</span>
+                    <span class="n">aws_access_key_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">aws_access_key_id</span><span class="p">,</span>
+                    <span class="n">aws_secret_access_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">aws_secret_access_key</span><span class="p">,</span>
+                    <span class="n">region_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">region_name</span><span class="p">,</span>
+                    <span class="n">registry</span><span class="o">=</span><span class="n">server</span>
+                <span class="p">)</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Logged in with success to ECR &#39;</span><span class="si">{</span><span class="n">server</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">DockerException</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DockerAPIError</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AWSProvider.disconnect_ecr"><a class="viewcode-back" href="../../../../rigel.providers.aws.html#rigel.providers.aws.provider.AWSProvider.disconnect_ecr">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect_ecr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="n">server</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">server</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__docker</span><span class="o">.</span><span class="n">logout</span><span class="p">(</span><span class="n">server</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">DockerException</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DockerAPIError</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span>
+
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Logged out with success from registry &#39;</span><span class="si">{</span><span class="n">server</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span></div>
+
+    <span class="c1">#</span>
+    <span class="c1"># ROBOMAKER</span>
+    <span class="c1">#</span>
+
+<div class="viewcode-block" id="AWSProvider.connect_robomaker"><a class="viewcode-back" href="../../../../rigel.providers.aws.html#rigel.providers.aws.provider.AWSProvider.connect_robomaker">[docs]</a>    <span class="k">def</span> <span class="nf">connect_robomaker</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Authenticated with Robomaker&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+
+            <span class="c1"># Obtain Robomaker authentication token</span>
+            <span class="n">robomaker_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span>
+                <span class="s1">&#39;robomaker&#39;</span><span class="p">,</span>
+                <span class="n">aws_access_key_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">aws_access_key_id</span><span class="p">,</span>
+                <span class="n">aws_secret_access_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">aws_secret_access_key</span><span class="p">,</span>
+                <span class="n">region_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">region_name</span>
+            <span class="p">)</span>
+
+        <span class="k">except</span> <span class="n">BotocoreClientError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ClientError</span><span class="p">(</span><span class="s1">&#39;AWS&#39;</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Authenticated with AWS RoboMaker.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__raw_output_model</span><span class="p">[</span><span class="s1">&#39;robomaker_client&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">robomaker_client</span></div>
+
+<div class="viewcode-block" id="AWSProvider.disconnect_robomaker"><a class="viewcode-back" href="../../../../rigel.providers.aws.html#rigel.providers.aws.provider.AWSProvider.disconnect_robomaker">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect_robomaker</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">pass</span>  <span class="c1"># do nothing</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Pedro Pereira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

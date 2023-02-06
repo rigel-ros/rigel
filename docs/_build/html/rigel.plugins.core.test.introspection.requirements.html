@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rigel.plugins.core.test.introspection.requirements package &mdash; Rigel 0.3.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Rigel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">rigel.plugins.core.test.introspection.requirements package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.test.introspection.requirements.absence">rigel.plugins.core.test.introspection.requirements.absence module</a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode"><code class="docutils literal notranslate"><span class="pre">AbsenceSimulationRequirementNode</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.assess_children_nodes"><code class="docutils literal notranslate"><span class="pre">AbsenceSimulationRequirementNode.assess_children_nodes()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_children_status_change"><code class="docutils literal notranslate"><span class="pre">AbsenceSimulationRequirementNode.handle_children_status_change()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_downstream_command"><code class="docutils literal notranslate"><span class="pre">AbsenceSimulationRequirementNode.handle_downstream_command()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_rosbridge_connection_commands"><code class="docutils literal notranslate"><span class="pre">AbsenceSimulationRequirementNode.handle_rosbridge_connection_commands()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_rosbridge_disconnection_commands"><code class="docutils literal notranslate"><span class="pre">AbsenceSimulationRequirementNode.handle_rosbridge_disconnection_commands()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_timeout"><code class="docutils literal notranslate"><span class="pre">AbsenceSimulationRequirementNode.handle_timeout()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_upstream_command"><code class="docutils literal notranslate"><span class="pre">AbsenceSimulationRequirementNode.handle_upstream_command()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.test.introspection.requirements.disjoint">rigel.plugins.core.test.introspection.requirements.disjoint module</a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode"><code class="docutils literal notranslate"><span class="pre">DisjointSimulationRequirementNode</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode.assess_children_nodes"><code class="docutils literal notranslate"><span class="pre">DisjointSimulationRequirementNode.assess_children_nodes()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode.handle_children_status_change"><code class="docutils literal notranslate"><span class="pre">DisjointSimulationRequirementNode.handle_children_status_change()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode.handle_downstream_command"><code class="docutils literal notranslate"><span class="pre">DisjointSimulationRequirementNode.handle_downstream_command()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode.handle_trigger"><code class="docutils literal notranslate"><span class="pre">DisjointSimulationRequirementNode.handle_trigger()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode.handle_upstream_command"><code class="docutils literal notranslate"><span class="pre">DisjointSimulationRequirementNode.handle_upstream_command()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.test.introspection.requirements.existence">rigel.plugins.core.test.introspection.requirements.existence module</a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode"><code class="docutils literal notranslate"><span class="pre">ExistenceSimulationRequirementNode</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.assess_children_nodes"><code class="docutils literal notranslate"><span class="pre">ExistenceSimulationRequirementNode.assess_children_nodes()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_children_status_change"><code class="docutils literal notranslate"><span class="pre">ExistenceSimulationRequirementNode.handle_children_status_change()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_downstream_command"><code class="docutils literal notranslate"><span class="pre">ExistenceSimulationRequirementNode.handle_downstream_command()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_rosbridge_connection_commands"><code class="docutils literal notranslate"><span class="pre">ExistenceSimulationRequirementNode.handle_rosbridge_connection_commands()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_rosbridge_disconnection_commands"><code class="docutils literal notranslate"><span class="pre">ExistenceSimulationRequirementNode.handle_rosbridge_disconnection_commands()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_timeout"><code class="docutils literal notranslate"><span class="pre">ExistenceSimulationRequirementNode.handle_timeout()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_upstream_command"><code class="docutils literal notranslate"><span class="pre">ExistenceSimulationRequirementNode.handle_upstream_command()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.test.introspection.requirements.manager">rigel.plugins.core.test.introspection.requirements.manager module</a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.assess_children_nodes"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager.assess_children_nodes()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.connect_to_rosbridge"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager.connect_to_rosbridge()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.disconnect_from_rosbridge"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager.disconnect_from_rosbridge()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.handle_children_status_change"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager.handle_children_status_change()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.handle_start_timeout"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager.handle_start_timeout()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.handle_stop_simulation"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager.handle_stop_simulation()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.handle_stop_timeout"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager.handle_stop_timeout()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.handle_upstream_command"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager.handle_upstream_command()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.stop_simulation"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager.stop_simulation()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.stop_timers"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager.stop_timers()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.test.introspection.requirements.node">rigel.plugins.core.test.introspection.requirements.node module</a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementNode</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode.satisfied"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementNode.satisfied</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.test.introspection.requirements.prevention">rigel.plugins.core.test.introspection.requirements.prevention module</a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.assess_children_nodes"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode.assess_children_nodes()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.children"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode.children</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.father"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode.father</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_children_status_change"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode.handle_children_status_change()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_downstream_command"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode.handle_downstream_command()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_rosbridge_connection_commands"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode.handle_rosbridge_connection_commands()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_rosbridge_disconnection_commands"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode.handle_rosbridge_disconnection_commands()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_timeout"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode.handle_timeout()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_trigger"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode.handle_trigger()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_upstream_command"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode.handle_upstream_command()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.test.introspection.requirements.requirement">rigel.plugins.core.test.introspection.requirements.requirement module</a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode"><code class="docutils literal notranslate"><span class="pre">RequirementSimulationRequirementNode</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.assess_children_nodes"><code class="docutils literal notranslate"><span class="pre">RequirementSimulationRequirementNode.assess_children_nodes()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.children"><code class="docutils literal notranslate"><span class="pre">RequirementSimulationRequirementNode.children</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.father"><code class="docutils literal notranslate"><span class="pre">RequirementSimulationRequirementNode.father</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_children_status_change"><code class="docutils literal notranslate"><span class="pre">RequirementSimulationRequirementNode.handle_children_status_change()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_downstream_command"><code class="docutils literal notranslate"><span class="pre">RequirementSimulationRequirementNode.handle_downstream_command()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_rosbridge_connection_commands"><code class="docutils literal notranslate"><span class="pre">RequirementSimulationRequirementNode.handle_rosbridge_connection_commands()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_rosbridge_disconnection_commands"><code class="docutils literal notranslate"><span class="pre">RequirementSimulationRequirementNode.handle_rosbridge_disconnection_commands()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_timeout"><code class="docutils literal notranslate"><span class="pre">RequirementSimulationRequirementNode.handle_timeout()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_upstream_command"><code class="docutils literal notranslate"><span class="pre">RequirementSimulationRequirementNode.handle_upstream_command()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.test.introspection.requirements.response">rigel.plugins.core.test.introspection.requirements.response module</a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.assess_children_nodes"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode.assess_children_nodes()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.children"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode.children</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.father"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode.father</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_children_status_change"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode.handle_children_status_change()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_downstream_command"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode.handle_downstream_command()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_rosbridge_connection_commands"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode.handle_rosbridge_connection_commands()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_rosbridge_disconnection_commands"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode.handle_rosbridge_disconnection_commands()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_timeout"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode.handle_timeout()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_trigger"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode.handle_trigger()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_upstream_command"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode.handle_upstream_command()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.test.introspection.requirements.simple">rigel.plugins.core.test.introspection.requirements.simple module</a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode"><code class="docutils literal notranslate"><span class="pre">SimpleSimulationRequirementNode</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.children"><code class="docutils literal notranslate"><span class="pre">SimpleSimulationRequirementNode.children</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.connect_to_rosbridge"><code class="docutils literal notranslate"><span class="pre">SimpleSimulationRequirementNode.connect_to_rosbridge()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.disconnect_from_rosbridge"><code class="docutils literal notranslate"><span class="pre">SimpleSimulationRequirementNode.disconnect_from_rosbridge()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.father"><code class="docutils literal notranslate"><span class="pre">SimpleSimulationRequirementNode.father</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.handle_downstream_command"><code class="docutils literal notranslate"><span class="pre">SimpleSimulationRequirementNode.handle_downstream_command()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.handle_trigger"><code class="docutils literal notranslate"><span class="pre">SimpleSimulationRequirementNode.handle_trigger()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.handle_upstream_command"><code class="docutils literal notranslate"><span class="pre">SimpleSimulationRequirementNode.handle_upstream_command()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.message_handler"><code class="docutils literal notranslate"><span class="pre">SimpleSimulationRequirementNode.message_handler()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.test.introspection.requirements">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Rigel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">rigel.plugins.core.test.introspection.requirements package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/rigel.plugins.core.test.introspection.requirements.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rigel-plugins-core-test-introspection-requirements-package">
+<h1>rigel.plugins.core.test.introspection.requirements package<a class="headerlink" href="#rigel-plugins-core-test-introspection-requirements-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-rigel.plugins.core.test.introspection.requirements.absence">
+<span id="rigel-plugins-core-test-introspection-requirements-absence-module"></span><h2>rigel.plugins.core.test.introspection.requirements.absence module<a class="headerlink" href="#module-rigel.plugins.core.test.introspection.requirements.absence" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.requirements.absence.</span></span><span class="sig-name descname"><span class="pre">AbsenceSimulationRequirementNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">inf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/absence.html#AbsenceSimulationRequirementNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode" title="rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimulationRequirementNode</span></code></a></p>
+<p>An absence simulation requirement node ensures
+that no ROS message was received that satisfies a given condition.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.assess_children_nodes">
+<span class="sig-name descname"><span class="pre">assess_children_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/absence.html#AbsenceSimulationRequirementNode.assess_children_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.assess_children_nodes" title="Permalink to this definition"></a></dt>
+<dd><p>An absence simulation requirement is considered satisfied
+only if no children simulation requirements is satisfied.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if no children simulation requirement is satisfied. False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_children_status_change">
+<span class="sig-name descname"><span class="pre">handle_children_status_change</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/absence.html#AbsenceSimulationRequirementNode.handle_children_status_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_children_status_change" title="Permalink to this definition"></a></dt>
+<dd><p>Handle STATUS_CHANGE commands sent by children nodes.
+Whenever a child changes state a disjoint requirement node must check its satisfability.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_downstream_command">
+<span class="sig-name descname"><span class="pre">handle_downstream_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/absence.html#AbsenceSimulationRequirementNode.handle_downstream_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_downstream_command" title="Permalink to this definition"></a></dt>
+<dd><p>Generic command handler.
+Forwards incoming downstream commands to their proper handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received dowstream command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_rosbridge_connection_commands">
+<span class="sig-name descname"><span class="pre">handle_rosbridge_connection_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/absence.html#AbsenceSimulationRequirementNode.handle_rosbridge_connection_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_rosbridge_connection_commands" title="Permalink to this definition"></a></dt>
+<dd><p>Handle commands of type ROSBRIDGE_CONNECT.
+Forward command to all children nodes and initialize timer thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_rosbridge_disconnection_commands">
+<span class="sig-name descname"><span class="pre">handle_rosbridge_disconnection_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/absence.html#AbsenceSimulationRequirementNode.handle_rosbridge_disconnection_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_rosbridge_disconnection_commands" title="Permalink to this definition"></a></dt>
+<dd><p>Handle commands of type ROSBRIDGE_DISCONNECT.
+Forwars command to all children nodes and stop timer threads.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_timeout">
+<span class="sig-name descname"><span class="pre">handle_timeout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/absence.html#AbsenceSimulationRequirementNode.handle_timeout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_timeout" title="Permalink to this definition"></a></dt>
+<dd><p>Handle timeout events.
+Issue children nodes to stop listening for ROS messages.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_upstream_command">
+<span class="sig-name descname"><span class="pre">handle_upstream_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/absence.html#AbsenceSimulationRequirementNode.handle_upstream_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_upstream_command" title="Permalink to this definition"></a></dt>
+<dd><p>Generic command handler.
+Forwards incoming upstream commands to their proper handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received upstream command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.plugins.core.test.introspection.requirements.disjoint">
+<span id="rigel-plugins-core-test-introspection-requirements-disjoint-module"></span><h2>rigel.plugins.core.test.introspection.requirements.disjoint module<a class="headerlink" href="#module-rigel.plugins.core.test.introspection.requirements.disjoint" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.requirements.disjoint.</span></span><span class="sig-name descname"><span class="pre">DisjointSimulationRequirementNode</span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/disjoint.html#DisjointSimulationRequirementNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode" title="rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimulationRequirementNode</span></code></a></p>
+<p>A disjoint simulation requirement node consists of a node with at least one child.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode.assess_children_nodes">
+<span class="sig-name descname"><span class="pre">assess_children_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/disjoint.html#DisjointSimulationRequirementNode.assess_children_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode.assess_children_nodes" title="Permalink to this definition"></a></dt>
+<dd><p>A disjoint simulation requirement is considered satisfied
+only when at least one of its children simulation requirements is also satisfied.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if this simulation requirement is satisfied. False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode.handle_children_status_change">
+<span class="sig-name descname"><span class="pre">handle_children_status_change</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/disjoint.html#DisjointSimulationRequirementNode.handle_children_status_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode.handle_children_status_change" title="Permalink to this definition"></a></dt>
+<dd><p>Handle STATUS_CHANGE commands sent by children nodes.
+Whenever a child changes state a disjoint requirement node must check its satisfability.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode.handle_downstream_command">
+<span class="sig-name descname"><span class="pre">handle_downstream_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/disjoint.html#DisjointSimulationRequirementNode.handle_downstream_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode.handle_downstream_command" title="Permalink to this definition"></a></dt>
+<dd><p>Generic command handler.
+Forwards incoming downstream commands to their proper handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received dowstream command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode.handle_trigger">
+<span class="sig-name descname"><span class="pre">handle_trigger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/disjoint.html#DisjointSimulationRequirementNode.handle_trigger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode.handle_trigger" title="Permalink to this definition"></a></dt>
+<dd><p>Handle TRIGGER command sent by father node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received upstream command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode.handle_upstream_command">
+<span class="sig-name descname"><span class="pre">handle_upstream_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/disjoint.html#DisjointSimulationRequirementNode.handle_upstream_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode.handle_upstream_command" title="Permalink to this definition"></a></dt>
+<dd><p>Generic command handler.
+Forwards incoming upstream commands to their proper handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received upstream command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.plugins.core.test.introspection.requirements.existence">
+<span id="rigel-plugins-core-test-introspection-requirements-existence-module"></span><h2>rigel.plugins.core.test.introspection.requirements.existence module<a class="headerlink" href="#module-rigel.plugins.core.test.introspection.requirements.existence" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.requirements.existence.</span></span><span class="sig-name descname"><span class="pre">ExistenceSimulationRequirementNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">inf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/existence.html#ExistenceSimulationRequirementNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode" title="rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimulationRequirementNode</span></code></a></p>
+<p>An existence simulation requirement node ensures
+that at least a ROS message was received that satisfies a given condition.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.assess_children_nodes">
+<span class="sig-name descname"><span class="pre">assess_children_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/existence.html#ExistenceSimulationRequirementNode.assess_children_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.assess_children_nodes" title="Permalink to this definition"></a></dt>
+<dd><p>An existence simulation requirement is considered satisfied
+only if all children simulation requirements are also satisfied.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if all children simulation requirements are satisfied. False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_children_status_change">
+<span class="sig-name descname"><span class="pre">handle_children_status_change</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/existence.html#ExistenceSimulationRequirementNode.handle_children_status_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_children_status_change" title="Permalink to this definition"></a></dt>
+<dd><p>Handle STATUS_CHANGE commands sent by children nodes.
+Whenever a child changes state a disjoint requirement node must check its satisfability.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_downstream_command">
+<span class="sig-name descname"><span class="pre">handle_downstream_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/existence.html#ExistenceSimulationRequirementNode.handle_downstream_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_downstream_command" title="Permalink to this definition"></a></dt>
+<dd><p>Generic command handler.
+Forwards incoming downstream commands to their proper handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received dowstream command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_rosbridge_connection_commands">
+<span class="sig-name descname"><span class="pre">handle_rosbridge_connection_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/existence.html#ExistenceSimulationRequirementNode.handle_rosbridge_connection_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_rosbridge_connection_commands" title="Permalink to this definition"></a></dt>
+<dd><p>Handle commands of type ROSBRIDGE_CONNECT.
+Forward command to all children nodes and initialize timer thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_rosbridge_disconnection_commands">
+<span class="sig-name descname"><span class="pre">handle_rosbridge_disconnection_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/existence.html#ExistenceSimulationRequirementNode.handle_rosbridge_disconnection_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_rosbridge_disconnection_commands" title="Permalink to this definition"></a></dt>
+<dd><p>Handle commands of type ROSBRIDGE_DISCONNECT.
+Forwars command to all children nodes and stop timer threads.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_timeout">
+<span class="sig-name descname"><span class="pre">handle_timeout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/existence.html#ExistenceSimulationRequirementNode.handle_timeout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_timeout" title="Permalink to this definition"></a></dt>
+<dd><p>Handle timeout events.
+Issue children nodes to stop listening for ROS messages.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_upstream_command">
+<span class="sig-name descname"><span class="pre">handle_upstream_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/existence.html#ExistenceSimulationRequirementNode.handle_upstream_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_upstream_command" title="Permalink to this definition"></a></dt>
+<dd><p>Generic command handler.
+Forwards incoming upstream commands to their proper handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received upstream command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.plugins.core.test.introspection.requirements.manager">
+<span id="rigel-plugins-core-test-introspection-requirements-manager-module"></span><h2>rigel.plugins.core.test.introspection.requirements.manager module<a class="headerlink" href="#module-rigel.plugins.core.test.introspection.requirements.manager" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.requirements.manager.</span></span><span class="sig-name descname"><span class="pre">SimulationRequirementsManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/manager.html#SimulationRequirementsManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode" title="rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimulationRequirementNode</span></code></a></p>
+<p>A simulation requirements manager is responsible for
+controling all different node trees associated with a given simulation.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.assess_children_nodes">
+<span class="sig-name descname"><span class="pre">assess_children_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/manager.html#SimulationRequirementsManager.assess_children_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.assess_children_nodes" title="Permalink to this definition"></a></dt>
+<dd><p>Tell whether or not all simulation requirements were satisfied.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if all simulation requirements were satisfied. False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.connect_to_rosbridge">
+<span class="sig-name descname"><span class="pre">connect_to_rosbridge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rosbridge_client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.clients.html#rigel.clients.rosbridge.ROSBridgeClient" title="rigel.clients.rosbridge.ROSBridgeClient"><span class="pre">ROSBridgeClient</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/manager.html#SimulationRequirementsManager.connect_to_rosbridge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.connect_to_rosbridge" title="Permalink to this definition"></a></dt>
+<dd><p>Issues children nodes to start listening for incoming ROS messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rosbridge_client</strong> (<a class="reference internal" href="rigel.clients.html#rigel.clients.rosbridge.ROSBridgeClient" title="rigel.clients.rosbridge.ROSBridgeClient"><em>ROSBridgeClient</em></a>) – The ROS bridge client.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.disconnect_from_rosbridge">
+<span class="sig-name descname"><span class="pre">disconnect_from_rosbridge</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/manager.html#SimulationRequirementsManager.disconnect_from_rosbridge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.disconnect_from_rosbridge" title="Permalink to this definition"></a></dt>
+<dd><p>Issue children nodes to stop listening for incoming ROS messages.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.handle_children_status_change">
+<span class="sig-name descname"><span class="pre">handle_children_status_change</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/manager.html#SimulationRequirementsManager.handle_children_status_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.handle_children_status_change" title="Permalink to this definition"></a></dt>
+<dd><p>Handle STATUS_CHANGE commands sent by children nodes.
+Whenever a child changes state a requirement node must check its satisfability.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.handle_start_timeout">
+<span class="sig-name descname"><span class="pre">handle_start_timeout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/manager.html#SimulationRequirementsManager.handle_start_timeout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.handle_start_timeout" title="Permalink to this definition"></a></dt>
+<dd><p>Allow simulation to be assessed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.handle_stop_simulation">
+<span class="sig-name descname"><span class="pre">handle_stop_simulation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/manager.html#SimulationRequirementsManager.handle_stop_simulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.handle_stop_simulation" title="Permalink to this definition"></a></dt>
+<dd><p>Handle STOP_SIMULATON commands sent by children nodes.
+Stops simulation and signals its ending.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.handle_stop_timeout">
+<span class="sig-name descname"><span class="pre">handle_stop_timeout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/manager.html#SimulationRequirementsManager.handle_stop_timeout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.handle_stop_timeout" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.handle_upstream_command">
+<span class="sig-name descname"><span class="pre">handle_upstream_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/manager.html#SimulationRequirementsManager.handle_upstream_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.handle_upstream_command" title="Permalink to this definition"></a></dt>
+<dd><p>Generic command handler.
+Forwards incoming upstream commands to their proper handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received upstream command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.stop_simulation">
+<span class="sig-name descname"><span class="pre">stop_simulation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/manager.html#SimulationRequirementsManager.stop_simulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.stop_simulation" title="Permalink to this definition"></a></dt>
+<dd><p>Stop simulation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.stop_timers">
+<span class="sig-name descname"><span class="pre">stop_timers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/manager.html#SimulationRequirementsManager.stop_timers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.stop_timers" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.plugins.core.test.introspection.requirements.node">
+<span id="rigel-plugins-core-test-introspection-requirements-node-module"></span><h2>rigel.plugins.core.test.introspection.requirements.node module<a class="headerlink" href="#module-rigel.plugins.core.test.introspection.requirements.node" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.requirements.node.</span></span><span class="sig-name descname"><span class="pre">SimulationRequirementNode</span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/node.html#SimulationRequirementNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandHandler" title="rigel.plugins.core.test.introspection.command.CommandHandler"><code class="xref py py-class docutils literal notranslate"><span class="pre">CommandHandler</span></code></a></p>
+<p>Simulation requirements are hierarchical.
+This class serves as a base class for all simulation requirements tree nodes
+and declares the interface that they must comply with.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode.satisfied">
+<span class="sig-name descname"><span class="pre">satisfied</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode.satisfied" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.plugins.core.test.introspection.requirements.prevention">
+<span id="rigel-plugins-core-test-introspection-requirements-prevention-module"></span><h2>rigel.plugins.core.test.introspection.requirements.prevention module<a class="headerlink" href="#module-rigel.plugins.core.test.introspection.requirements.prevention" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.requirements.prevention.</span></span><span class="sig-name descname"><span class="pre">PreventionSimulationRequirementNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">inf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/prevention.html#PreventionSimulationRequirementNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode" title="rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimulationRequirementNode</span></code></a></p>
+<p>A response simulation requirement node ensures that
+if a ROS message is received that satisfies anterior requirements
+then no other message ROS message is received that satisfies posterior requirements.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.assess_children_nodes">
+<span class="sig-name descname"><span class="pre">assess_children_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/prevention.html#PreventionSimulationRequirementNode.assess_children_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.assess_children_nodes" title="Permalink to this definition"></a></dt>
+<dd><p>An existence simulation requirement is considered satisfied
+only if the posterior requirement is never satisfied after the anterior requirement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if requirement is satisfied. False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.children">
+<span class="sig-name descname"><span class="pre">children</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandHandler" title="rigel.plugins.core.test.introspection.command.CommandHandler"><span class="pre">CommandHandler</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.children" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.father">
+<span class="sig-name descname"><span class="pre">father</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandHandler" title="rigel.plugins.core.test.introspection.command.CommandHandler"><span class="pre">CommandHandler</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.father" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_children_status_change">
+<span class="sig-name descname"><span class="pre">handle_children_status_change</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/prevention.html#PreventionSimulationRequirementNode.handle_children_status_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_children_status_change" title="Permalink to this definition"></a></dt>
+<dd><p>Handle STATUS_CHANGE commands sent by children nodes.
+Whenever a child changes state a disjoint requirement node must check its satisfability.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_downstream_command">
+<span class="sig-name descname"><span class="pre">handle_downstream_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/prevention.html#PreventionSimulationRequirementNode.handle_downstream_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_downstream_command" title="Permalink to this definition"></a></dt>
+<dd><p>Generic command handler.
+Forwards incoming downstream commands to their proper handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received dowstream command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_rosbridge_connection_commands">
+<span class="sig-name descname"><span class="pre">handle_rosbridge_connection_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/prevention.html#PreventionSimulationRequirementNode.handle_rosbridge_connection_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_rosbridge_connection_commands" title="Permalink to this definition"></a></dt>
+<dd><p>Handle commands of type ROSBRIDGE_CONNECT.
+Forward command to all children nodes and initialize timer thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_rosbridge_disconnection_commands">
+<span class="sig-name descname"><span class="pre">handle_rosbridge_disconnection_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/prevention.html#PreventionSimulationRequirementNode.handle_rosbridge_disconnection_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_rosbridge_disconnection_commands" title="Permalink to this definition"></a></dt>
+<dd><p>Handle commands of type ROSBRIDGE_DISCONNECT.
+Forwars command to all children nodes and stop timer threads.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_timeout">
+<span class="sig-name descname"><span class="pre">handle_timeout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/prevention.html#PreventionSimulationRequirementNode.handle_timeout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_timeout" title="Permalink to this definition"></a></dt>
+<dd><p>Handle timeout events.
+Issue children nodes to stop listening for ROS messages.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_trigger">
+<span class="sig-name descname"><span class="pre">handle_trigger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/prevention.html#PreventionSimulationRequirementNode.handle_trigger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_trigger" title="Permalink to this definition"></a></dt>
+<dd><p>Handle commands of type TRIGGER.
+Forward commad to anterior children.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_upstream_command">
+<span class="sig-name descname"><span class="pre">handle_upstream_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/prevention.html#PreventionSimulationRequirementNode.handle_upstream_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_upstream_command" title="Permalink to this definition"></a></dt>
+<dd><p>Generic command handler.
+Forwards incoming upstream commands to their proper handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received upstream command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.plugins.core.test.introspection.requirements.requirement">
+<span id="rigel-plugins-core-test-introspection-requirements-requirement-module"></span><h2>rigel.plugins.core.test.introspection.requirements.requirement module<a class="headerlink" href="#module-rigel.plugins.core.test.introspection.requirements.requirement" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.requirements.requirement.</span></span><span class="sig-name descname"><span class="pre">RequirementSimulationRequirementNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">inf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/requirement.html#RequirementSimulationRequirementNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode" title="rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimulationRequirementNode</span></code></a></p>
+<p>A response simulation requirement node ensures
+that if a ROS message is received that satisfies anterior requirements
+then all posterior requirements were already previously satisfied.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.assess_children_nodes">
+<span class="sig-name descname"><span class="pre">assess_children_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/requirement.html#RequirementSimulationRequirementNode.assess_children_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.assess_children_nodes" title="Permalink to this definition"></a></dt>
+<dd><p>A response simulation requirement consists is considered satisfied
+in any of the following situations:
+- both anterior and posterior requirements are satisfied</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.children">
+<span class="sig-name descname"><span class="pre">children</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandHandler" title="rigel.plugins.core.test.introspection.command.CommandHandler"><span class="pre">CommandHandler</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.children" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.father">
+<span class="sig-name descname"><span class="pre">father</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandHandler" title="rigel.plugins.core.test.introspection.command.CommandHandler"><span class="pre">CommandHandler</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.father" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_children_status_change">
+<span class="sig-name descname"><span class="pre">handle_children_status_change</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/requirement.html#RequirementSimulationRequirementNode.handle_children_status_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_children_status_change" title="Permalink to this definition"></a></dt>
+<dd><p>Handle STATUS_CHANGE commands sent by children nodes.
+Whenever a child changes state a disjoint requirement node must check its satisfability.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_downstream_command">
+<span class="sig-name descname"><span class="pre">handle_downstream_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/requirement.html#RequirementSimulationRequirementNode.handle_downstream_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_downstream_command" title="Permalink to this definition"></a></dt>
+<dd><p>Generic command handler.
+Forwards incoming downstream commands to their proper handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received dowstream command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_rosbridge_connection_commands">
+<span class="sig-name descname"><span class="pre">handle_rosbridge_connection_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/requirement.html#RequirementSimulationRequirementNode.handle_rosbridge_connection_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_rosbridge_connection_commands" title="Permalink to this definition"></a></dt>
+<dd><p>Handle commands of type ROSBRIDGE_CONNECT.
+Forward command to all children nodes and initialize timer thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_rosbridge_disconnection_commands">
+<span class="sig-name descname"><span class="pre">handle_rosbridge_disconnection_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/requirement.html#RequirementSimulationRequirementNode.handle_rosbridge_disconnection_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_rosbridge_disconnection_commands" title="Permalink to this definition"></a></dt>
+<dd><p>Handle commands of type ROSBRIDGE_DISCONNECT.
+Forwars command to all children nodes and stop timer threads.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_timeout">
+<span class="sig-name descname"><span class="pre">handle_timeout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/requirement.html#RequirementSimulationRequirementNode.handle_timeout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_timeout" title="Permalink to this definition"></a></dt>
+<dd><p>Handle timeout events.
+Issue children nodes to stop listening for ROS messages.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_upstream_command">
+<span class="sig-name descname"><span class="pre">handle_upstream_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/requirement.html#RequirementSimulationRequirementNode.handle_upstream_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_upstream_command" title="Permalink to this definition"></a></dt>
+<dd><p>Generic command handler.
+Forwards incoming upstream commands to their proper handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received upstream command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.plugins.core.test.introspection.requirements.response">
+<span id="rigel-plugins-core-test-introspection-requirements-response-module"></span><h2>rigel.plugins.core.test.introspection.requirements.response module<a class="headerlink" href="#module-rigel.plugins.core.test.introspection.requirements.response" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.requirements.response.</span></span><span class="sig-name descname"><span class="pre">ResponseSimulationRequirementNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">inf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/response.html#ResponseSimulationRequirementNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode" title="rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimulationRequirementNode</span></code></a></p>
+<p>A response simulation requirement node ensures
+that no ROS message is received that satisfies posterior requirements
+before anterior requirements were previously satisfied.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.assess_children_nodes">
+<span class="sig-name descname"><span class="pre">assess_children_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/response.html#ResponseSimulationRequirementNode.assess_children_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.assess_children_nodes" title="Permalink to this definition"></a></dt>
+<dd><p>A response simulation requirement is considered satisfied
+only if the posterior requirement is satisfied after the anterior requirement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True is requirement is satisfied. False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.children">
+<span class="sig-name descname"><span class="pre">children</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandHandler" title="rigel.plugins.core.test.introspection.command.CommandHandler"><span class="pre">CommandHandler</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.children" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.father">
+<span class="sig-name descname"><span class="pre">father</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandHandler" title="rigel.plugins.core.test.introspection.command.CommandHandler"><span class="pre">CommandHandler</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.father" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_children_status_change">
+<span class="sig-name descname"><span class="pre">handle_children_status_change</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/response.html#ResponseSimulationRequirementNode.handle_children_status_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_children_status_change" title="Permalink to this definition"></a></dt>
+<dd><p>Handle STATUS_CHANGE commands sent by children nodes.
+Whenever a child changes state a disjoint requirement node must check its satisfability.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_downstream_command">
+<span class="sig-name descname"><span class="pre">handle_downstream_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/response.html#ResponseSimulationRequirementNode.handle_downstream_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_downstream_command" title="Permalink to this definition"></a></dt>
+<dd><p>Generic command handler.
+Forwards incoming downstream commands to their proper handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received dowstream command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_rosbridge_connection_commands">
+<span class="sig-name descname"><span class="pre">handle_rosbridge_connection_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/response.html#ResponseSimulationRequirementNode.handle_rosbridge_connection_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_rosbridge_connection_commands" title="Permalink to this definition"></a></dt>
+<dd><p>Handle commands of type ROSBRIDGE_CONNECT.
+Forward command to all children nodes and initialize timer thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_rosbridge_disconnection_commands">
+<span class="sig-name descname"><span class="pre">handle_rosbridge_disconnection_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/response.html#ResponseSimulationRequirementNode.handle_rosbridge_disconnection_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_rosbridge_disconnection_commands" title="Permalink to this definition"></a></dt>
+<dd><p>Handle commands of type ROSBRIDGE_DISCONNECT.
+Forwars command to all children nodes and stop timer threads.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_timeout">
+<span class="sig-name descname"><span class="pre">handle_timeout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/response.html#ResponseSimulationRequirementNode.handle_timeout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_timeout" title="Permalink to this definition"></a></dt>
+<dd><p>Handle timeout events.
+Issue children nodes to stop listening for ROS messages.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_trigger">
+<span class="sig-name descname"><span class="pre">handle_trigger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/response.html#ResponseSimulationRequirementNode.handle_trigger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_trigger" title="Permalink to this definition"></a></dt>
+<dd><p>Handle commands of type TRIGGER.
+Forward command to anterior children.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_upstream_command">
+<span class="sig-name descname"><span class="pre">handle_upstream_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/response.html#ResponseSimulationRequirementNode.handle_upstream_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_upstream_command" title="Permalink to this definition"></a></dt>
+<dd><p>Generic command handler.
+Forwards incoming upstream commands to their proper handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received upstream command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.plugins.core.test.introspection.requirements.simple">
+<span id="rigel-plugins-core-test-introspection-requirements-simple-module"></span><h2>rigel.plugins.core.test.introspection.requirements.simple module<a class="headerlink" href="#module-rigel.plugins.core.test.introspection.requirements.simple" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.requirements.simple.</span></span><span class="sig-name descname"><span class="pre">SimpleSimulationRequirementNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ros_topic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ros_message_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ros_message_callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/simple.html#SimpleSimulationRequirementNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode" title="rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimulationRequirementNode</span></code></a></p>
+<p>A simple simulation requirement node consists of a node without children.
+Simple simulation requirements interface with ROS bridge clients and hande incoming ROS messages.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.children">
+<span class="sig-name descname"><span class="pre">children</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandHandler" title="rigel.plugins.core.test.introspection.command.CommandHandler"><span class="pre">CommandHandler</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.children" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.connect_to_rosbridge">
+<span class="sig-name descname"><span class="pre">connect_to_rosbridge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rosbridge_client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.clients.html#rigel.clients.rosbridge.ROSBridgeClient" title="rigel.clients.rosbridge.ROSBridgeClient"><span class="pre">ROSBridgeClient</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/simple.html#SimpleSimulationRequirementNode.connect_to_rosbridge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.connect_to_rosbridge" title="Permalink to this definition"></a></dt>
+<dd><p>Register ROS message handler and start listening for incoming ROS messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rosbridge_client</strong> (<a class="reference internal" href="rigel.clients.html#rigel.clients.rosbridge.ROSBridgeClient" title="rigel.clients.rosbridge.ROSBridgeClient"><em>ROSBridgeClient</em></a>) – The ROS bridge client.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.disconnect_from_rosbridge">
+<span class="sig-name descname"><span class="pre">disconnect_from_rosbridge</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/simple.html#SimpleSimulationRequirementNode.disconnect_from_rosbridge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.disconnect_from_rosbridge" title="Permalink to this definition"></a></dt>
+<dd><p>Unregister ROS message handler and stop listening for incoming ROS messages.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.father">
+<span class="sig-name descname"><span class="pre">father</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandHandler" title="rigel.plugins.core.test.introspection.command.CommandHandler"><span class="pre">CommandHandler</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.father" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.handle_downstream_command">
+<span class="sig-name descname"><span class="pre">handle_downstream_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/simple.html#SimpleSimulationRequirementNode.handle_downstream_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.handle_downstream_command" title="Permalink to this definition"></a></dt>
+<dd><p>Generic command handler.
+Forwards incoming downstream commands to their proper handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – Received downstream command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.handle_trigger">
+<span class="sig-name descname"><span class="pre">handle_trigger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/simple.html#SimpleSimulationRequirementNode.handle_trigger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.handle_trigger" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timestamp</strong> (<em>float</em>) – Maximum timestamp for last message received.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.handle_upstream_command">
+<span class="sig-name descname"><span class="pre">handle_upstream_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/simple.html#SimpleSimulationRequirementNode.handle_upstream_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.handle_upstream_command" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.message_handler">
+<span class="sig-name descname"><span class="pre">message_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/requirements/simple.html#SimpleSimulationRequirementNode.message_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.message_handler" title="Permalink to this definition"></a></dt>
+<dd><p>ROS message handler.
+Applied predicate condition to all messages in order to assess
+simulation requirement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>ROS_MESSAGE_TYPE</em>) – The received ROS message.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.plugins.core.test.introspection.requirements">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-rigel.plugins.core.test.introspection.requirements" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Pedro Pereira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

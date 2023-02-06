@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rigel.cli package &mdash; Rigel 0.3.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Rigel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">rigel.cli package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-rigel.cli.command">rigel.cli.command module</a><ul>
+<li><a class="reference internal" href="#rigel.cli.command.CLICommand"><code class="docutils literal notranslate"><span class="pre">CLICommand</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.cli.command.CLICommand.add_to_group"><code class="docutils literal notranslate"><span class="pre">CLICommand.add_to_group()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.cli.run">rigel.cli.run module</a><ul>
+<li><a class="reference internal" href="#rigel.cli.run.RunJobCommand"><code class="docutils literal notranslate"><span class="pre">RunJobCommand</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.cli.run.RunJobCommand.job"><code class="docutils literal notranslate"><span class="pre">RunJobCommand.job</span></code></a></li>
+<li><a class="reference internal" href="#rigel.cli.run.RunJobCommand.sequence"><code class="docutils literal notranslate"><span class="pre">RunJobCommand.sequence</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.cli">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Rigel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">rigel.cli package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/rigel.cli.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rigel-cli-package">
+<h1>rigel.cli package<a class="headerlink" href="#rigel-cli-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-rigel.cli.command">
+<span id="rigel-cli-command-module"></span><h2>rigel.cli.command module<a class="headerlink" href="#module-rigel.cli.command" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.cli.command.CLICommand">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.cli.command.</span></span><span class="sig-name descname"><span class="pre">CLICommand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/cli/command.html#CLICommand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.cli.command.CLICommand" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.cli.command.CLICommand.add_to_group">
+<span class="sig-name descname"><span class="pre">add_to_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Group</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/cli/command.html#CLICommand.add_to_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.cli.command.CLICommand.add_to_group" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.cli.run">
+<span id="rigel-cli-run-module"></span><h2>rigel.cli.run module<a class="headerlink" href="#module-rigel.cli.run" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.cli.run.RunJobCommand">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.cli.run.</span></span><span class="sig-name descname"><span class="pre">RunJobCommand</span></span><a class="reference internal" href="_modules/rigel/cli/run.html#RunJobCommand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.cli.run.RunJobCommand" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.cli.command.CLICommand" title="rigel.cli.command.CLICommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">CLICommand</span></code></a></p>
+<p>Run a job or sequence of jobs</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.cli.run.RunJobCommand.job">
+<span class="sig-name descname"><span class="pre">job</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Command</span> <span class="pre">job&gt;</span></em><a class="headerlink" href="#rigel.cli.run.RunJobCommand.job" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.cli.run.RunJobCommand.sequence">
+<span class="sig-name descname"><span class="pre">sequence</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Command</span> <span class="pre">sequence&gt;</span></em><a class="headerlink" href="#rigel.cli.run.RunJobCommand.sequence" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.cli">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-rigel.cli" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Pedro Pereira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

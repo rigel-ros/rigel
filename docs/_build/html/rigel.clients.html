@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rigel.clients package &mdash; Rigel 0.3.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Rigel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">rigel.clients package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-rigel.clients.docker">rigel.clients.docker module</a><ul>
+<li><a class="reference internal" href="#rigel.clients.docker.DockerClient"><code class="docutils literal notranslate"><span class="pre">DockerClient</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.clients.docker.DockerClient.DOCKER_CONTAINER_ID_DISPLAY_SIZE"><code class="docutils literal notranslate"><span class="pre">DockerClient.DOCKER_CONTAINER_ID_DISPLAY_SIZE</span></code></a></li>
+<li><a class="reference internal" href="#rigel.clients.docker.DockerClient.DOCKER_RUN_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">DockerClient.DOCKER_RUN_TIMEOUT</span></code></a></li>
+<li><a class="reference internal" href="#rigel.clients.docker.DockerClient.DOCKER_RUN_WAIT_STATUS"><code class="docutils literal notranslate"><span class="pre">DockerClient.DOCKER_RUN_WAIT_STATUS</span></code></a></li>
+<li><a class="reference internal" href="#rigel.clients.docker.DockerClient.client"><code class="docutils literal notranslate"><span class="pre">DockerClient.client</span></code></a></li>
+<li><a class="reference internal" href="#rigel.clients.docker.DockerClient.create_builder"><code class="docutils literal notranslate"><span class="pre">DockerClient.create_builder()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.clients.docker.DockerClient.create_network"><code class="docutils literal notranslate"><span class="pre">DockerClient.create_network()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.clients.docker.DockerClient.get_builder"><code class="docutils literal notranslate"><span class="pre">DockerClient.get_builder()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.clients.docker.DockerClient.get_container"><code class="docutils literal notranslate"><span class="pre">DockerClient.get_container()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.clients.docker.DockerClient.get_network"><code class="docutils literal notranslate"><span class="pre">DockerClient.get_network()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.clients.docker.DockerClient.remove_builder"><code class="docutils literal notranslate"><span class="pre">DockerClient.remove_builder()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.clients.docker.DockerClient.remove_container"><code class="docutils literal notranslate"><span class="pre">DockerClient.remove_container()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.clients.docker.DockerClient.remove_network"><code class="docutils literal notranslate"><span class="pre">DockerClient.remove_network()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.clients.docker.DockerClient.run_container"><code class="docutils literal notranslate"><span class="pre">DockerClient.run_container()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.clients.docker.DockerClient.wait_for_container_status"><code class="docutils literal notranslate"><span class="pre">DockerClient.wait_for_container_status()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.clients.rosbridge">rigel.clients.rosbridge module</a><ul>
+<li><a class="reference internal" href="#rigel.clients.rosbridge.ROSBridgeClient"><code class="docutils literal notranslate"><span class="pre">ROSBridgeClient</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.clients.rosbridge.ROSBridgeClient.close"><code class="docutils literal notranslate"><span class="pre">ROSBridgeClient.close()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.clients.rosbridge.ROSBridgeClient.handlers"><code class="docutils literal notranslate"><span class="pre">ROSBridgeClient.handlers</span></code></a></li>
+<li><a class="reference internal" href="#rigel.clients.rosbridge.ROSBridgeClient.register_message_handler"><code class="docutils literal notranslate"><span class="pre">ROSBridgeClient.register_message_handler()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.clients.rosbridge.ROSBridgeClient.remove_message_handler"><code class="docutils literal notranslate"><span class="pre">ROSBridgeClient.remove_message_handler()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.clients.rosbridge.ROSBridgeClient.subscribers"><code class="docutils literal notranslate"><span class="pre">ROSBridgeClient.subscribers</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.clients">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Rigel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">rigel.clients package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/rigel.clients.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rigel-clients-package">
+<h1>rigel.clients package<a class="headerlink" href="#rigel-clients-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-rigel.clients.docker">
+<span id="rigel-clients-docker-module"></span><h2>rigel.clients.docker module<a class="headerlink" href="#module-rigel.clients.docker" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.clients.docker.DockerClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.clients.docker.</span></span><span class="sig-name descname"><span class="pre">DockerClient</span></span><a class="reference internal" href="_modules/rigel/clients/docker.html#DockerClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.clients.docker.DockerClient" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A wrapper class for the docker.client.DockerClient.
+Keeps the same functionality but allows for error handling that suits better Rigel.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.clients.docker.DockerClient.DOCKER_CONTAINER_ID_DISPLAY_SIZE">
+<span class="sig-name descname"><span class="pre">DOCKER_CONTAINER_ID_DISPLAY_SIZE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">12</span></em><a class="headerlink" href="#rigel.clients.docker.DockerClient.DOCKER_CONTAINER_ID_DISPLAY_SIZE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.clients.docker.DockerClient.DOCKER_RUN_TIMEOUT">
+<span class="sig-name descname"><span class="pre">DOCKER_RUN_TIMEOUT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">120</span></em><a class="headerlink" href="#rigel.clients.docker.DockerClient.DOCKER_RUN_TIMEOUT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.clients.docker.DockerClient.DOCKER_RUN_WAIT_STATUS">
+<span class="sig-name descname"><span class="pre">DOCKER_RUN_WAIT_STATUS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#rigel.clients.docker.DockerClient.DOCKER_RUN_WAIT_STATUS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.clients.docker.DockerClient.client">
+<span class="sig-name descname"><span class="pre">client</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DockerClient</span></em><a class="headerlink" href="#rigel.clients.docker.DockerClient.client" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.clients.docker.DockerClient.create_builder">
+<span class="sig-name descname"><span class="pre">create_builder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">driver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'docker-container'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Builder</span></span></span><a class="reference internal" href="_modules/rigel/clients/docker.html#DockerClient.create_builder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.clients.docker.DockerClient.create_builder" title="Permalink to this definition"></a></dt>
+<dd><p>Create a Docker builder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – the builder name</p></li>
+<li><p><strong>use</strong> (<em>bool</em><em>, </em><em>optional</em>) – set to use, defaults to True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the created Docker builder, if unexistent.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>python_on_whales.components.buildx.cli_wrapper.Builder</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.clients.docker.DockerClient.create_network">
+<span class="sig-name descname"><span class="pre">create_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">driver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Network</span></span></span><a class="reference internal" href="_modules/rigel/clients/docker.html#DockerClient.create_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.clients.docker.DockerClient.create_network" title="Permalink to this definition"></a></dt>
+<dd><p>Create a Docker network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>string</em>) – The name of the Docker network.</p></li>
+<li><p><strong>driver</strong> (<em>string</em>) – Name of driver used to create the network.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>python_on_whales.components.network.cli_wrapper.Network</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Docker network with the specified name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.clients.docker.DockerClient.get_builder">
+<span class="sig-name descname"><span class="pre">get_builder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Builder</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/clients/docker.html#DockerClient.get_builder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.clients.docker.DockerClient.get_builder" title="Permalink to this definition"></a></dt>
+<dd><p>Get a Docker builder
+:param name: the name of the builder
+:type name: str
+:return: the builder, if existent
+:rtype: python_on_whales.components.buildx.cli_wrapper.Builder</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.clients.docker.DockerClient.get_container">
+<span class="sig-name descname"><span class="pre">get_container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Container</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/clients/docker.html#DockerClient.get_container"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.clients.docker.DockerClient.get_container" title="Permalink to this definition"></a></dt>
+<dd><p>Get a Docker container.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>string</em>) – The name of the Docker container.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Optional[python_on_whales.components.container.cli_wrapper.Container]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Docker container with the specified name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.clients.docker.DockerClient.get_network">
+<span class="sig-name descname"><span class="pre">get_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Network</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/clients/docker.html#DockerClient.get_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.clients.docker.DockerClient.get_network" title="Permalink to this definition"></a></dt>
+<dd><p>Get a Docker network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>string</em>) – The name of the Docker network.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Optional[python_on_whales.components.network.cli_wrapper.Network]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Docker network with the specified name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.clients.docker.DockerClient.remove_builder">
+<span class="sig-name descname"><span class="pre">remove_builder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/clients/docker.html#DockerClient.remove_builder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.clients.docker.DockerClient.remove_builder" title="Permalink to this definition"></a></dt>
+<dd><p>Remove a Docker builder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>string</em>) – The name of the Docker builder.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.clients.docker.DockerClient.remove_container">
+<span class="sig-name descname"><span class="pre">remove_container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/clients/docker.html#DockerClient.remove_container"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.clients.docker.DockerClient.remove_container" title="Permalink to this definition"></a></dt>
+<dd><p>Remove a Docker container.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>string</em>) – The name of the Docker container.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.clients.docker.DockerClient.remove_network">
+<span class="sig-name descname"><span class="pre">remove_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/clients/docker.html#DockerClient.remove_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.clients.docker.DockerClient.remove_network" title="Permalink to this definition"></a></dt>
+<dd><p>Remove a Docker network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>string</em>) – The name of the Docker network.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.clients.docker.DockerClient.run_container">
+<span class="sig-name descname"><span class="pre">run_container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Container</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/rigel/clients/docker.html#DockerClient.run_container"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.clients.docker.DockerClient.run_container" title="Permalink to this definition"></a></dt>
+<dd><p>Run a Docker container with a given name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>string</em>) – The Docker container name.</p></li>
+<li><p><strong>name</strong> – The Docker image.</p></li>
+<li><p><strong>kwargs</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – Keyword arguments. Consult the documentation for more information</p></li>
+</ul>
+</dd>
+</dl>
+<p>(<a class="reference external" href="https://gabrieldemarmiesse.github.io/python-on-whales/sub-commands/container/">https://gabrieldemarmiesse.github.io/python-on-whales/sub-commands/container/</a>)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[python_on_whales.components.container.cli_wrapper.Container, str, Iterable[Tuple[str, bytes]]]</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The created Docker container</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.clients.docker.DockerClient.wait_for_container_status">
+<span class="sig-name descname"><span class="pre">wait_for_container_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/clients/docker.html#DockerClient.wait_for_container_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.clients.docker.DockerClient.wait_for_container_status" title="Permalink to this definition"></a></dt>
+<dd><p>Wait for a container status to change to a desired value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>string</em>) – The name of the container to watch.</p></li>
+<li><p><strong>status</strong> (<em>string</em>) – The desires container status.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.clients.rosbridge">
+<span id="rigel-clients-rosbridge-module"></span><h2>rigel.clients.rosbridge module<a class="headerlink" href="#module-rigel.clients.rosbridge" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.clients.rosbridge.ROSBridgeClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.clients.rosbridge.</span></span><span class="sig-name descname"><span class="pre">ROSBridgeClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'localhost'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">9090</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/clients/rosbridge.html#ROSBridgeClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.clients.rosbridge.ROSBridgeClient" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A wrapper class for the roslibpy.ros.Ros.
+A client for the ROS bridge websocket server.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.clients.rosbridge.ROSBridgeClient.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/clients/rosbridge.html#ROSBridgeClient.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.clients.rosbridge.ROSBridgeClient.close" title="Permalink to this definition"></a></dt>
+<dd><p>Close connection between to the ROS bridge websocket server.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.clients.rosbridge.ROSBridgeClient.handlers">
+<span class="sig-name descname"><span class="pre">handlers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.clients.rosbridge.ROSBridgeClient.handlers" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.clients.rosbridge.ROSBridgeClient.register_message_handler">
+<span class="sig-name descname"><span class="pre">register_message_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/clients/rosbridge.html#ROSBridgeClient.register_message_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.clients.rosbridge.ROSBridgeClient.register_message_handler" title="Permalink to this definition"></a></dt>
+<dd><p>Registers a ROS message handler and starts listening for incoming messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>topic</strong> (<em>string</em>) – The ROS topic to subscribe.</p></li>
+<li><p><strong>message_type</strong> (<em>string</em>) – The expected type of incoming ROS messages.</p></li>
+<li><p><strong>handler</strong> (<em>Callable</em><em>[</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em><em>, </em><em>None</em><em>]</em>) – The message handler function to be executed everytime a message is received.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.clients.rosbridge.ROSBridgeClient.remove_message_handler">
+<span class="sig-name descname"><span class="pre">remove_message_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/clients/rosbridge.html#ROSBridgeClient.remove_message_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.clients.rosbridge.ROSBridgeClient.remove_message_handler" title="Permalink to this definition"></a></dt>
+<dd><p>Deletes a registered ROS message handler and stops forwarding ROS messages arriving on specified topic.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>topic</strong> (<em>string</em>) – The ROS topic associated with the message handler.</p></li>
+<li><p><strong>message_type</strong> (<em>string</em>) – The type of ROS messages associated with the message handler.</p></li>
+<li><p><strong>handler</strong> (<em>Callable</em><em>[</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em><em>, </em><em>None</em><em>]</em>) – The message handler function to be removed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.clients.rosbridge.ROSBridgeClient.subscribers">
+<span class="sig-name descname"><span class="pre">subscribers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Topic</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.clients.rosbridge.ROSBridgeClient.subscribers" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.clients">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-rigel.clients" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Pedro Pereira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rigel.plugins.core.dockerfile package &mdash; Rigel 0.3.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Rigel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">rigel.plugins.core.dockerfile package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.dockerfile.models">rigel.plugins.core.dockerfile.models module</a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.dockerfile.models.Compiler"><code class="docutils literal notranslate"><span class="pre">Compiler</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.dockerfile.models.Compiler.cmake_args"><code class="docutils literal notranslate"><span class="pre">Compiler.cmake_args</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.dockerfile.models.Compiler.name"><code class="docutils literal notranslate"><span class="pre">Compiler.name</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.dockerfile.models.Compiler.validate_compiler"><code class="docutils literal notranslate"><span class="pre">Compiler.validate_compiler()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.plugins.core.dockerfile.models.PluginModel"><code class="docutils literal notranslate"><span class="pre">PluginModel</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.dockerfile.models.PluginModel.apt"><code class="docutils literal notranslate"><span class="pre">PluginModel.apt</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.dockerfile.models.PluginModel.command"><code class="docutils literal notranslate"><span class="pre">PluginModel.command</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.dockerfile.models.PluginModel.compiler"><code class="docutils literal notranslate"><span class="pre">PluginModel.compiler</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.dockerfile.models.PluginModel.docker_run"><code class="docutils literal notranslate"><span class="pre">PluginModel.docker_run</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.dockerfile.models.PluginModel.entrypoint"><code class="docutils literal notranslate"><span class="pre">PluginModel.entrypoint</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.dockerfile.models.PluginModel.env"><code class="docutils literal notranslate"><span class="pre">PluginModel.env</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.dockerfile.models.PluginModel.ros_image"><code class="docutils literal notranslate"><span class="pre">PluginModel.ros_image</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.dockerfile.models.PluginModel.rosinstall"><code class="docutils literal notranslate"><span class="pre">PluginModel.rosinstall</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.dockerfile.models.PluginModel.username"><code class="docutils literal notranslate"><span class="pre">PluginModel.username</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.dockerfile.plugin">rigel.plugins.core.dockerfile.plugin module</a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.dockerfile.plugin.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.dockerfile.plugin.Plugin.run"><code class="docutils literal notranslate"><span class="pre">Plugin.run()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.dockerfile.plugin.Plugin.setup"><code class="docutils literal notranslate"><span class="pre">Plugin.setup()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.dockerfile.renderer">rigel.plugins.core.dockerfile.renderer module</a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.dockerfile.renderer.Renderer"><code class="docutils literal notranslate"><span class="pre">Renderer</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.dockerfile.renderer.Renderer.render"><code class="docutils literal notranslate"><span class="pre">Renderer.render()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.dockerfile">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Rigel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">rigel.plugins.core.dockerfile package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/rigel.plugins.core.dockerfile.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rigel-plugins-core-dockerfile-package">
+<h1>rigel.plugins.core.dockerfile package<a class="headerlink" href="#rigel-plugins-core-dockerfile-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-rigel.plugins.core.dockerfile.models">
+<span id="rigel-plugins-core-dockerfile-models-module"></span><h2>rigel.plugins.core.dockerfile.models module<a class="headerlink" href="#module-rigel.plugins.core.dockerfile.models" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.dockerfile.models.Compiler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.dockerfile.models.</span></span><span class="sig-name descname"><span class="pre">Compiler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'catkin_make'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmake_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/core/dockerfile/models.html#Compiler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.dockerfile.models.Compiler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.dockerfile.models.Compiler.cmake_args">
+<span class="sig-name descname"><span class="pre">cmake_args</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.core.dockerfile.models.Compiler.cmake_args" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.dockerfile.models.Compiler.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.plugins.core.dockerfile.models.Compiler.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.dockerfile.models.Compiler.validate_compiler">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_compiler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/dockerfile/models.html#Compiler.validate_compiler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.dockerfile.models.Compiler.validate_compiler" title="Permalink to this definition"></a></dt>
+<dd><p>Ensure that the specified ROS package compiler used is supported by Rigel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>string</em>) – ROS package compiler.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.dockerfile.models.PluginModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.dockerfile.models.</span></span><span class="sig-name descname"><span class="pre">PluginModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compiler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#rigel.plugins.core.dockerfile.models.Compiler" title="rigel.plugins.core.dockerfile.models.Compiler"><span class="pre">Compiler</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entrypoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rosinstall</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ros_image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docker_run</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'rigeluser'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/core/dockerfile/models.html#PluginModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.dockerfile.models.PluginModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>A plugin that creates a ready-to-use Dockerfile for an existing ROS package.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>command</strong> – The command to be executed once a container starts executing.</p></li>
+<li><p><strong>apt</strong> – The name of dependencies to be installed using APT.</p></li>
+<li><p><strong>compiler</strong> – The tool with which to compile the containerized ROS workspace. Default value is ‘catkin_make’.</p></li>
+<li><p><strong>entrypoint</strong> – A list of commands to be run while executing the entrypoint script.</p></li>
+<li><p><strong>env</strong> – A list of environment variables to be set inside the Docker image.</p></li>
+<li><p><strong>rosinstall</strong> – A list of all required .rosinstall files.</p></li>
+<li><p><strong>ros_image</strong> – The official ROS Docker image to use as a base for the new Docker image.</p></li>
+<li><p><strong>docker_run</strong> – A list of commands to be executed while building the Docker image.</p></li>
+<li><p><strong>username</strong> – The desired username. Defaults to ‘user’.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.dockerfile.models.PluginModel.apt">
+<span class="sig-name descname"><span class="pre">apt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.core.dockerfile.models.PluginModel.apt" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.dockerfile.models.PluginModel.command">
+<span class="sig-name descname"><span class="pre">command</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.plugins.core.dockerfile.models.PluginModel.command" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.dockerfile.models.PluginModel.compiler">
+<span class="sig-name descname"><span class="pre">compiler</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#rigel.plugins.core.dockerfile.models.Compiler" title="rigel.plugins.core.dockerfile.models.Compiler"><span class="pre">Compiler</span></a></em><a class="headerlink" href="#rigel.plugins.core.dockerfile.models.PluginModel.compiler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.dockerfile.models.PluginModel.docker_run">
+<span class="sig-name descname"><span class="pre">docker_run</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.core.dockerfile.models.PluginModel.docker_run" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.dockerfile.models.PluginModel.entrypoint">
+<span class="sig-name descname"><span class="pre">entrypoint</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.core.dockerfile.models.PluginModel.entrypoint" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.dockerfile.models.PluginModel.env">
+<span class="sig-name descname"><span class="pre">env</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.core.dockerfile.models.PluginModel.env" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.dockerfile.models.PluginModel.ros_image">
+<span class="sig-name descname"><span class="pre">ros_image</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.plugins.core.dockerfile.models.PluginModel.ros_image" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.dockerfile.models.PluginModel.rosinstall">
+<span class="sig-name descname"><span class="pre">rosinstall</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.core.dockerfile.models.PluginModel.rosinstall" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.dockerfile.models.PluginModel.username">
+<span class="sig-name descname"><span class="pre">username</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.plugins.core.dockerfile.models.PluginModel.username" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.plugins.core.dockerfile.plugin">
+<span id="rigel-plugins-core-dockerfile-plugin-module"></span><h2>rigel.plugins.core.dockerfile.plugin module<a class="headerlink" href="#module-rigel.plugins.core.dockerfile.plugin" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.dockerfile.plugin.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.dockerfile.plugin.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="rigel.models.html#rigel.models.data.ComplexDataModel" title="rigel.models.data.ComplexDataModel"><span class="pre">ComplexDataModel</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">application</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.models.html#rigel.models.application.Application" title="rigel.models.application.Application"><span class="pre">Application</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">providers_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/core/dockerfile/plugin.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.dockerfile.plugin.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="rigel.plugins.html#rigel.plugins.plugin.Plugin" title="rigel.plugins.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">Plugin</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.dockerfile.plugin.Plugin.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/dockerfile/plugin.html#Plugin.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.dockerfile.plugin.Plugin.run" title="Permalink to this definition"></a></dt>
+<dd><p>Use this function as an entry point for your plugin.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.dockerfile.plugin.Plugin.setup">
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/dockerfile/plugin.html#Plugin.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.dockerfile.plugin.Plugin.setup" title="Permalink to this definition"></a></dt>
+<dd><p>Use this function to allocate plugin resoures.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.plugins.core.dockerfile.renderer">
+<span id="rigel-plugins-core-dockerfile-renderer-module"></span><h2>rigel.plugins.core.dockerfile.renderer module<a class="headerlink" href="#module-rigel.plugins.core.dockerfile.renderer" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.dockerfile.renderer.Renderer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.dockerfile.renderer.</span></span><span class="sig-name descname"><span class="pre">Renderer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distro</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configuration_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#rigel.plugins.core.dockerfile.models.PluginModel" title="rigel.plugins.core.dockerfile.models.PluginModel"><span class="pre">PluginModel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssh_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SSHProviderOutputModel</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/core/dockerfile/renderer.html#Renderer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.dockerfile.renderer.Renderer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class that creates Dockerfiles.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.dockerfile.renderer.Renderer.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/dockerfile/renderer.html#Renderer.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.dockerfile.renderer.Renderer.render" title="Permalink to this definition"></a></dt>
+<dd><p>Create a new Dockerfile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>template</strong> (<em>string</em>) – Name of the template file to render.</p></li>
+<li><p><strong>output</strong> (<em>string</em>) – Name for the output rendered file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.plugins.core.dockerfile">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-rigel.plugins.core.dockerfile" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Pedro Pereira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

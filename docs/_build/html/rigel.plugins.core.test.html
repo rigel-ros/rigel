@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rigel.plugins.core.test package &mdash; Rigel 0.3.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Rigel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">rigel.plugins.core.test package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.test.models">rigel.plugins.core.test.models module</a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.models.Introspection"><code class="docutils literal notranslate"><span class="pre">Introspection</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.models.Introspection.hostname"><code class="docutils literal notranslate"><span class="pre">Introspection.hostname</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.models.Introspection.publish"><code class="docutils literal notranslate"><span class="pre">Introspection.publish</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.models.Introspection.requirements"><code class="docutils literal notranslate"><span class="pre">Introspection.requirements</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.models.PluginModel"><code class="docutils literal notranslate"><span class="pre">PluginModel</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.models.PluginModel.components"><code class="docutils literal notranslate"><span class="pre">PluginModel.components</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.models.TestComponent"><code class="docutils literal notranslate"><span class="pre">TestComponent</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.models.TestComponent.image"><code class="docutils literal notranslate"><span class="pre">TestComponent.image</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.models.TestComponent.introspection"><code class="docutils literal notranslate"><span class="pre">TestComponent.introspection</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.models.TestComponent.name"><code class="docutils literal notranslate"><span class="pre">TestComponent.name</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.test.plugin">rigel.plugins.core.test.plugin module</a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.plugin.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.plugin.Plugin.bringup_ros_nodes"><code class="docutils literal notranslate"><span class="pre">Plugin.bringup_ros_nodes()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.plugin.Plugin.convert_envs"><code class="docutils literal notranslate"><span class="pre">Plugin.convert_envs()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.plugin.Plugin.convert_volumes"><code class="docutils literal notranslate"><span class="pre">Plugin.convert_volumes()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.plugin.Plugin.create_simulation_network"><code class="docutils literal notranslate"><span class="pre">Plugin.create_simulation_network()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.plugin.Plugin.remove_package_containers"><code class="docutils literal notranslate"><span class="pre">Plugin.remove_package_containers()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.plugin.Plugin.remove_simulation_network"><code class="docutils literal notranslate"><span class="pre">Plugin.remove_simulation_network()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.plugin.Plugin.run"><code class="docutils literal notranslate"><span class="pre">Plugin.run()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.plugin.Plugin.run_package_container"><code class="docutils literal notranslate"><span class="pre">Plugin.run_package_container()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.plugin.Plugin.setup"><code class="docutils literal notranslate"><span class="pre">Plugin.setup()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.plugin.Plugin.start_dns_server"><code class="docutils literal notranslate"><span class="pre">Plugin.start_dns_server()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.plugin.Plugin.start_ros_master"><code class="docutils literal notranslate"><span class="pre">Plugin.start_ros_master()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.plugin.Plugin.stop"><code class="docutils literal notranslate"><span class="pre">Plugin.stop()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.plugin.Plugin.stop_dns_server"><code class="docutils literal notranslate"><span class="pre">Plugin.stop_dns_server()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.plugin.Plugin.stop_ros_master"><code class="docutils literal notranslate"><span class="pre">Plugin.stop_ros_master()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.test">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Rigel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">rigel.plugins.core.test package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/rigel.plugins.core.test.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rigel-plugins-core-test-package">
+<h1>rigel.plugins.core.test package<a class="headerlink" href="#rigel-plugins-core-test-package" title="Permalink to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="rigel.plugins.core.test.introspection.html">rigel.plugins.core.test.introspection package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html">rigel.plugins.core.test.introspection.requirements package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#module-rigel.plugins.core.test.introspection.requirements.absence">rigel.plugins.core.test.introspection.requirements.absence module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#module-rigel.plugins.core.test.introspection.requirements.disjoint">rigel.plugins.core.test.introspection.requirements.disjoint module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#module-rigel.plugins.core.test.introspection.requirements.existence">rigel.plugins.core.test.introspection.requirements.existence module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#module-rigel.plugins.core.test.introspection.requirements.manager">rigel.plugins.core.test.introspection.requirements.manager module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#module-rigel.plugins.core.test.introspection.requirements.node">rigel.plugins.core.test.introspection.requirements.node module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#module-rigel.plugins.core.test.introspection.requirements.prevention">rigel.plugins.core.test.introspection.requirements.prevention module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#module-rigel.plugins.core.test.introspection.requirements.requirement">rigel.plugins.core.test.introspection.requirements.requirement module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#module-rigel.plugins.core.test.introspection.requirements.response">rigel.plugins.core.test.introspection.requirements.response module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#module-rigel.plugins.core.test.introspection.requirements.simple">rigel.plugins.core.test.introspection.requirements.simple module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#module-rigel.plugins.core.test.introspection.requirements">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#module-rigel.plugins.core.test.introspection.callback">rigel.plugins.core.test.introspection.callback module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.callback.CallbackGenerator"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_and"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.generate_callback_and()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_different"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.generate_callback_different()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_equal"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.generate_callback_equal()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_greater"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.generate_callback_greater()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_greater_than"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.generate_callback_greater_than()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_iff"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.generate_callback_iff()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_lesser"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.generate_callback_lesser()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_lesser_than"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.generate_callback_lesser_than()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_vacuous"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.generate_callback_vacuous()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.callback.CallbackGenerator.process_binary_operator"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.process_binary_operator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.callback.CallbackGenerator.process_vacuous_truth"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.process_vacuous_truth()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#module-rigel.plugins.core.test.introspection.command">rigel.plugins.core.test.introspection.command module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.Command"><code class="docutils literal notranslate"><span class="pre">Command</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandBuilder"><code class="docutils literal notranslate"><span class="pre">CommandBuilder</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandBuilder.build_rosbridge_connect_cmd"><code class="docutils literal notranslate"><span class="pre">CommandBuilder.build_rosbridge_connect_cmd()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandBuilder.build_rosbridge_disconnect_cmd"><code class="docutils literal notranslate"><span class="pre">CommandBuilder.build_rosbridge_disconnect_cmd()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandBuilder.build_status_change_cmd"><code class="docutils literal notranslate"><span class="pre">CommandBuilder.build_status_change_cmd()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandBuilder.build_stop_simulation_cmd"><code class="docutils literal notranslate"><span class="pre">CommandBuilder.build_stop_simulation_cmd()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandBuilder.build_trigger_cmd"><code class="docutils literal notranslate"><span class="pre">CommandBuilder.build_trigger_cmd()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandHandler"><code class="docutils literal notranslate"><span class="pre">CommandHandler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandHandler.children"><code class="docutils literal notranslate"><span class="pre">CommandHandler.children</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandHandler.father"><code class="docutils literal notranslate"><span class="pre">CommandHandler.father</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandHandler.handle_downstream_command"><code class="docutils literal notranslate"><span class="pre">CommandHandler.handle_downstream_command()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandHandler.handle_upstream_command"><code class="docutils literal notranslate"><span class="pre">CommandHandler.handle_upstream_command()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandHandler.send_child_downstream_cmd"><code class="docutils literal notranslate"><span class="pre">CommandHandler.send_child_downstream_cmd()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandHandler.send_downstream_cmd"><code class="docutils literal notranslate"><span class="pre">CommandHandler.send_downstream_cmd()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandHandler.send_upstream_cmd"><code class="docutils literal notranslate"><span class="pre">CommandHandler.send_upstream_cmd()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandType"><code class="docutils literal notranslate"><span class="pre">CommandType</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandType.ROSBRIDGE_CONNECT"><code class="docutils literal notranslate"><span class="pre">CommandType.ROSBRIDGE_CONNECT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandType.ROSBRIDGE_DISCONNECT"><code class="docutils literal notranslate"><span class="pre">CommandType.ROSBRIDGE_DISCONNECT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandType.STATUS_CHANGE"><code class="docutils literal notranslate"><span class="pre">CommandType.STATUS_CHANGE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandType.STOP_SIMULATON"><code class="docutils literal notranslate"><span class="pre">CommandType.STOP_SIMULATON</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.command.CommandType.TRIGGER"><code class="docutils literal notranslate"><span class="pre">CommandType.TRIGGER</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#module-rigel.plugins.core.test.introspection.parser">rigel.plugins.core.test.introspection.parser module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.parser.SimulationRequirementsParser"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsParser</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.parser.SimulationRequirementsParser.parse"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsParser.parse()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.parser.SimulationRequirementsVisitor"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsVisitor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.parser.SimulationRequirementsVisitor.requirement"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsVisitor.requirement</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.parser.SimulationRequirementsVisitor.visit_hpl_pattern"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsVisitor.visit_hpl_pattern()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#module-rigel.plugins.core.test.introspection.strategy">rigel.plugins.core.test.introspection.strategy module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.AssessmentStrategy"><code class="docutils literal notranslate"><span class="pre">AssessmentStrategy</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.AssessmentStrategy.assess"><code class="docutils literal notranslate"><span class="pre">AssessmentStrategy.assess()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.AssessmentStrategy.finished"><code class="docutils literal notranslate"><span class="pre">AssessmentStrategy.finished</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.SingleMatchAssessmentStrategy"><code class="docutils literal notranslate"><span class="pre">SingleMatchAssessmentStrategy</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.SingleMatchAssessmentStrategy.assess"><code class="docutils literal notranslate"><span class="pre">SingleMatchAssessmentStrategy.assess()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.assess_condition"><code class="docutils literal notranslate"><span class="pre">assess_condition()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.assess_different"><code class="docutils literal notranslate"><span class="pre">assess_different()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.assess_equal"><code class="docutils literal notranslate"><span class="pre">assess_equal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.assess_greater"><code class="docutils literal notranslate"><span class="pre">assess_greater()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.assess_greater_than"><code class="docutils literal notranslate"><span class="pre">assess_greater_than()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.assess_lesser"><code class="docutils literal notranslate"><span class="pre">assess_lesser()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.assess_lesser_than"><code class="docutils literal notranslate"><span class="pre">assess_lesser_than()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.core.test.introspection.html#module-rigel.plugins.core.test.introspection">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-rigel.plugins.core.test.models">
+<span id="rigel-plugins-core-test-models-module"></span><h2>rigel.plugins.core.test.models module<a class="headerlink" href="#module-rigel.plugins.core.test.models" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.models.Introspection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.models.</span></span><span class="sig-name descname"><span class="pre">Introspection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requirements</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">publish</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(9090,</span> <span class="pre">9090)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hostname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/core/test/models.html#Introspection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.models.Introspection" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.models.Introspection.hostname">
+<span class="sig-name descname"><span class="pre">hostname</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#rigel.plugins.core.test.models.Introspection.hostname" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.models.Introspection.publish">
+<span class="sig-name descname"><span class="pre">publish</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.core.test.models.Introspection.publish" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.models.Introspection.requirements">
+<span class="sig-name descname"><span class="pre">requirements</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.core.test.models.Introspection.requirements" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.models.PluginModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.models.</span></span><span class="sig-name descname"><span class="pre">PluginModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">components</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#rigel.plugins.core.test.models.TestComponent" title="rigel.plugins.core.test.models.TestComponent"><span class="pre">TestComponent</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/core/test/models.html#PluginModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.models.PluginModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.models.PluginModel.components">
+<span class="sig-name descname"><span class="pre">components</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#rigel.plugins.core.test.models.TestComponent" title="rigel.plugins.core.test.models.TestComponent"><span class="pre">TestComponent</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.core.test.models.PluginModel.components" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.models.TestComponent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.models.</span></span><span class="sig-name descname"><span class="pre">TestComponent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">introspection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#rigel.plugins.core.test.models.Introspection" title="rigel.plugins.core.test.models.Introspection"><span class="pre">Introspection</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/core/test/models.html#TestComponent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.models.TestComponent" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>A placeholder for information regarding a containerized ROS package to include in the testing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>string</em>) – The Docker image.</p></li>
+<li><p><strong>name</strong> (<em>string</em>) – The Docker container name.</p></li>
+<li><p><strong>instrospection</strong> (<em>Instrospection.</em>) – Information regarding test conditions.</p></li>
+<li><p><strong>_kwargs</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – Keyword arguments. Consult the documentation for more information</p></li>
+</ul>
+</dd>
+</dl>
+<p>(<a class="reference external" href="https://gabrieldemarmiesse.github.io/python-on-whales/sub-commands/container/">https://gabrieldemarmiesse.github.io/python-on-whales/sub-commands/container/</a> - run function)</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.models.TestComponent.image">
+<span class="sig-name descname"><span class="pre">image</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.plugins.core.test.models.TestComponent.image" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.models.TestComponent.introspection">
+<span class="sig-name descname"><span class="pre">introspection</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#rigel.plugins.core.test.models.Introspection" title="rigel.plugins.core.test.models.Introspection"><span class="pre">Introspection</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#rigel.plugins.core.test.models.TestComponent.introspection" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.models.TestComponent.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.plugins.core.test.models.TestComponent.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.plugins.core.test.plugin">
+<span id="rigel-plugins-core-test-plugin-module"></span><h2>rigel.plugins.core.test.plugin module<a class="headerlink" href="#module-rigel.plugins.core.test.plugin" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.plugin.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.plugin.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="rigel.models.html#rigel.models.data.ComplexDataModel" title="rigel.models.data.ComplexDataModel"><span class="pre">ComplexDataModel</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">application</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.models.html#rigel.models.application.Application" title="rigel.models.application.Application"><span class="pre">Application</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">providers_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/core/test/plugin.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.plugin.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="rigel.plugins.html#rigel.plugins.plugin.Plugin" title="rigel.plugins.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">Plugin</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.plugin.Plugin.bringup_ros_nodes">
+<span class="sig-name descname"><span class="pre">bringup_ros_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/plugin.html#Plugin.bringup_ros_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.plugin.Plugin.bringup_ros_nodes" title="Permalink to this definition"></a></dt>
+<dd><p>Launch all containerized ROS nodes required for a given simulation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.plugin.Plugin.convert_envs">
+<span class="sig-name descname"><span class="pre">convert_envs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">envs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/plugin.html#Plugin.convert_envs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.plugin.Plugin.convert_envs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.plugin.Plugin.convert_volumes">
+<span class="sig-name descname"><span class="pre">convert_volumes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">volumes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/plugin.html#Plugin.convert_volumes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.plugin.Plugin.convert_volumes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.plugin.Plugin.create_simulation_network">
+<span class="sig-name descname"><span class="pre">create_simulation_network</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/plugin.html#Plugin.create_simulation_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.plugin.Plugin.create_simulation_network" title="Permalink to this definition"></a></dt>
+<dd><p>Create dedicated Docker network created for a simulation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.plugin.Plugin.remove_package_containers">
+<span class="sig-name descname"><span class="pre">remove_package_containers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/plugin.html#Plugin.remove_package_containers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.plugin.Plugin.remove_package_containers" title="Permalink to this definition"></a></dt>
+<dd><p>Remove a single containerized ROS node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plugin</strong> (<a class="reference internal" href="rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.models.PluginModel" title="rigel.plugins.aws.robomaker.models.PluginModel"><em>PluginModel</em></a>) – Test components for this package.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.plugin.Plugin.remove_simulation_network">
+<span class="sig-name descname"><span class="pre">remove_simulation_network</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/plugin.html#Plugin.remove_simulation_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.plugin.Plugin.remove_simulation_network" title="Permalink to this definition"></a></dt>
+<dd><p>Remove dedicated Docker network created for a simulation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.plugin.Plugin.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/plugin.html#Plugin.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.plugin.Plugin.run" title="Permalink to this definition"></a></dt>
+<dd><p>Plugin entrypoint.
+Create simulation network and all containers required for a given simulation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.plugin.Plugin.run_package_container">
+<span class="sig-name descname"><span class="pre">run_package_container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#rigel.plugins.core.test.models.TestComponent" title="rigel.plugins.core.test.models.TestComponent"><span class="pre">TestComponent</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">master</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Container</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/plugin.html#Plugin.run_package_container"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.plugin.Plugin.run_package_container" title="Permalink to this definition"></a></dt>
+<dd><p>Launch a single containerized ROS node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>component</strong> (<a class="reference internal" href="#rigel.plugins.core.test.models.TestComponent" title="rigel.plugins.core.test.models.TestComponent"><em>TestComponent</em></a>) – Information about the test component.</p></li>
+<li><p><strong>master</strong> (<em>str</em>) – The IP address of the ROS MASTER.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>docker.models.containers.Container</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Docker container serving as ROS master.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.plugin.Plugin.setup">
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/plugin.html#Plugin.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.plugin.Plugin.setup" title="Permalink to this definition"></a></dt>
+<dd><p>Use this function to allocate plugin resoures.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.plugin.Plugin.start_dns_server">
+<span class="sig-name descname"><span class="pre">start_dns_server</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/plugin.html#Plugin.start_dns_server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.plugin.Plugin.start_dns_server" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.plugin.Plugin.start_ros_master">
+<span class="sig-name descname"><span class="pre">start_ros_master</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/plugin.html#Plugin.start_ros_master"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.plugin.Plugin.start_ros_master" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.plugin.Plugin.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/plugin.html#Plugin.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.plugin.Plugin.stop" title="Permalink to this definition"></a></dt>
+<dd><p>Plugin graceful closing mechanism.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.plugin.Plugin.stop_dns_server">
+<span class="sig-name descname"><span class="pre">stop_dns_server</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/plugin.html#Plugin.stop_dns_server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.plugin.Plugin.stop_dns_server" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.plugin.Plugin.stop_ros_master">
+<span class="sig-name descname"><span class="pre">stop_ros_master</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/plugin.html#Plugin.stop_ros_master"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.plugin.Plugin.stop_ros_master" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.plugins.core.test">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-rigel.plugins.core.test" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Pedro Pereira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

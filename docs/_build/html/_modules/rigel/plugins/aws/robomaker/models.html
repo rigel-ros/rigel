@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rigel.plugins.aws.robomaker.models &mdash; Rigel 0.3.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> Rigel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Rigel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">rigel.plugins.aws.robomaker.models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for rigel.plugins.aws.robomaker.models</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Extra</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
+<span class="kn">from</span> <span class="nn">rigel.exceptions</span> <span class="kn">import</span> <span class="n">InvalidValueError</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="n">DEFAULT_ROBOT_APPLICATION_NAME</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;rigel_robomaker_robot_application&#39;</span>
+<span class="n">DEFAULT_SIMULATION_APPLICATION_NAME</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;rigel_robomaker_simulation_application&#39;</span>
+
+
+<div class="viewcode-block" id="VPCConfig"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.models.VPCConfig">[docs]</a><span class="k">class</span> <span class="nc">VPCConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span><span class="p">):</span>
+
+    <span class="c1"># Required fields</span>
+    <span class="n">subnets</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">securityGroups</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;security_groups&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Optional fields</span>
+    <span class="n">assignPublicIp</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;assign_public_ip&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Tool"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.models.Tool">[docs]</a><span class="k">class</span> <span class="nc">Tool</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Information about tools configured for the robot application.</span>
+<span class="sd">    :param command: Command-line arguments for the tool. It must include the tool executable name.</span>
+<span class="sd">    :type command: str</span>
+<span class="sd">    :param exit_behavior: Exit behavior determines what happens when your tool quits running.</span>
+<span class="sd">        RESTART will cause your tool to be restarted.</span>
+<span class="sd">        FAIL will cause your job to exit. The default is RESTART .</span>
+<span class="sd">    :type exit_behavior: bool</span>
+<span class="sd">    :type name: bool</span>
+<span class="sd">    :param name: The name of the tool.</span>
+<span class="sd">    :type name: str</span>
+<span class="sd">    :param streamOutputToCloudWatch: Boolean indicating whether logs will be recorded in CloudWatch for the tool.</span>
+<span class="sd">        The default is False.</span>
+<span class="sd">    :type streamOutputToCloudWatch: bool</span>
+<span class="sd">    :param streamUI: Boolean indicating whether a streaming session will be configured for the tool.</span>
+<span class="sd">        If True, AWS RoboMaker will configure a connection so you can interact with the tool as it is running in the simulation.</span>
+<span class="sd">        It must have a graphical user interface. The default is False.</span>
+<span class="sd">    :type streamUI: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Tool.Config"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.models.Tool.Config">[docs]</a>    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">allow_population_by_field_name</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span></div>
+
+    <span class="c1"># Required fields</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">command</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="c1"># Optional fields.</span>
+    <span class="n">exitBehavior</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;exit_behaviour&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;RESTART&#39;</span><span class="p">)</span>
+    <span class="n">streamOutputToCloudWatch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;stream_output_to_cloud_watch&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">streamUI</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;stream_ui&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Tool.validate_exit_behavior"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.models.Tool.validate_exit_behavior">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;exitBehavior&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate_exit_behavior</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">exitBehavior</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ensure that field &#39;exitBehavior&#39; is valid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">exitBehavior</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;FAIL&#39;</span><span class="p">,</span> <span class="s1">&#39;RESTART&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">InvalidValueError</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="s1">&#39;exitBehavior&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">exitBehavior</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">exitBehavior</span></div></div>
+
+
+<div class="viewcode-block" id="RobotApplication"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.models.RobotApplication">[docs]</a><span class="k">class</span> <span class="nc">RobotApplication</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span><span class="p">):</span>
+
+    <span class="c1"># Required fields</span>
+    <span class="n">ecr</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">command</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+
+    <span class="c1"># Optional fields</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_ROBOT_APPLICATION_NAME</span>
+    <span class="n">environment</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">ports</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">requirements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">streamUI</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;stream_ui&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">tools</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tool</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+
+<div class="viewcode-block" id="SimulationApplication"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.models.SimulationApplication">[docs]</a><span class="k">class</span> <span class="nc">SimulationApplication</span><span class="p">(</span><span class="n">RobotApplication</span><span class="p">):</span>
+
+    <span class="c1"># Optional fields</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_SIMULATION_APPLICATION_NAME</span>
+    <span class="n">worldConfigs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;world&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;world_configs&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[])</span></div>
+
+
+<div class="viewcode-block" id="DataSource"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.models.DataSource">[docs]</a><span class="k">class</span> <span class="nc">DataSource</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A data source consists of read-only files from S3</span>
+<span class="sd">    used into RoboMaker simulations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Required field</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">s3Bucket</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;s3_bucket&#39;</span><span class="p">)</span>
+    <span class="n">s3Keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;s3_keys&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Optional fields:</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;File&#39;</span>
+    <span class="n">destination</span><span class="p">:</span> <span class="nb">str</span>
+
+<div class="viewcode-block" id="DataSource.validate_data_source_type"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.models.DataSource.validate_data_source_type">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate_data_source_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ds_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ensure that field &#39;type&#39; is valid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ds_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Prefix&#39;</span><span class="p">,</span> <span class="s1">&#39;Archive&#39;</span><span class="p">,</span> <span class="s1">&#39;File&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">InvalidValueError</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">ds_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ds_type</span></div></div>
+
+    <span class="c1"># TODO: add validator to ensure that field &#39;destination&#39;</span>
+    <span class="c1"># is set according to the value of field &#39;type&#39;</span>
+
+
+<div class="viewcode-block" id="PluginModel"><a class="viewcode-back" href="../../../../../rigel.plugins.aws.robomaker.html#rigel.plugins.aws.robomaker.models.PluginModel">[docs]</a><span class="k">class</span> <span class="nc">PluginModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span><span class="p">):</span>
+
+    <span class="c1"># Required fields</span>
+    <span class="n">iam_role</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">robot_application</span><span class="p">:</span> <span class="n">RobotApplication</span>
+    <span class="n">simulation_application</span><span class="p">:</span> <span class="n">SimulationApplication</span>
+
+    <span class="c1"># Optional fields</span>
+    <span class="n">output_location</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">simulation_duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">300</span>  <span class="c1"># seconds</span>
+    <span class="n">vpc_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">VPCConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">data_sources</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DataSource</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Pedro Pereira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

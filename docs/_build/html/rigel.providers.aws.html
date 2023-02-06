@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rigel.providers.aws package &mdash; Rigel 0.3.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Rigel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">rigel.providers.aws package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-rigel.providers.aws.models">rigel.providers.aws.models module</a><ul>
+<li><a class="reference internal" href="#rigel.providers.aws.models.AWSProviderModel"><code class="docutils literal notranslate"><span class="pre">AWSProviderModel</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.providers.aws.models.AWSProviderModel.aws_access_key_id"><code class="docutils literal notranslate"><span class="pre">AWSProviderModel.aws_access_key_id</span></code></a></li>
+<li><a class="reference internal" href="#rigel.providers.aws.models.AWSProviderModel.aws_secret_access_key"><code class="docutils literal notranslate"><span class="pre">AWSProviderModel.aws_secret_access_key</span></code></a></li>
+<li><a class="reference internal" href="#rigel.providers.aws.models.AWSProviderModel.ecr_servers"><code class="docutils literal notranslate"><span class="pre">AWSProviderModel.ecr_servers</span></code></a></li>
+<li><a class="reference internal" href="#rigel.providers.aws.models.AWSProviderModel.region_name"><code class="docutils literal notranslate"><span class="pre">AWSProviderModel.region_name</span></code></a></li>
+<li><a class="reference internal" href="#rigel.providers.aws.models.AWSProviderModel.services"><code class="docutils literal notranslate"><span class="pre">AWSProviderModel.services</span></code></a></li>
+<li><a class="reference internal" href="#rigel.providers.aws.models.AWSProviderModel.validate_services"><code class="docutils literal notranslate"><span class="pre">AWSProviderModel.validate_services()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.providers.aws.models.AWSProviderOutputModel"><code class="docutils literal notranslate"><span class="pre">AWSProviderOutputModel</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.providers.aws.models.AWSProviderOutputModel.robomaker_client"><code class="docutils literal notranslate"><span class="pre">AWSProviderOutputModel.robomaker_client</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.providers.aws.provider">rigel.providers.aws.provider module</a><ul>
+<li><a class="reference internal" href="#rigel.providers.aws.provider.AWSProvider"><code class="docutils literal notranslate"><span class="pre">AWSProvider</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.providers.aws.provider.AWSProvider.connect"><code class="docutils literal notranslate"><span class="pre">AWSProvider.connect()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.providers.aws.provider.AWSProvider.connect_ecr"><code class="docutils literal notranslate"><span class="pre">AWSProvider.connect_ecr()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.providers.aws.provider.AWSProvider.connect_robomaker"><code class="docutils literal notranslate"><span class="pre">AWSProvider.connect_robomaker()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.providers.aws.provider.AWSProvider.disconnect"><code class="docutils literal notranslate"><span class="pre">AWSProvider.disconnect()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.providers.aws.provider.AWSProvider.disconnect_ecr"><code class="docutils literal notranslate"><span class="pre">AWSProvider.disconnect_ecr()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.providers.aws.provider.AWSProvider.disconnect_robomaker"><code class="docutils literal notranslate"><span class="pre">AWSProvider.disconnect_robomaker()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.providers.aws">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Rigel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">rigel.providers.aws package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/rigel.providers.aws.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rigel-providers-aws-package">
+<h1>rigel.providers.aws package<a class="headerlink" href="#rigel-providers-aws-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-rigel.providers.aws.models">
+<span id="rigel-providers-aws-models-module"></span><h2>rigel.providers.aws.models module<a class="headerlink" href="#module-rigel.providers.aws.models" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.providers.aws.models.AWSProviderModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.providers.aws.models.</span></span><span class="sig-name descname"><span class="pre">AWSProviderModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aws_access_key_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aws_secret_access_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">services</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecr_servers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/providers/aws/models.html#AWSProviderModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.providers.aws.models.AWSProviderModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.providers.aws.models.AWSProviderModel.aws_access_key_id">
+<span class="sig-name descname"><span class="pre">aws_access_key_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.providers.aws.models.AWSProviderModel.aws_access_key_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.providers.aws.models.AWSProviderModel.aws_secret_access_key">
+<span class="sig-name descname"><span class="pre">aws_secret_access_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.providers.aws.models.AWSProviderModel.aws_secret_access_key" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.providers.aws.models.AWSProviderModel.ecr_servers">
+<span class="sig-name descname"><span class="pre">ecr_servers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.providers.aws.models.AWSProviderModel.ecr_servers" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.providers.aws.models.AWSProviderModel.region_name">
+<span class="sig-name descname"><span class="pre">region_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.providers.aws.models.AWSProviderModel.region_name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.providers.aws.models.AWSProviderModel.services">
+<span class="sig-name descname"><span class="pre">services</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.providers.aws.models.AWSProviderModel.services" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.providers.aws.models.AWSProviderModel.validate_services">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_services</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">services</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/rigel/providers/aws/models.html#AWSProviderModel.validate_services"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.providers.aws.models.AWSProviderModel.validate_services" title="Permalink to this definition"></a></dt>
+<dd><p>Ensure that at least one AWS service was selected.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.providers.aws.models.AWSProviderOutputModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.providers.aws.models.</span></span><span class="sig-name descname"><span class="pre">AWSProviderOutputModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robomaker_client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/providers/aws/models.html#AWSProviderOutputModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.providers.aws.models.AWSProviderOutputModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.providers.aws.models.AWSProviderOutputModel.robomaker_client">
+<span class="sig-name descname"><span class="pre">robomaker_client</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#rigel.providers.aws.models.AWSProviderOutputModel.robomaker_client" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.providers.aws.provider">
+<span id="rigel-providers-aws-provider-module"></span><h2>rigel.providers.aws.provider module<a class="headerlink" href="#module-rigel.providers.aws.provider" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.providers.aws.provider.AWSProvider">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.providers.aws.provider.</span></span><span class="sig-name descname"><span class="pre">AWSProvider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="rigel.models.html#rigel.models.data.ComplexDataModel" title="rigel.models.data.ComplexDataModel"><span class="pre">ComplexDataModel</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">providers_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/providers/aws/provider.html#AWSProvider"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.providers.aws.provider.AWSProvider" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="rigel.providers.html#rigel.providers.provider.Provider" title="rigel.providers.provider.Provider"><code class="xref py py-class docutils literal notranslate"><span class="pre">Provider</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.providers.aws.provider.AWSProvider.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/providers/aws/provider.html#AWSProvider.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.providers.aws.provider.AWSProvider.connect" title="Permalink to this definition"></a></dt>
+<dd><p>Use this function to connect to required provider services.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.providers.aws.provider.AWSProvider.connect_ecr">
+<span class="sig-name descname"><span class="pre">connect_ecr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/providers/aws/provider.html#AWSProvider.connect_ecr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.providers.aws.provider.AWSProvider.connect_ecr" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.providers.aws.provider.AWSProvider.connect_robomaker">
+<span class="sig-name descname"><span class="pre">connect_robomaker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/providers/aws/provider.html#AWSProvider.connect_robomaker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.providers.aws.provider.AWSProvider.connect_robomaker" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.providers.aws.provider.AWSProvider.disconnect">
+<span class="sig-name descname"><span class="pre">disconnect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/providers/aws/provider.html#AWSProvider.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.providers.aws.provider.AWSProvider.disconnect" title="Permalink to this definition"></a></dt>
+<dd><p>Use this function to gracefully diconnect from provider services.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.providers.aws.provider.AWSProvider.disconnect_ecr">
+<span class="sig-name descname"><span class="pre">disconnect_ecr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/providers/aws/provider.html#AWSProvider.disconnect_ecr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.providers.aws.provider.AWSProvider.disconnect_ecr" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.providers.aws.provider.AWSProvider.disconnect_robomaker">
+<span class="sig-name descname"><span class="pre">disconnect_robomaker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/providers/aws/provider.html#AWSProvider.disconnect_robomaker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.providers.aws.provider.AWSProvider.disconnect_robomaker" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.providers.aws">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-rigel.providers.aws" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Pedro Pereira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

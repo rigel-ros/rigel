@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rigel.workspace &mdash; Rigel 0.3.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Rigel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rigel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">rigel.workspace</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for rigel.workspace</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">signal</span>
+<span class="kn">from</span> <span class="nn">rigel.files.decoder</span> <span class="kn">import</span> <span class="n">YAMLDataDecoder</span>
+<span class="kn">from</span> <span class="nn">rigel.files.loader</span> <span class="kn">import</span> <span class="n">YAMLDataLoader</span>
+<span class="kn">from</span> <span class="nn">rigel.loggers</span> <span class="kn">import</span> <span class="n">get_logger</span>
+<span class="kn">from</span> <span class="nn">rigel.models.builder</span> <span class="kn">import</span> <span class="n">ModelBuilder</span>
+<span class="kn">from</span> <span class="nn">rigel.models.plugin</span> <span class="kn">import</span> <span class="n">PluginDataModel</span>
+<span class="kn">from</span> <span class="nn">rigel.models.rigelfile</span> <span class="kn">import</span> <span class="n">Rigelfile</span>
+<span class="kn">from</span> <span class="nn">rigel.plugins.manager</span> <span class="kn">import</span> <span class="n">PluginManager</span>
+<span class="kn">from</span> <span class="nn">rigel.plugins.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span>
+<span class="kn">from</span> <span class="nn">rigel.providers.manager</span> <span class="kn">import</span> <span class="n">ProviderManager</span>
+<span class="kn">from</span> <span class="nn">rigel.providers.provider</span> <span class="kn">import</span> <span class="n">Provider</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="WorkspaceManager"><a class="viewcode-back" href="../../rigel.html#rigel.workspace.WorkspaceManager">[docs]</a><span class="k">class</span> <span class="nc">WorkspaceManager</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Class constructor.</span>
+<span class="sd">        Retrieve workspace information from a Rigelfile.</span>
+
+<span class="sd">        :path: path to Rigelfile.</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Parse YAML Rigelfile</span>
+        <span class="n">loader</span> <span class="o">=</span> <span class="n">YAMLDataLoader</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">decoder</span> <span class="o">=</span> <span class="n">YAMLDataDecoder</span><span class="p">()</span>
+        <span class="n">yaml_data</span> <span class="o">=</span> <span class="n">decoder</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">loader</span><span class="o">.</span><span class="n">load</span><span class="p">())</span>
+
+        <span class="c1"># Initialize internal data structures</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="p">:</span> <span class="n">Rigelfile</span> <span class="o">=</span> <span class="n">ModelBuilder</span><span class="p">(</span><span class="n">Rigelfile</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">([],</span> <span class="n">yaml_data</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="p">,</span> <span class="n">Rigelfile</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">providers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Provider</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">providers_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__active_plugin</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Plugin</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__plugin_manager</span><span class="p">:</span> <span class="n">PluginManager</span> <span class="o">=</span> <span class="n">PluginManager</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__provider_manager</span><span class="p">:</span> <span class="n">ProviderManager</span> <span class="o">=</span> <span class="n">ProviderManager</span><span class="p">()</span>
+
+        <span class="c1"># Initialize providers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initializate_providers</span><span class="p">()</span>
+
+<div class="viewcode-block" id="WorkspaceManager.initializate_providers"><a class="viewcode-back" href="../../rigel.html#rigel.workspace.WorkspaceManager.initializate_providers">[docs]</a>    <span class="k">def</span> <span class="nf">initializate_providers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">provider_id</span><span class="p">,</span> <span class="n">provider_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">providers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">providers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__provider_manager</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+                    <span class="n">provider_data</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+                    <span class="n">provider_id</span><span class="p">,</span>
+                    <span class="n">provider_data</span><span class="o">.</span><span class="n">with_</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">vars</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">providers_data</span>
+                <span class="p">)</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="WorkspaceManager.connect_providers"><a class="viewcode-back" href="../../rigel.html#rigel.workspace.WorkspaceManager.connect_providers">[docs]</a>    <span class="k">def</span> <span class="nf">connect_providers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize and connect to all declared providers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Connecting to providers&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">provider</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">providers</span><span class="p">:</span>
+            <span class="n">provider</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="WorkspaceManager.disconnect_providers"><a class="viewcode-back" href="../../rigel.html#rigel.workspace.WorkspaceManager.disconnect_providers">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect_providers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Disconnect from all declared providers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Disconnecting from providers&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">provider</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">providers</span><span class="p">:</span>
+            <span class="n">provider</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="WorkspaceManager.handle_signals"><a class="viewcode-back" href="../../rigel.html#rigel.workspace.WorkspaceManager.handle_signals">[docs]</a>    <span class="k">def</span> <span class="nf">handle_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Start listening for abort (CTRL-C and CTRL-Z) events.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_abort</span><span class="p">)</span>
+        <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTSTP</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_abort</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Press CTRL-C / CTRL-Z to stop execution&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WorkspaceManager.handle_abort"><a class="viewcode-back" href="../../rigel.html#rigel.workspace.WorkspaceManager.handle_abort">[docs]</a>    <span class="k">def</span> <span class="nf">handle_abort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Handle abort events.</span>
+<span class="sd">        Ensure that executing plugin is properly terminated and disconnect</span>
+<span class="sd">        from all declared providers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Stopping execution...&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__active_plugin</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__active_plugin</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__active_plugin</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">disconnect_providers</span><span class="p">()</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WorkspaceManager.execute_plugin"><a class="viewcode-back" href="../../rigel.html#rigel.workspace.WorkspaceManager.execute_plugin">[docs]</a>    <span class="k">def</span> <span class="nf">execute_plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Run the plugin associated with a given job.</span>
+
+<span class="sd">        :param job: The job identifier.</span>
+<span class="sd">        :type job: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">application_id</span><span class="p">,</span> <span class="n">application_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">applications</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Working with application &#39;</span><span class="si">{</span><span class="n">application_id</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">application_data</span><span class="o">.</span><span class="n">jobs</span><span class="p">:</span>
+
+                <span class="n">job_data</span> <span class="o">=</span> <span class="n">application_data</span><span class="o">.</span><span class="n">jobs</span><span class="p">[</span><span class="n">job</span><span class="p">]</span>
+                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">job_data</span><span class="p">,</span> <span class="n">PluginDataModel</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">__active_plugin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__plugin_manager</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+                    <span class="n">job_data</span><span class="o">.</span><span class="n">plugin</span><span class="p">,</span>
+                    <span class="n">job_data</span><span class="o">.</span><span class="n">with_</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">vars</span><span class="p">,</span>
+                    <span class="n">application_data</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">providers_data</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__active_plugin</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__active_plugin</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__active_plugin</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__active_plugin</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="WorkspaceManager.run_job"><a class="viewcode-back" href="../../rigel.html#rigel.workspace.WorkspaceManager.run_job">[docs]</a>    <span class="k">def</span> <span class="nf">run_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Run a single job.</span>
+
+<span class="sd">        :param job: The job identifier.</span>
+<span class="sd">        :type job: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handle_signals</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect_providers</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute_plugin</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">disconnect_providers</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="WorkspaceManager.run_sequence"><a class="viewcode-back" href="../../rigel.html#rigel.workspace.WorkspaceManager.run_sequence">[docs]</a>    <span class="k">def</span> <span class="nf">run_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Run a sequence of jobs.</span>
+
+<span class="sd">        :param sequence: The sequence identifier.</span>
+<span class="sd">        :type sequence: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handle_signals</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect_providers</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">sequence</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">sequences</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">sequences</span><span class="p">[</span><span class="n">sequence</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">execute_plugin</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">disconnect_providers</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Pedro Pereira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

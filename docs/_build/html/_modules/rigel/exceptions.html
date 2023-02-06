@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rigel.exceptions &mdash; Rigel 0.3.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Rigel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rigel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">rigel.exceptions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for rigel.exceptions</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">pydantic.error_wrappers</span> <span class="kn">import</span> <span class="n">ValidationError</span>
+
+
+<div class="viewcode-block" id="RigelError"><a class="viewcode-back" href="../../rigel.html#rigel.exceptions.RigelError">[docs]</a><span class="k">class</span> <span class="nc">RigelError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The base exception class for all Rigel errors.</span>
+
+<span class="sd">    :type base: string</span>
+<span class="sd">    :var base: The error message.</span>
+<span class="sd">    :type code: int</span>
+<span class="sd">    :cvar code: The error code.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">base</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Generic Rigel error.&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base</span> <span class="o">=</span> <span class="n">base</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span></div>
+
+
+<span class="c1"># TODO: implemente tests for this error class</span>
+<div class="viewcode-block" id="ClientError"><a class="viewcode-back" href="../../rigel.html#rigel.exceptions.ClientError">[docs]</a><span class="k">class</span> <span class="nc">ClientError</span><span class="p">(</span><span class="n">RigelError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised whenever an error occurs while using a client.</span>
+
+<span class="sd">    :type client: str</span>
+<span class="sd">    :ivar client: The client that raised the exception.</span>
+<span class="sd">    :type exception: Exception</span>
+<span class="sd">    :ivar exception: The exception raised by the client.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">exception</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;An error was reported by the </span><span class="si">{</span><span class="n">client</span><span class="si">}</span><span class="s2"> client. </span><span class="si">{</span><span class="n">exception</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">client</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exception</span> <span class="o">=</span> <span class="n">exception</span></div>
+
+
+<span class="c1"># TODO: replace this exception by ClientError instances</span>
+<div class="viewcode-block" id="DockerAPIError"><a class="viewcode-back" href="../../rigel.html#rigel.exceptions.DockerAPIError">[docs]</a><span class="k">class</span> <span class="nc">DockerAPIError</span><span class="p">(</span><span class="n">RigelError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised whenever an exception is thrown while making a call to the Docker API.</span>
+
+<span class="sd">    :type exception: Exception</span>
+<span class="sd">    :ivar exception: The exception thrown by the Docker API.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exception</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;An error occured while calling the Docker API: </span><span class="si">{</span><span class="n">exception</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exception</span> <span class="o">=</span> <span class="n">exception</span></div>
+
+
+<div class="viewcode-block" id="PydanticValidationError"><a class="viewcode-back" href="../../rigel.html#rigel.exceptions.PydanticValidationError">[docs]</a><span class="k">class</span> <span class="nc">PydanticValidationError</span><span class="p">(</span><span class="n">RigelError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised whenever a ValidationError is thrown</span>
+<span class="sd">    while creating instances of pydantic.BaseModel.</span>
+
+<span class="sd">    :type exception: pydantic.error_wrappers.ValidationError</span>
+<span class="sd">    :ivar exception: The exception thrown.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exception</span><span class="p">:</span> <span class="n">ValidationError</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;An error occurred while validating Pydantic model: </span><span class="si">{</span><span class="n">exception</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exception</span> <span class="o">=</span> <span class="n">exception</span></div>
+
+
+<div class="viewcode-block" id="UndeclaredEnvironmentVariableError"><a class="viewcode-back" href="../../rigel.html#rigel.exceptions.UndeclaredEnvironmentVariableError">[docs]</a><span class="k">class</span> <span class="nc">UndeclaredEnvironmentVariableError</span><span class="p">(</span><span class="n">RigelError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised whenever an attempt is made to use the value of an undeclared environment variable.</span>
+
+<span class="sd">    :type env: string</span>
+<span class="sd">    :ivar env: The undeclared environment variable.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Environment variable </span><span class="si">{</span><span class="n">env</span><span class="si">}</span><span class="s2"> is not declared.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">env</span> <span class="o">=</span> <span class="n">env</span></div>
+
+
+<div class="viewcode-block" id="UndeclaredGlobalVariableError"><a class="viewcode-back" href="../../rigel.html#rigel.exceptions.UndeclaredGlobalVariableError">[docs]</a><span class="k">class</span> <span class="nc">UndeclaredGlobalVariableError</span><span class="p">(</span><span class="n">RigelError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised whenever an undeclared global variable is referenced.</span>
+
+<span class="sd">    :type field: string</span>
+<span class="sd">    :ivar field: Path for the field referencing the global varialble.</span>
+<span class="sd">    :type var: string</span>
+<span class="sd">    :ivar var: Global variable identifier.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Field &#39;</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">&#39; set to have the value of undeclared global variable &#39;</span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">var</span> <span class="o">=</span> <span class="n">var</span></div>
+
+
+<div class="viewcode-block" id="RigelfileNotFoundError"><a class="viewcode-back" href="../../rigel.html#rigel.exceptions.RigelfileNotFoundError">[docs]</a><span class="k">class</span> <span class="nc">RigelfileNotFoundError</span><span class="p">(</span><span class="n">RigelError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised whenever a Rigelfile is required but is not found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;Rigelfile was not found. Use &#39;rigel init&#39; to create one.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="UnformattedRigelfileError"><a class="viewcode-back" href="../../rigel.html#rigel.exceptions.UnformattedRigelfileError">[docs]</a><span class="k">class</span> <span class="nc">UnformattedRigelfileError</span><span class="p">(</span><span class="n">RigelError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised whenever an attempt is made to use an unformatted Rigelfile.</span>
+
+<span class="sd">    :type trace: string</span>
+<span class="sd">    :ivar trace: A message detailing what format error was found and where.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trace</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rigelfile is not properly formatted: </span><span class="si">{</span><span class="n">trace</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trace</span> <span class="o">=</span> <span class="n">trace</span></div>
+
+
+<div class="viewcode-block" id="EmptyRigelfileError"><a class="viewcode-back" href="../../rigel.html#rigel.exceptions.EmptyRigelfileError">[docs]</a><span class="k">class</span> <span class="nc">EmptyRigelfileError</span><span class="p">(</span><span class="n">RigelError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised whenever an empty Rigelfile is found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;Provided Rigelfile is empty.&quot;</span><span class="p">)</span></div>
+
+
+<span class="c1"># TODO: implemen tests for this class</span>
+<div class="viewcode-block" id="InvalidValueError"><a class="viewcode-back" href="../../rigel.html#rigel.exceptions.InvalidValueError">[docs]</a><span class="k">class</span> <span class="nc">InvalidValueError</span><span class="p">(</span><span class="n">RigelError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised whenever an attempt is made to pass an invalid value to a given field.</span>
+
+<span class="sd">    :type field: string</span>
+<span class="sd">    :ivar field: The name of the unsupported compiler.</span>
+<span class="sd">    :type value: string</span>
+<span class="sd">    :ivar value: The name of the unsupported compiler.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Field &#39;</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">&#39; has passed invalid value &#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span></div>
+
+
+<span class="c1"># TODO: replace by InvalidValueError</span>
+<div class="viewcode-block" id="UnsupportedCompilerError"><a class="viewcode-back" href="../../rigel.html#rigel.exceptions.UnsupportedCompilerError">[docs]</a><span class="k">class</span> <span class="nc">UnsupportedCompilerError</span><span class="p">(</span><span class="n">RigelError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised whenever an attempt is made to use an unsupported compiler.</span>
+
+<span class="sd">    :type compiler: string</span>
+<span class="sd">    :ivar compiler: The name of the unsupported compiler.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compiler</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported compiler &#39;</span><span class="si">{</span><span class="n">compiler</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compiler</span> <span class="o">=</span> <span class="n">compiler</span></div>
+
+
+<span class="c1"># TODO: replace by InvalidValueError</span>
+<div class="viewcode-block" id="UnsupportedPlatformError"><a class="viewcode-back" href="../../rigel.html#rigel.exceptions.UnsupportedPlatformError">[docs]</a><span class="k">class</span> <span class="nc">UnsupportedPlatformError</span><span class="p">(</span><span class="n">RigelError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised whenever an attempt is build an image for an unsupported platform.</span>
+
+<span class="sd">    :type compiler: platform</span>
+<span class="sd">    :ivar compiler: The unsupported platform.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">platform</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported platform &#39;</span><span class="si">{</span><span class="n">platform</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">platform</span> <span class="o">=</span> <span class="n">platform</span></div>
+
+
+<div class="viewcode-block" id="PluginNotFoundError"><a class="viewcode-back" href="../../rigel.html#rigel.exceptions.PluginNotFoundError">[docs]</a><span class="k">class</span> <span class="nc">PluginNotFoundError</span><span class="p">(</span><span class="n">RigelError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised whenever an attempt is made to load a plugin that is not installed.</span>
+
+<span class="sd">    :type plugin: string</span>
+<span class="sd">    :ivar plugin: Name of the plugin.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to load plugin &#39;</span><span class="si">{</span><span class="n">plugin</span><span class="si">}</span><span class="s2">&#39;. Make sure plugin is installed in your system.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;For more information on plugin installation run command &#39;rigel install --help&#39;.&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugin</span> <span class="o">=</span> <span class="n">plugin</span></div>
+
+
+<div class="viewcode-block" id="PluginNotCompliantError"><a class="viewcode-back" href="../../rigel.html#rigel.exceptions.PluginNotCompliantError">[docs]</a><span class="k">class</span> <span class="nc">PluginNotCompliantError</span><span class="p">(</span><span class="n">RigelError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised whenever an plugin is loaded that is not compliant with</span>
+<span class="sd">    the rigel.plugins.Protocol class.</span>
+
+<span class="sd">    :type plugin: string</span>
+<span class="sd">    :ivar plugin: Name of the plugin</span>
+<span class="sd">    :type cause: string</span>
+<span class="sd">    :ivar cause: Reason why plugin is not compliant.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cause</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Plugin &#39;</span><span class="si">{</span><span class="n">plugin</span><span class="si">}</span><span class="s2">&#39; does not comply with Rigel plugin protocol: </span><span class="si">{</span><span class="n">cause</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugin</span> <span class="o">=</span> <span class="n">plugin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cause</span> <span class="o">=</span> <span class="n">cause</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Pedro Pereira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

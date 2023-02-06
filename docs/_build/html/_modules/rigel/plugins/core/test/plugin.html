@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rigel.plugins.core.test.plugin &mdash; Rigel 0.3.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> Rigel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Rigel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">rigel.plugins.core.test.plugin</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for rigel.plugins.core.test.plugin</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">python_on_whales.components.container.cli_wrapper</span> <span class="kn">import</span> <span class="n">Container</span>
+<span class="kn">from</span> <span class="nn">rigel.clients</span> <span class="kn">import</span> <span class="n">DockerClient</span><span class="p">,</span> <span class="n">ROSBridgeClient</span>
+<span class="kn">from</span> <span class="nn">rigel.loggers</span> <span class="kn">import</span> <span class="n">get_logger</span>
+<span class="kn">from</span> <span class="nn">rigel.models.application</span> <span class="kn">import</span> <span class="n">Application</span>
+<span class="kn">from</span> <span class="nn">rigel.models.builder</span> <span class="kn">import</span> <span class="n">ModelBuilder</span>
+<span class="kn">from</span> <span class="nn">rigel.models.plugin</span> <span class="kn">import</span> <span class="n">PluginRawData</span>
+<span class="kn">from</span> <span class="nn">rigel.models.rigelfile</span> <span class="kn">import</span> <span class="n">RigelfileGlobalData</span>
+<span class="kn">from</span> <span class="nn">rigel.plugins</span> <span class="kn">import</span> <span class="n">Plugin</span> <span class="k">as</span> <span class="n">PluginBase</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">PluginModel</span><span class="p">,</span> <span class="n">TestComponent</span>
+<span class="kn">from</span> <span class="nn">.introspection.command</span> <span class="kn">import</span> <span class="n">CommandHandler</span>
+<span class="kn">from</span> <span class="nn">.introspection.requirements.manager</span> <span class="kn">import</span> <span class="n">SimulationRequirementsManager</span>
+<span class="kn">from</span> <span class="nn">.introspection.parser</span> <span class="kn">import</span> <span class="n">SimulationRequirementsParser</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="Plugin"><a class="viewcode-back" href="../../../../../rigel.plugins.core.test.html#rigel.plugins.core.test.plugin.Plugin">[docs]</a><span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="n">PluginBase</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">raw_data</span><span class="p">:</span> <span class="n">PluginRawData</span><span class="p">,</span>
+        <span class="n">global_data</span><span class="p">:</span> <span class="n">RigelfileGlobalData</span><span class="p">,</span>
+        <span class="n">application</span><span class="p">:</span> <span class="n">Application</span><span class="p">,</span>
+        <span class="n">providers_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">raw_data</span><span class="p">,</span>
+            <span class="n">global_data</span><span class="p">,</span>
+            <span class="n">application</span><span class="p">,</span>
+            <span class="n">providers_data</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Ensure model instance was properly initialized</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">ModelBuilder</span><span class="p">(</span><span class="n">PluginModel</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">([],</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_data</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">PluginModel</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__simulation_uuid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__network_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;rigel-simulation-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__simulation_uuid</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__docker_client</span> <span class="o">=</span> <span class="n">DockerClient</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__requirements_manager</span> <span class="o">=</span> <span class="n">SimulationRequirementsManager</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="mf">60.0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__requirements_parser</span> <span class="o">=</span> <span class="n">SimulationRequirementsParser</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Plugin.create_simulation_network"><a class="viewcode-back" href="../../../../../rigel.plugins.core.test.html#rigel.plugins.core.test.plugin.Plugin.create_simulation_network">[docs]</a>    <span class="k">def</span> <span class="nf">create_simulation_network</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create dedicated Docker network created for a simulation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__docker_client</span><span class="o">.</span><span class="n">create_network</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__network_name</span><span class="p">,</span> <span class="s1">&#39;bridge&#39;</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created Docker network &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__network_name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Plugin.start_dns_server"><a class="viewcode-back" href="../../../../../rigel.plugins.core.test.html#rigel.plugins.core.test.plugin.Plugin.start_dns_server">[docs]</a>    <span class="k">def</span> <span class="nf">start_dns_server</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__docker_client</span><span class="o">.</span><span class="n">run_container</span><span class="p">(</span>
+            <span class="s1">&#39;rigel-dns&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;dvdarias/docker-hoster&#39;</span><span class="p">,</span>
+            <span class="n">detach</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">networks</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__network_name</span><span class="p">],</span>
+            <span class="n">privileged</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">volumes</span><span class="o">=</span><span class="p">[</span>
+                <span class="p">(</span><span class="s1">&#39;/var/run/docker.sock&#39;</span><span class="p">,</span> <span class="s1">&#39;/tmp/docker.sock&#39;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;/etc/hosts&#39;</span><span class="p">,</span> <span class="s1">&#39;/tmp/hosts&#39;</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Created DNS server&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Plugin.stop_dns_server"><a class="viewcode-back" href="../../../../../rigel.plugins.core.test.html#rigel.plugins.core.test.plugin.Plugin.stop_dns_server">[docs]</a>    <span class="k">def</span> <span class="nf">stop_dns_server</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__docker_client</span><span class="o">.</span><span class="n">remove_container</span><span class="p">(</span><span class="s1">&#39;rigel-dns&#39;</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopped DNS server&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Plugin.start_ros_master"><a class="viewcode-back" href="../../../../../rigel.plugins.core.test.html#rigel.plugins.core.test.plugin.Plugin.start_ros_master">[docs]</a>    <span class="k">def</span> <span class="nf">start_ros_master</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__docker_client</span><span class="o">.</span><span class="n">run_container</span><span class="p">(</span>
+            <span class="s1">&#39;master&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;ros:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">distro</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">hostname</span><span class="o">=</span><span class="s1">&#39;master&#39;</span><span class="p">,</span>
+            <span class="n">command</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;roscore&#39;</span><span class="p">],</span>
+            <span class="n">envs</span><span class="o">=</span><span class="p">{</span>
+                <span class="s1">&#39;ROS_HOSTNAME&#39;</span><span class="p">:</span> <span class="s1">&#39;master&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;ROS_MASTER_URI&#39;</span><span class="p">:</span> <span class="s1">&#39;http://master:11311&#39;</span>
+            <span class="p">},</span>
+            <span class="n">networks</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__network_name</span><span class="p">],</span>
+            <span class="n">detach</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Created ROS master&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Plugin.stop_ros_master"><a class="viewcode-back" href="../../../../../rigel.plugins.core.test.html#rigel.plugins.core.test.plugin.Plugin.stop_ros_master">[docs]</a>    <span class="k">def</span> <span class="nf">stop_ros_master</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__docker_client</span><span class="o">.</span><span class="n">remove_container</span><span class="p">(</span><span class="s1">&#39;master&#39;</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopped ROS master&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Plugin.remove_simulation_network"><a class="viewcode-back" href="../../../../../rigel.plugins.core.test.html#rigel.plugins.core.test.plugin.Plugin.remove_simulation_network">[docs]</a>    <span class="k">def</span> <span class="nf">remove_simulation_network</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove dedicated Docker network created for a simulation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__docker_client</span><span class="o">.</span><span class="n">remove_network</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__network_name</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removed Docker network &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__network_name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Plugin.convert_envs"><a class="viewcode-back" href="../../../../../rigel.plugins.core.test.html#rigel.plugins.core.test.plugin.Plugin.convert_envs">[docs]</a>    <span class="k">def</span> <span class="nf">convert_envs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">envs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">env</span> <span class="ow">in</span> <span class="n">envs</span><span class="p">:</span>
+            <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="Plugin.convert_volumes"><a class="viewcode-back" href="../../../../../rigel.plugins.core.test.html#rigel.plugins.core.test.plugin.Plugin.convert_volumes">[docs]</a>    <span class="k">def</span> <span class="nf">convert_volumes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">volumes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">volume</span> <span class="ow">in</span> <span class="n">volumes</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">volume</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="Plugin.bringup_ros_nodes"><a class="viewcode-back" href="../../../../../rigel.plugins.core.test.html#rigel.plugins.core.test.plugin.Plugin.bringup_ros_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">bringup_ros_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Launch all containerized ROS nodes required for a given simulation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__docker_client</span><span class="o">.</span><span class="n">wait_for_container_status</span><span class="p">(</span><span class="s1">&#39;master&#39;</span><span class="p">,</span> <span class="s1">&#39;running&#39;</span><span class="p">)</span>
+        <span class="n">master_container</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__docker_client</span><span class="o">.</span><span class="n">get_container</span><span class="p">(</span><span class="s1">&#39;master&#39;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">master_container</span>
+        <span class="n">master_ip</span> <span class="o">=</span> <span class="n">master_container</span><span class="o">.</span><span class="n">network_settings</span><span class="o">.</span><span class="n">networks</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__network_name</span><span class="p">]</span><span class="o">.</span><span class="n">ip_address</span>
+
+        <span class="c1"># Start containerize ROS application</span>
+        <span class="k">for</span> <span class="n">test_component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+
+            <span class="n">container</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_package_container</span><span class="p">(</span><span class="n">test_component</span><span class="p">,</span> <span class="n">master_ip</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">container</span><span class="p">:</span>
+
+                <span class="n">container_ip</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">network_settings</span><span class="o">.</span><span class="n">networks</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__network_name</span><span class="p">]</span><span class="o">.</span><span class="n">ip_address</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created container &#39;</span><span class="si">{</span><span class="n">test_component</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; (</span><span class="si">{</span><span class="n">container_ip</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">test_component</span><span class="o">.</span><span class="n">introspection</span><span class="p">:</span>
+
+                    <span class="n">requirements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CommandHandler</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">__requirements_parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">req</span><span class="p">)</span> <span class="k">for</span> <span class="n">req</span> <span class="ow">in</span> <span class="n">test_component</span><span class="o">.</span><span class="n">introspection</span><span class="o">.</span><span class="n">requirements</span>
+                    <span class="p">]</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__requirements_manager</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">requirements</span>
+
+                    <span class="c1"># Connect to ROS bridge inside container</span>
+                    <span class="n">hostname</span> <span class="o">=</span> <span class="n">test_component</span><span class="o">.</span><span class="n">introspection</span><span class="o">.</span><span class="n">hostname</span> <span class="ow">or</span> <span class="n">container_ip</span>
+                    <span class="n">port</span> <span class="o">=</span> <span class="n">test_component</span><span class="o">.</span><span class="n">introspection</span><span class="o">.</span><span class="n">publish</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">rosbridge_client</span> <span class="o">=</span> <span class="n">ROSBridgeClient</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+                    <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connected to ROS bridge server at &#39;</span><span class="si">{</span><span class="n">hostname</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__requirements_manager</span><span class="o">.</span><span class="n">connect_to_rosbridge</span><span class="p">(</span><span class="n">rosbridge_client</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Plugin.run_package_container"><a class="viewcode-back" href="../../../../../rigel.plugins.core.test.html#rigel.plugins.core.test.plugin.Plugin.run_package_container">[docs]</a>    <span class="k">def</span> <span class="nf">run_package_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component</span><span class="p">:</span> <span class="n">TestComponent</span><span class="p">,</span> <span class="n">master</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Container</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Launch a single containerized ROS node.</span>
+
+<span class="sd">        :type component: TestComponent</span>
+<span class="sd">        :param component: Information about the test component.</span>
+<span class="sd">        :type master: str</span>
+<span class="sd">        :param master: The IP address of the ROS MASTER.</span>
+
+<span class="sd">        :rtype: docker.models.containers.Container</span>
+<span class="sd">        :return: The Docker container serving as ROS master.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">_kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;detach&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;hostname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="k">if</span> <span class="s1">&#39;envs&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;envs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;envs&#39;</span><span class="p">][</span><span class="s1">&#39;ROS_MASTER_URI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;http://</span><span class="si">{</span><span class="n">master</span><span class="si">}</span><span class="s1">:11311&#39;</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;envs&#39;</span><span class="p">][</span><span class="s1">&#39;ROS_HOSTNAME&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;hostname&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="c1"># TODO: ensure that networks can be costumized.</span>
+        <span class="c1"># Probably not required.</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;networks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__network_name</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;restart&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;restart&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;on-failure&#39;</span>
+
+        <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">introspection</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;publish&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;publish&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">component</span><span class="o">.</span><span class="n">introspection</span><span class="o">.</span><span class="n">publish</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;publish&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;publish&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">component</span><span class="o">.</span><span class="n">introspection</span><span class="o">.</span><span class="n">publish</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__docker_client</span><span class="o">.</span><span class="n">run_container</span><span class="p">(</span>
+            <span class="n">component</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">component</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__docker_client</span><span class="o">.</span><span class="n">wait_for_container_status</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;running&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__docker_client</span><span class="o">.</span><span class="n">get_container</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># this call to &#39;get_container&#39; ensures updated container data</span></div>
+
+<div class="viewcode-block" id="Plugin.remove_package_containers"><a class="viewcode-back" href="../../../../../rigel.plugins.core.test.html#rigel.plugins.core.test.plugin.Plugin.remove_package_containers">[docs]</a>    <span class="k">def</span> <span class="nf">remove_package_containers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Remove a single containerized ROS node.</span>
+
+<span class="sd">        :type plugin: PluginModel</span>
+<span class="sd">        :param plugin: Test components for this package.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">test_component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__docker_client</span><span class="o">.</span><span class="n">remove_container</span><span class="p">(</span><span class="n">test_component</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removed Docker container &#39;</span><span class="si">{</span><span class="n">test_component</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Plugin.setup"><a class="viewcode-back" href="../../../../../rigel.plugins.core.test.html#rigel.plugins.core.test.plugin.Plugin.setup">[docs]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_simulation_network</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_dns_server</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_ros_master</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Plugin.run"><a class="viewcode-back" href="../../../../../rigel.plugins.core.test.html#rigel.plugins.core.test.plugin.Plugin.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plugin entrypoint.</span>
+<span class="sd">        Create simulation network and all containers required for a given simulation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bringup_ros_nodes</span><span class="p">()</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Testing the application!&quot;</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__requirements_manager</span><span class="o">.</span><span class="n">children</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__requirements_manager</span><span class="o">.</span><span class="n">assess_children_nodes</span><span class="p">()):</span>
+            <span class="k">pass</span>  <span class="c1"># TODO: separate this into a thread for efficiency</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__requirements_manager</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Plugin.stop"><a class="viewcode-back" href="../../../../../rigel.plugins.core.test.html#rigel.plugins.core.test.plugin.Plugin.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plugin graceful closing mechanism.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_ros_master</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_dns_server</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_package_containers</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_simulation_network</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Pedro Pereira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

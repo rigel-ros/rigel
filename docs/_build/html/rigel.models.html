@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rigel.models package &mdash; Rigel 0.3.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Rigel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">rigel.models package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-rigel.models.application">rigel.models.application module</a><ul>
+<li><a class="reference internal" href="#rigel.models.application.Application"><code class="docutils literal notranslate"><span class="pre">Application</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.models.application.Application.dir"><code class="docutils literal notranslate"><span class="pre">Application.dir</span></code></a></li>
+<li><a class="reference internal" href="#rigel.models.application.Application.distro"><code class="docutils literal notranslate"><span class="pre">Application.distro</span></code></a></li>
+<li><a class="reference internal" href="#rigel.models.application.Application.jobs"><code class="docutils literal notranslate"><span class="pre">Application.jobs</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.models.builder">rigel.models.builder module</a><ul>
+<li><a class="reference internal" href="#rigel.models.builder.ModelBuilder"><code class="docutils literal notranslate"><span class="pre">ModelBuilder</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.models.builder.ModelBuilder.build"><code class="docutils literal notranslate"><span class="pre">ModelBuilder.build()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.models.data">rigel.models.data module</a><ul>
+<li><a class="reference internal" href="#rigel.models.data.ComplexDataModel"><code class="docutils literal notranslate"><span class="pre">ComplexDataModel</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.models.data.ComplexDataModel.type"><code class="docutils literal notranslate"><span class="pre">ComplexDataModel.type</span></code></a></li>
+<li><a class="reference internal" href="#rigel.models.data.ComplexDataModel.with_"><code class="docutils literal notranslate"><span class="pre">ComplexDataModel.with_</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.models.plugin">rigel.models.plugin module</a><ul>
+<li><a class="reference internal" href="#rigel.models.plugin.PluginDataModel"><code class="docutils literal notranslate"><span class="pre">PluginDataModel</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.models.plugin.PluginDataModel.plugin"><code class="docutils literal notranslate"><span class="pre">PluginDataModel.plugin</span></code></a></li>
+<li><a class="reference internal" href="#rigel.models.plugin.PluginDataModel.with_"><code class="docutils literal notranslate"><span class="pre">PluginDataModel.with_</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.models.provider">rigel.models.provider module</a><ul>
+<li><a class="reference internal" href="#rigel.models.provider.ProviderDataModel"><code class="docutils literal notranslate"><span class="pre">ProviderDataModel</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.models.provider.ProviderDataModel.provider"><code class="docutils literal notranslate"><span class="pre">ProviderDataModel.provider</span></code></a></li>
+<li><a class="reference internal" href="#rigel.models.provider.ProviderDataModel.with_"><code class="docutils literal notranslate"><span class="pre">ProviderDataModel.with_</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.models.rigelfile">rigel.models.rigelfile module</a><ul>
+<li><a class="reference internal" href="#rigel.models.rigelfile.Rigelfile"><code class="docutils literal notranslate"><span class="pre">Rigelfile</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.models.rigelfile.Rigelfile.applications"><code class="docutils literal notranslate"><span class="pre">Rigelfile.applications</span></code></a></li>
+<li><a class="reference internal" href="#rigel.models.rigelfile.Rigelfile.providers"><code class="docutils literal notranslate"><span class="pre">Rigelfile.providers</span></code></a></li>
+<li><a class="reference internal" href="#rigel.models.rigelfile.Rigelfile.sequences"><code class="docutils literal notranslate"><span class="pre">Rigelfile.sequences</span></code></a></li>
+<li><a class="reference internal" href="#rigel.models.rigelfile.Rigelfile.vars"><code class="docutils literal notranslate"><span class="pre">Rigelfile.vars</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.models">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Rigel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">rigel.models package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/rigel.models.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rigel-models-package">
+<h1>rigel.models package<a class="headerlink" href="#rigel-models-package" title="Permalink to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="rigel.models.core.html">rigel.models.core package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rigel.models.core.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.models.core.html#module-rigel.models.core.registry">rigel.models.core.registry module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.models.core.html#rigel.models.core.registry.ContainerRegistry"><code class="docutils literal notranslate"><span class="pre">ContainerRegistry</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.core.html#rigel.models.core.registry.ContainerRegistry.password"><code class="docutils literal notranslate"><span class="pre">ContainerRegistry.password</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.core.html#rigel.models.core.registry.ContainerRegistry.server"><code class="docutils literal notranslate"><span class="pre">ContainerRegistry.server</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.core.html#rigel.models.core.registry.ContainerRegistry.username"><code class="docutils literal notranslate"><span class="pre">ContainerRegistry.username</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.models.core.html#module-rigel.models.core.ssh">rigel.models.core.ssh module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.models.core.html#rigel.models.core.ssh.SSHPrivateKey"><code class="docutils literal notranslate"><span class="pre">SSHPrivateKey</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.core.html#rigel.models.core.ssh.SSHPrivateKey.hostname"><code class="docutils literal notranslate"><span class="pre">SSHPrivateKey.hostname</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.core.html#rigel.models.core.ssh.SSHPrivateKey.value"><code class="docutils literal notranslate"><span class="pre">SSHPrivateKey.value</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="rigel.models.core.html#rigel.models.core.ssh.SSHPrivateKeyFile"><code class="docutils literal notranslate"><span class="pre">SSHPrivateKeyFile</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.core.html#rigel.models.core.ssh.SSHPrivateKeyFile.hostname"><code class="docutils literal notranslate"><span class="pre">SSHPrivateKeyFile.hostname</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.models.core.html#rigel.models.core.ssh.SSHPrivateKeyFile.path"><code class="docutils literal notranslate"><span class="pre">SSHPrivateKeyFile.path</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.models.core.html#module-rigel.models.core">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-rigel.models.application">
+<span id="rigel-models-application-module"></span><h2>rigel.models.application module<a class="headerlink" href="#module-rigel.models.application" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.models.application.Application">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.models.application.</span></span><span class="sig-name descname"><span class="pre">Application</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distro</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jobs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#rigel.models.plugin.PluginDataModel" title="rigel.models.plugin.PluginDataModel"><span class="pre">PluginDataModel</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'.'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/models/application.html#Application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.models.application.Application" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>A placeholder for information regarding a single ROS application.
+Each ROS application contains at least one ROS package.</p>
+<p>Each ROS application may support the execution of individual jobs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>distro</strong> – Target ROS distro.</p></li>
+<li><p><strong>dir</strong> – The folder containing the ROS package source code, if any.
+Defaults to ‘.’.</p></li>
+<li><p><strong>jobs</strong> – The jobs supported by the package.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.models.application.Application.dir">
+<span class="sig-name descname"><span class="pre">dir</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.models.application.Application.dir" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.models.application.Application.distro">
+<span class="sig-name descname"><span class="pre">distro</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.models.application.Application.distro" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.models.application.Application.jobs">
+<span class="sig-name descname"><span class="pre">jobs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#rigel.models.plugin.PluginDataModel" title="rigel.models.plugin.PluginDataModel"><span class="pre">PluginDataModel</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.models.application.Application.jobs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.models.builder">
+<span id="rigel-models-builder-module"></span><h2>rigel.models.builder module<a class="headerlink" href="#module-rigel.models.builder" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.models.builder.ModelBuilder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.models.builder.</span></span><span class="sig-name descname"><span class="pre">ModelBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/models/builder.html#ModelBuilder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.models.builder.ModelBuilder" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class to help instantiate model classes.
+This class handles all the exceptions that may occur
+while creating instances of a given class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.models.builder.ModelBuilder.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="_modules/rigel/models/builder.html#ModelBuilder.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.models.builder.ModelBuilder.build" title="Permalink to this definition"></a></dt>
+<dd><p>Create an instance of the specified class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of required class arguments.</p></li>
+<li><p><strong>kwargs</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – Positional class arguments.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Type</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An instance of the specified class.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.models.data">
+<span id="rigel-models-data-module"></span><h2>rigel.models.data module<a class="headerlink" href="#module-rigel.models.data" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.models.data.ComplexDataModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.models.data.</span></span><span class="sig-name descname"><span class="pre">ComplexDataModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">extra_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/models/data.html#ComplexDataModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.models.data.ComplexDataModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.models.data.ComplexDataModel.type">
+<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.models.data.ComplexDataModel.type" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.models.data.ComplexDataModel.with_">
+<span class="sig-name descname"><span class="pre">with_</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.models.data.ComplexDataModel.with_" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.models.plugin">
+<span id="rigel-models-plugin-module"></span><h2>rigel.models.plugin module<a class="headerlink" href="#module-rigel.models.plugin" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.models.plugin.PluginDataModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.models.plugin.</span></span><span class="sig-name descname"><span class="pre">PluginDataModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plugin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">extra_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/models/plugin.html#PluginDataModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.models.plugin.PluginDataModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.models.plugin.PluginDataModel.plugin">
+<span class="sig-name descname"><span class="pre">plugin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.models.plugin.PluginDataModel.plugin" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.models.plugin.PluginDataModel.with_">
+<span class="sig-name descname"><span class="pre">with_</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.models.plugin.PluginDataModel.with_" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.models.provider">
+<span id="rigel-models-provider-module"></span><h2>rigel.models.provider module<a class="headerlink" href="#module-rigel.models.provider" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.models.provider.ProviderDataModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.models.provider.</span></span><span class="sig-name descname"><span class="pre">ProviderDataModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">provider</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">extra_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/models/provider.html#ProviderDataModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.models.provider.ProviderDataModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.models.provider.ProviderDataModel.provider">
+<span class="sig-name descname"><span class="pre">provider</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#rigel.models.provider.ProviderDataModel.provider" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.models.provider.ProviderDataModel.with_">
+<span class="sig-name descname"><span class="pre">with_</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.models.provider.ProviderDataModel.with_" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.models.rigelfile">
+<span id="rigel-models-rigelfile-module"></span><h2>rigel.models.rigelfile module<a class="headerlink" href="#module-rigel.models.rigelfile" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.models.rigelfile.Rigelfile">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.models.rigelfile.</span></span><span class="sig-name descname"><span class="pre">Rigelfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">applications</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#rigel.models.application.Application" title="rigel.models.application.Application"><span class="pre">Application</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">providers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#rigel.models.provider.ProviderDataModel" title="rigel.models.provider.ProviderDataModel"><span class="pre">ProviderDataModel</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequences</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#rigel.models.data.ComplexDataModel" title="rigel.models.data.ComplexDataModel"><span class="pre">ComplexDataModel</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/models/rigelfile.html#Rigelfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.models.rigelfile.Rigelfile" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>A placeholder for information regarding a set of ROS packages.</p>
+<p>Each set may contain multiple ROS packages
+supporting the execution of individual jobs and job sequences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>applications</strong> – The set of relevant ROS applications.</p></li>
+<li><p><strong>sequences</strong> – The supported sequence of jobs.</p></li>
+<li><p><strong>providers</strong> – A list of required providers.</p></li>
+<li><p><strong>vars</strong> – Section containing the values of global variables.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.models.rigelfile.Rigelfile.applications">
+<span class="sig-name descname"><span class="pre">applications</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#rigel.models.application.Application" title="rigel.models.application.Application"><span class="pre">Application</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.models.rigelfile.Rigelfile.applications" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.models.rigelfile.Rigelfile.providers">
+<span class="sig-name descname"><span class="pre">providers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#rigel.models.provider.ProviderDataModel" title="rigel.models.provider.ProviderDataModel"><span class="pre">ProviderDataModel</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.models.rigelfile.Rigelfile.providers" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.models.rigelfile.Rigelfile.sequences">
+<span class="sig-name descname"><span class="pre">sequences</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.models.rigelfile.Rigelfile.sequences" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.models.rigelfile.Rigelfile.vars">
+<span class="sig-name descname"><span class="pre">vars</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#rigel.models.data.ComplexDataModel" title="rigel.models.data.ComplexDataModel"><span class="pre">ComplexDataModel</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.models.rigelfile.Rigelfile.vars" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.models">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-rigel.models" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Pedro Pereira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rigel.plugins.core.test.introspection package &mdash; Rigel 0.3.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Rigel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">rigel.plugins.core.test.introspection package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.test.introspection.callback">rigel.plugins.core.test.introspection.callback module</a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_and"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.generate_callback_and()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_different"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.generate_callback_different()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_equal"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.generate_callback_equal()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_greater"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.generate_callback_greater()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_greater_than"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.generate_callback_greater_than()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_iff"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.generate_callback_iff()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_lesser"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.generate_callback_lesser()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_lesser_than"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.generate_callback_lesser_than()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_vacuous"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.generate_callback_vacuous()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.process_binary_operator"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.process_binary_operator()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.process_vacuous_truth"><code class="docutils literal notranslate"><span class="pre">CallbackGenerator.process_vacuous_truth()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.test.introspection.command">rigel.plugins.core.test.introspection.command module</a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.Command"><code class="docutils literal notranslate"><span class="pre">Command</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandBuilder"><code class="docutils literal notranslate"><span class="pre">CommandBuilder</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandBuilder.build_rosbridge_connect_cmd"><code class="docutils literal notranslate"><span class="pre">CommandBuilder.build_rosbridge_connect_cmd()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandBuilder.build_rosbridge_disconnect_cmd"><code class="docutils literal notranslate"><span class="pre">CommandBuilder.build_rosbridge_disconnect_cmd()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandBuilder.build_status_change_cmd"><code class="docutils literal notranslate"><span class="pre">CommandBuilder.build_status_change_cmd()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandBuilder.build_stop_simulation_cmd"><code class="docutils literal notranslate"><span class="pre">CommandBuilder.build_stop_simulation_cmd()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandBuilder.build_trigger_cmd"><code class="docutils literal notranslate"><span class="pre">CommandBuilder.build_trigger_cmd()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandHandler"><code class="docutils literal notranslate"><span class="pre">CommandHandler</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandHandler.children"><code class="docutils literal notranslate"><span class="pre">CommandHandler.children</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandHandler.father"><code class="docutils literal notranslate"><span class="pre">CommandHandler.father</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandHandler.handle_downstream_command"><code class="docutils literal notranslate"><span class="pre">CommandHandler.handle_downstream_command()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandHandler.handle_upstream_command"><code class="docutils literal notranslate"><span class="pre">CommandHandler.handle_upstream_command()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandHandler.send_child_downstream_cmd"><code class="docutils literal notranslate"><span class="pre">CommandHandler.send_child_downstream_cmd()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandHandler.send_downstream_cmd"><code class="docutils literal notranslate"><span class="pre">CommandHandler.send_downstream_cmd()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandHandler.send_upstream_cmd"><code class="docutils literal notranslate"><span class="pre">CommandHandler.send_upstream_cmd()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandType"><code class="docutils literal notranslate"><span class="pre">CommandType</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandType.ROSBRIDGE_CONNECT"><code class="docutils literal notranslate"><span class="pre">CommandType.ROSBRIDGE_CONNECT</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandType.ROSBRIDGE_DISCONNECT"><code class="docutils literal notranslate"><span class="pre">CommandType.ROSBRIDGE_DISCONNECT</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandType.STATUS_CHANGE"><code class="docutils literal notranslate"><span class="pre">CommandType.STATUS_CHANGE</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandType.STOP_SIMULATON"><code class="docutils literal notranslate"><span class="pre">CommandType.STOP_SIMULATON</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandType.TRIGGER"><code class="docutils literal notranslate"><span class="pre">CommandType.TRIGGER</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.test.introspection.parser">rigel.plugins.core.test.introspection.parser module</a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.parser.SimulationRequirementsParser"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsParser</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.parser.SimulationRequirementsParser.parse"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsParser.parse()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.parser.SimulationRequirementsVisitor"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsVisitor</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.parser.SimulationRequirementsVisitor.requirement"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsVisitor.requirement</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.parser.SimulationRequirementsVisitor.visit_hpl_pattern"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsVisitor.visit_hpl_pattern()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.test.introspection.strategy">rigel.plugins.core.test.introspection.strategy module</a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.strategy.AssessmentStrategy"><code class="docutils literal notranslate"><span class="pre">AssessmentStrategy</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.strategy.AssessmentStrategy.assess"><code class="docutils literal notranslate"><span class="pre">AssessmentStrategy.assess()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.strategy.AssessmentStrategy.finished"><code class="docutils literal notranslate"><span class="pre">AssessmentStrategy.finished</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.strategy.SingleMatchAssessmentStrategy"><code class="docutils literal notranslate"><span class="pre">SingleMatchAssessmentStrategy</span></code></a><ul>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.strategy.SingleMatchAssessmentStrategy.assess"><code class="docutils literal notranslate"><span class="pre">SingleMatchAssessmentStrategy.assess()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.strategy.assess_condition"><code class="docutils literal notranslate"><span class="pre">assess_condition()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.strategy.assess_different"><code class="docutils literal notranslate"><span class="pre">assess_different()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.strategy.assess_equal"><code class="docutils literal notranslate"><span class="pre">assess_equal()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.strategy.assess_greater"><code class="docutils literal notranslate"><span class="pre">assess_greater()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.strategy.assess_greater_than"><code class="docutils literal notranslate"><span class="pre">assess_greater_than()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.strategy.assess_lesser"><code class="docutils literal notranslate"><span class="pre">assess_lesser()</span></code></a></li>
+<li><a class="reference internal" href="#rigel.plugins.core.test.introspection.strategy.assess_lesser_than"><code class="docutils literal notranslate"><span class="pre">assess_lesser_than()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rigel.plugins.core.test.introspection">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Rigel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">rigel.plugins.core.test.introspection package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/rigel.plugins.core.test.introspection.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rigel-plugins-core-test-introspection-package">
+<h1>rigel.plugins.core.test.introspection package<a class="headerlink" href="#rigel-plugins-core-test-introspection-package" title="Permalink to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html">rigel.plugins.core.test.introspection.requirements package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#module-rigel.plugins.core.test.introspection.requirements.absence">rigel.plugins.core.test.introspection.requirements.absence module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode"><code class="docutils literal notranslate"><span class="pre">AbsenceSimulationRequirementNode</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.assess_children_nodes"><code class="docutils literal notranslate"><span class="pre">AbsenceSimulationRequirementNode.assess_children_nodes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_children_status_change"><code class="docutils literal notranslate"><span class="pre">AbsenceSimulationRequirementNode.handle_children_status_change()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_downstream_command"><code class="docutils literal notranslate"><span class="pre">AbsenceSimulationRequirementNode.handle_downstream_command()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_rosbridge_connection_commands"><code class="docutils literal notranslate"><span class="pre">AbsenceSimulationRequirementNode.handle_rosbridge_connection_commands()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_rosbridge_disconnection_commands"><code class="docutils literal notranslate"><span class="pre">AbsenceSimulationRequirementNode.handle_rosbridge_disconnection_commands()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_timeout"><code class="docutils literal notranslate"><span class="pre">AbsenceSimulationRequirementNode.handle_timeout()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.absence.AbsenceSimulationRequirementNode.handle_upstream_command"><code class="docutils literal notranslate"><span class="pre">AbsenceSimulationRequirementNode.handle_upstream_command()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#module-rigel.plugins.core.test.introspection.requirements.disjoint">rigel.plugins.core.test.introspection.requirements.disjoint module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode"><code class="docutils literal notranslate"><span class="pre">DisjointSimulationRequirementNode</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode.assess_children_nodes"><code class="docutils literal notranslate"><span class="pre">DisjointSimulationRequirementNode.assess_children_nodes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode.handle_children_status_change"><code class="docutils literal notranslate"><span class="pre">DisjointSimulationRequirementNode.handle_children_status_change()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode.handle_downstream_command"><code class="docutils literal notranslate"><span class="pre">DisjointSimulationRequirementNode.handle_downstream_command()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode.handle_trigger"><code class="docutils literal notranslate"><span class="pre">DisjointSimulationRequirementNode.handle_trigger()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.disjoint.DisjointSimulationRequirementNode.handle_upstream_command"><code class="docutils literal notranslate"><span class="pre">DisjointSimulationRequirementNode.handle_upstream_command()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#module-rigel.plugins.core.test.introspection.requirements.existence">rigel.plugins.core.test.introspection.requirements.existence module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode"><code class="docutils literal notranslate"><span class="pre">ExistenceSimulationRequirementNode</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.assess_children_nodes"><code class="docutils literal notranslate"><span class="pre">ExistenceSimulationRequirementNode.assess_children_nodes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_children_status_change"><code class="docutils literal notranslate"><span class="pre">ExistenceSimulationRequirementNode.handle_children_status_change()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_downstream_command"><code class="docutils literal notranslate"><span class="pre">ExistenceSimulationRequirementNode.handle_downstream_command()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_rosbridge_connection_commands"><code class="docutils literal notranslate"><span class="pre">ExistenceSimulationRequirementNode.handle_rosbridge_connection_commands()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_rosbridge_disconnection_commands"><code class="docutils literal notranslate"><span class="pre">ExistenceSimulationRequirementNode.handle_rosbridge_disconnection_commands()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_timeout"><code class="docutils literal notranslate"><span class="pre">ExistenceSimulationRequirementNode.handle_timeout()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_upstream_command"><code class="docutils literal notranslate"><span class="pre">ExistenceSimulationRequirementNode.handle_upstream_command()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#module-rigel.plugins.core.test.introspection.requirements.manager">rigel.plugins.core.test.introspection.requirements.manager module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.assess_children_nodes"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager.assess_children_nodes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.connect_to_rosbridge"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager.connect_to_rosbridge()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.disconnect_from_rosbridge"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager.disconnect_from_rosbridge()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.handle_children_status_change"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager.handle_children_status_change()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.handle_start_timeout"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager.handle_start_timeout()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.handle_stop_simulation"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager.handle_stop_simulation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.handle_stop_timeout"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager.handle_stop_timeout()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.handle_upstream_command"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager.handle_upstream_command()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.stop_simulation"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager.stop_simulation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager.stop_timers"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementsManager.stop_timers()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#module-rigel.plugins.core.test.introspection.requirements.node">rigel.plugins.core.test.introspection.requirements.node module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementNode</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode.satisfied"><code class="docutils literal notranslate"><span class="pre">SimulationRequirementNode.satisfied</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#module-rigel.plugins.core.test.introspection.requirements.prevention">rigel.plugins.core.test.introspection.requirements.prevention module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.assess_children_nodes"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode.assess_children_nodes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.children"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode.children</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.father"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode.father</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_children_status_change"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode.handle_children_status_change()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_downstream_command"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode.handle_downstream_command()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_rosbridge_connection_commands"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode.handle_rosbridge_connection_commands()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_rosbridge_disconnection_commands"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode.handle_rosbridge_disconnection_commands()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_timeout"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode.handle_timeout()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_trigger"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode.handle_trigger()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.prevention.PreventionSimulationRequirementNode.handle_upstream_command"><code class="docutils literal notranslate"><span class="pre">PreventionSimulationRequirementNode.handle_upstream_command()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#module-rigel.plugins.core.test.introspection.requirements.requirement">rigel.plugins.core.test.introspection.requirements.requirement module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode"><code class="docutils literal notranslate"><span class="pre">RequirementSimulationRequirementNode</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.assess_children_nodes"><code class="docutils literal notranslate"><span class="pre">RequirementSimulationRequirementNode.assess_children_nodes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.children"><code class="docutils literal notranslate"><span class="pre">RequirementSimulationRequirementNode.children</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.father"><code class="docutils literal notranslate"><span class="pre">RequirementSimulationRequirementNode.father</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_children_status_change"><code class="docutils literal notranslate"><span class="pre">RequirementSimulationRequirementNode.handle_children_status_change()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_downstream_command"><code class="docutils literal notranslate"><span class="pre">RequirementSimulationRequirementNode.handle_downstream_command()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_rosbridge_connection_commands"><code class="docutils literal notranslate"><span class="pre">RequirementSimulationRequirementNode.handle_rosbridge_connection_commands()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_rosbridge_disconnection_commands"><code class="docutils literal notranslate"><span class="pre">RequirementSimulationRequirementNode.handle_rosbridge_disconnection_commands()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_timeout"><code class="docutils literal notranslate"><span class="pre">RequirementSimulationRequirementNode.handle_timeout()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.requirement.RequirementSimulationRequirementNode.handle_upstream_command"><code class="docutils literal notranslate"><span class="pre">RequirementSimulationRequirementNode.handle_upstream_command()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#module-rigel.plugins.core.test.introspection.requirements.response">rigel.plugins.core.test.introspection.requirements.response module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.assess_children_nodes"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode.assess_children_nodes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.children"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode.children</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.father"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode.father</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_children_status_change"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode.handle_children_status_change()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_downstream_command"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode.handle_downstream_command()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_rosbridge_connection_commands"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode.handle_rosbridge_connection_commands()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_rosbridge_disconnection_commands"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode.handle_rosbridge_disconnection_commands()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_timeout"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode.handle_timeout()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_trigger"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode.handle_trigger()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.response.ResponseSimulationRequirementNode.handle_upstream_command"><code class="docutils literal notranslate"><span class="pre">ResponseSimulationRequirementNode.handle_upstream_command()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#module-rigel.plugins.core.test.introspection.requirements.simple">rigel.plugins.core.test.introspection.requirements.simple module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode"><code class="docutils literal notranslate"><span class="pre">SimpleSimulationRequirementNode</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.children"><code class="docutils literal notranslate"><span class="pre">SimpleSimulationRequirementNode.children</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.connect_to_rosbridge"><code class="docutils literal notranslate"><span class="pre">SimpleSimulationRequirementNode.connect_to_rosbridge()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.disconnect_from_rosbridge"><code class="docutils literal notranslate"><span class="pre">SimpleSimulationRequirementNode.disconnect_from_rosbridge()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.father"><code class="docutils literal notranslate"><span class="pre">SimpleSimulationRequirementNode.father</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.handle_downstream_command"><code class="docutils literal notranslate"><span class="pre">SimpleSimulationRequirementNode.handle_downstream_command()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.handle_trigger"><code class="docutils literal notranslate"><span class="pre">SimpleSimulationRequirementNode.handle_trigger()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.handle_upstream_command"><code class="docutils literal notranslate"><span class="pre">SimpleSimulationRequirementNode.handle_upstream_command()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.simple.SimpleSimulationRequirementNode.message_handler"><code class="docutils literal notranslate"><span class="pre">SimpleSimulationRequirementNode.message_handler()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#module-rigel.plugins.core.test.introspection.requirements">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-rigel.plugins.core.test.introspection.callback">
+<span id="rigel-plugins-core-test-introspection-callback-module"></span><h2>rigel.plugins.core.test.introspection.callback module<a class="headerlink" href="#module-rigel.plugins.core.test.introspection.callback" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.callback.CallbackGenerator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.callback.</span></span><span class="sig-name descname"><span class="pre">CallbackGenerator</span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/callback.html#CallbackGenerator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_and">
+<span class="sig-name descname"><span class="pre">generate_callback_and</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anterior</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">posterior</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/callback.html#CallbackGenerator.generate_callback_and"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_and" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a base callback that
+verifies if both an anterior condition and a posterior condition return True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anterior</strong> (<em>Callable</em><em>[</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em><em>, </em><em>bool</em><em>]</em>) – The anterior function.</p></li>
+<li><p><strong>posterior</strong> (<em>Callable</em><em>[</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em><em>, </em><em>bool</em><em>]</em>) – The posterior function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>ROSCallbackType</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A function that returns True if both anterior and posterior functions also return True.</p>
+</dd>
+</dl>
+<p>False otherwise.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_different">
+<span class="sig-name descname"><span class="pre">generate_callback_different</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/callback.html#CallbackGenerator.generate_callback_different"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_different" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a base callback function that verifies
+if a given ROS message field is different from a certain reference value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – The ROS message field.</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – The reference value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Callable[[Dict[str, Any]], bool]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A function that returns True if the ROS message field is different from the reference value.</p>
+</dd>
+</dl>
+<p>False otherwise.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_equal">
+<span class="sig-name descname"><span class="pre">generate_callback_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/callback.html#CallbackGenerator.generate_callback_equal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_equal" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a base callback function that verifies
+if a ROS message field equals a certain reference value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – The ROS message field.</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – The reference value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Callable[[Dict[str, Any]], bool]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A function that returns True if the ROS message field and the reference value are equal.</p>
+</dd>
+</dl>
+<p>False otherwise.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_greater">
+<span class="sig-name descname"><span class="pre">generate_callback_greater</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/callback.html#CallbackGenerator.generate_callback_greater"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_greater" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a base callback function that verifies
+if a given ROS message field is greater than a certain reference value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – The ROS message field.</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – The reference value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Callable[[Dict[str, Any]], bool]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A function that returns True if the ROS message field is greater than the reference value.</p>
+</dd>
+</dl>
+<p>False otherwise.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_greater_than">
+<span class="sig-name descname"><span class="pre">generate_callback_greater_than</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/callback.html#CallbackGenerator.generate_callback_greater_than"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_greater_than" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a base callback function that verifies
+if a given ROS message field is greater than or equal to a certain reference value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – The ROS message field.</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – The reference value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Callable[[Dict[str, Any]], bool]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A function that returns True if the ROS message field is greater than or equal to the reference value.</p>
+</dd>
+</dl>
+<p>False otherwise.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_iff">
+<span class="sig-name descname"><span class="pre">generate_callback_iff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anterior</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">posterior</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/callback.html#CallbackGenerator.generate_callback_iff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_iff" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a base callback function that
+retrives the value of a posterior function in case an anterior function returns True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anterior</strong> (<em>Callable</em><em>[</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em><em>, </em><em>bool</em><em>]</em>) – The anterior function.</p></li>
+<li><p><strong>posterior</strong> (<em>Callable</em><em>[</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em><em>, </em><em>bool</em><em>]</em>) – The posterior function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>ROSCallbackType</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A function that retrives the value of a posterior function in case an anterior function returns True.</p>
+</dd>
+</dl>
+<p>False otherwise.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_lesser">
+<span class="sig-name descname"><span class="pre">generate_callback_lesser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/callback.html#CallbackGenerator.generate_callback_lesser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_lesser" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a base callback function that verifies
+if a given ROS message field is lesser than a certain reference value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – The ROS message field.</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – The reference value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Callable[[Dict[str, Any]], bool]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A function that returns True if the ROS message field is lesser than the reference value.</p>
+</dd>
+</dl>
+<p>False otherwise.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_lesser_than">
+<span class="sig-name descname"><span class="pre">generate_callback_lesser_than</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/callback.html#CallbackGenerator.generate_callback_lesser_than"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_lesser_than" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a base callback function that verifies
+if a given ROS message field is lesser than or equal to a certain reference value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – The ROS message field.</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – The reference value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Callable[[Dict[str, Any]], bool]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A function that returns True if the ROS message field is lesser than or equal to the reference value.</p>
+</dd>
+</dl>
+<p>False otherwise.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_vacuous">
+<span class="sig-name descname"><span class="pre">generate_callback_vacuous</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/callback.html#CallbackGenerator.generate_callback_vacuous"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.generate_callback_vacuous" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a dummy callback function that simply returns True.
+This is useful to check if a message was received on a given topic despite its contents.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ROSCallbackType</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A function that returns True for each return message.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.callback.CallbackGenerator.process_binary_operator">
+<span class="sig-name descname"><span class="pre">process_binary_operator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HplBinaryOperator</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/callback.html#CallbackGenerator.process_binary_operator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.process_binary_operator" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve a callback function that verifies the same condition as a HplBinaryOperator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>operator</strong> (<em>HplBinaryOperator</em>) – The HplBinaryOperator holding information regarding the callback logic.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A ROS message handler callback function.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ROSCallbackType</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.callback.CallbackGenerator.process_vacuous_truth">
+<span class="sig-name descname"><span class="pre">process_vacuous_truth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/callback.html#CallbackGenerator.process_vacuous_truth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.callback.CallbackGenerator.process_vacuous_truth" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve a dummy callback function to be associated with HplVacuousTruth.
+HplVacuousTruth callbacks simply return True</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A ROS message handler callback function.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>ROSCallbackType</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.plugins.core.test.introspection.command">
+<span id="rigel-plugins-core-test-introspection-command-module"></span><h2>rigel.plugins.core.test.introspection.command module<a class="headerlink" href="#module-rigel.plugins.core.test.introspection.command" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.command.Command">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.command.</span></span><span class="sig-name descname"><span class="pre">Command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandType" title="rigel.plugins.core.test.introspection.command.CommandType"><span class="pre">CommandType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/command.html#Command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.command.Command" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A command to be exchanged between simulation requirement nodes.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.command.CommandBuilder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.command.</span></span><span class="sig-name descname"><span class="pre">CommandBuilder</span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/command.html#CommandBuilder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.command.CommandBuilder" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class to uniformize the creation of Command instances.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.command.CommandBuilder.build_rosbridge_connect_cmd">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build_rosbridge_connect_cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rosbridge_client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rigel.clients.html#rigel.clients.rosbridge.ROSBridgeClient" title="rigel.clients.rosbridge.ROSBridgeClient"><span class="pre">ROSBridgeClient</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/command.html#CommandBuilder.build_rosbridge_connect_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.command.CommandBuilder.build_rosbridge_connect_cmd" title="Permalink to this definition"></a></dt>
+<dd><p>Build a command that instructs requirement nodes to connect to a ROS bridge client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rosbridge_client</strong> (<a class="reference internal" href="rigel.clients.html#rigel.clients.rosbridge.ROSBridgeClient" title="rigel.clients.rosbridge.ROSBridgeClient"><em>ROSBridgeClient</em></a>) – The ROS bridge client instance.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A command holding necessary information.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command">Command</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.command.CommandBuilder.build_rosbridge_disconnect_cmd">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build_rosbridge_disconnect_cmd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/command.html#CommandBuilder.build_rosbridge_disconnect_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.command.CommandBuilder.build_rosbridge_disconnect_cmd" title="Permalink to this definition"></a></dt>
+<dd><p>Build a command that instructs requirement nodes to disconnect from a ROS bridge client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A command holding necessary information.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command">Command</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.command.CommandBuilder.build_status_change_cmd">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build_status_change_cmd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/command.html#CommandBuilder.build_status_change_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.command.CommandBuilder.build_status_change_cmd" title="Permalink to this definition"></a></dt>
+<dd><p>Build a command that informs requirement nodes that a children node’s state has changed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A command holding necessary information.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command">Command</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.command.CommandBuilder.build_stop_simulation_cmd">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build_stop_simulation_cmd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/command.html#CommandBuilder.build_stop_simulation_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.command.CommandBuilder.build_stop_simulation_cmd" title="Permalink to this definition"></a></dt>
+<dd><p>Build a command that informs manager that a simulation requirement has
+unsatisfied and there’s no need to continue assessment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A command holding necessary information.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command">Command</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.command.CommandBuilder.build_trigger_cmd">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build_trigger_cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/command.html#CommandBuilder.build_trigger_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.command.CommandBuilder.build_trigger_cmd" title="Permalink to this definition"></a></dt>
+<dd><p>Build a command that signals a node to stop listening for incoming messages
+once it gets satisfied.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timestamp</strong> (<em>float</em><em>, </em><em>optional</em>) – The timestamp for oldest received message to be considered satisfied.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A command holding necessary information.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command">Command</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.command.CommandHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.command.</span></span><span class="sig-name descname"><span class="pre">CommandHandler</span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/command.html#CommandHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.command.CommandHandler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class for all objects that are able to handle commands and exchange command between themselves.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.command.CommandHandler.children">
+<span class="sig-name descname"><span class="pre">children</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandHandler" title="rigel.plugins.core.test.introspection.command.CommandHandler"><span class="pre">CommandHandler</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#rigel.plugins.core.test.introspection.command.CommandHandler.children" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.command.CommandHandler.father">
+<span class="sig-name descname"><span class="pre">father</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandHandler" title="rigel.plugins.core.test.introspection.command.CommandHandler"><span class="pre">CommandHandler</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#rigel.plugins.core.test.introspection.command.CommandHandler.father" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.command.CommandHandler.handle_downstream_command">
+<span class="sig-name descname"><span class="pre">handle_downstream_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/command.html#CommandHandler.handle_downstream_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.command.CommandHandler.handle_downstream_command" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.command.CommandHandler.handle_upstream_command">
+<span class="sig-name descname"><span class="pre">handle_upstream_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/command.html#CommandHandler.handle_upstream_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.command.CommandHandler.handle_upstream_command" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.command.CommandHandler.send_child_downstream_cmd">
+<span class="sig-name descname"><span class="pre">send_child_downstream_cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">child</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandHandler" title="rigel.plugins.core.test.introspection.command.CommandHandler"><span class="pre">CommandHandler</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/command.html#CommandHandler.send_child_downstream_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.command.CommandHandler.send_child_downstream_cmd" title="Permalink to this definition"></a></dt>
+<dd><p>Send a downstream command to a single child node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>child</strong> (<a class="reference internal" href="#rigel.plugins.core.test.introspection.command.CommandHandler" title="rigel.plugins.core.test.introspection.command.CommandHandler"><em>CommandHandler</em></a>) – The child node.</p></li>
+<li><p><strong>command</strong> (<a class="reference internal" href="#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – The downstream command to send to the child node.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.command.CommandHandler.send_downstream_cmd">
+<span class="sig-name descname"><span class="pre">send_downstream_cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/command.html#CommandHandler.send_downstream_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.command.CommandHandler.send_downstream_cmd" title="Permalink to this definition"></a></dt>
+<dd><p>Send a downstream command to all children nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – The downstream command to send to all children nodes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.command.CommandHandler.send_upstream_cmd">
+<span class="sig-name descname"><span class="pre">send_upstream_cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><span class="pre">Command</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/command.html#CommandHandler.send_upstream_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.command.CommandHandler.send_upstream_cmd" title="Permalink to this definition"></a></dt>
+<dd><p>Send a upstream command to the father node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="#rigel.plugins.core.test.introspection.command.Command" title="rigel.plugins.core.test.introspection.command.Command"><em>Command</em></a>) – The upstream command to send to the father node.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.command.CommandType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.command.</span></span><span class="sig-name descname"><span class="pre">CommandType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/command.html#CommandType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.command.CommandType" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.command.CommandType.ROSBRIDGE_CONNECT">
+<span class="sig-name descname"><span class="pre">ROSBRIDGE_CONNECT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#rigel.plugins.core.test.introspection.command.CommandType.ROSBRIDGE_CONNECT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.command.CommandType.ROSBRIDGE_DISCONNECT">
+<span class="sig-name descname"><span class="pre">ROSBRIDGE_DISCONNECT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#rigel.plugins.core.test.introspection.command.CommandType.ROSBRIDGE_DISCONNECT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.command.CommandType.STATUS_CHANGE">
+<span class="sig-name descname"><span class="pre">STATUS_CHANGE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#rigel.plugins.core.test.introspection.command.CommandType.STATUS_CHANGE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.command.CommandType.STOP_SIMULATON">
+<span class="sig-name descname"><span class="pre">STOP_SIMULATON</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#rigel.plugins.core.test.introspection.command.CommandType.STOP_SIMULATON" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.command.CommandType.TRIGGER">
+<span class="sig-name descname"><span class="pre">TRIGGER</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#rigel.plugins.core.test.introspection.command.CommandType.TRIGGER" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.plugins.core.test.introspection.parser">
+<span id="rigel-plugins-core-test-introspection-parser-module"></span><h2>rigel.plugins.core.test.introspection.parser module<a class="headerlink" href="#module-rigel.plugins.core.test.introspection.parser" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.parser.SimulationRequirementsParser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.parser.</span></span><span class="sig-name descname"><span class="pre">SimulationRequirementsParser</span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/parser.html#SimulationRequirementsParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.parser.SimulationRequirementsParser" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class to parse simulation requirements.
+All simulation requirements must be declared in the HPL language.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.parser.SimulationRequirementsParser.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hpl_requirement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode" title="rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode"><span class="pre">SimulationRequirementNode</span></a></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/parser.html#SimulationRequirementsParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.parser.SimulationRequirementsParser.parse" title="Permalink to this definition"></a></dt>
+<dd><p>Parse a single simulation requirement.
+All simulation requirements must be expressed in the HPL language.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>hpl_requirement</strong> (<em>str</em>) – A simulation requirement expressed in the HPL language.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tree of simulation requirements.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager" title="rigel.plugins.core.test.introspection.requirements.manager.SimulationRequirementsManager">SimulationRequirementsManager</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.parser.SimulationRequirementsVisitor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.parser.</span></span><span class="sig-name descname"><span class="pre">SimulationRequirementsVisitor</span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/parser.html#SimulationRequirementsVisitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.parser.SimulationRequirementsVisitor" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">HplAstVisitor</span></code></p>
+<p>A class to extract simulation requirements from the nodes of a transformed HPL AST.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.parser.SimulationRequirementsVisitor.requirement">
+<span class="sig-name descname"><span class="pre">requirement</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode" title="rigel.plugins.core.test.introspection.requirements.node.SimulationRequirementNode"><span class="pre">SimulationRequirementNode</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#rigel.plugins.core.test.introspection.parser.SimulationRequirementsVisitor.requirement" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.parser.SimulationRequirementsVisitor.visit_hpl_pattern">
+<span class="sig-name descname"><span class="pre">visit_hpl_pattern</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HplPattern</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/parser.html#SimulationRequirementsVisitor.visit_hpl_pattern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.parser.SimulationRequirementsVisitor.visit_hpl_pattern" title="Permalink to this definition"></a></dt>
+<dd><p>Extract information from a node of type HplPattern.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>HplPattern</em>) – The HPL AST node.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-rigel.plugins.core.test.introspection.strategy">
+<span id="rigel-plugins-core-test-introspection-strategy-module"></span><h2>rigel.plugins.core.test.introspection.strategy module<a class="headerlink" href="#module-rigel.plugins.core.test.introspection.strategy" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.strategy.AssessmentStrategy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.strategy.</span></span><span class="sig-name descname"><span class="pre">AssessmentStrategy</span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/strategy.html#AssessmentStrategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.strategy.AssessmentStrategy" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for all assessment strategies.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>finished</strong> – Flag that indicates when to stop assessing incoming ROS messages.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.strategy.AssessmentStrategy.assess">
+<span class="sig-name descname"><span class="pre">assess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/strategy.html#AssessmentStrategy.assess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.strategy.AssessmentStrategy.assess" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.strategy.AssessmentStrategy.finished">
+<span class="sig-name descname"><span class="pre">finished</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#rigel.plugins.core.test.introspection.strategy.AssessmentStrategy.finished" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.strategy.SingleMatchAssessmentStrategy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.strategy.</span></span><span class="sig-name descname"><span class="pre">SingleMatchAssessmentStrategy</span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/strategy.html#SingleMatchAssessmentStrategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.strategy.SingleMatchAssessmentStrategy" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rigel.plugins.core.test.introspection.strategy.AssessmentStrategy" title="rigel.plugins.core.test.introspection.strategy.AssessmentStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">AssessmentStrategy</span></code></a></p>
+<p>A requirement assessment strategy that consists in finding
+a single ROS message that satisfies a given condition.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.strategy.SingleMatchAssessmentStrategy.assess">
+<span class="sig-name descname"><span class="pre">assess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/strategy.html#SingleMatchAssessmentStrategy.assess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.strategy.SingleMatchAssessmentStrategy.assess" title="Permalink to this definition"></a></dt>
+<dd><p>Assess if a ROS message satisfies a given condition.
+Once a message is found to do that, no more messages are assessed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> (<em>Any</em>) – The ROS message field.</p></li>
+<li><p><strong>operator</strong> (<em>str</em>) – The comparison to make and that must be satisfied.</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – The reference value.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.strategy.assess_condition">
+<span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.strategy.</span></span><span class="sig-name descname"><span class="pre">assess_condition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/strategy.html#assess_condition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.strategy.assess_condition" title="Permalink to this definition"></a></dt>
+<dd><p>Compare the value of a given ROS message field with a certain reference value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> (<em>Any</em>) – The ROS message field.</p></li>
+<li><p><strong>operator</strong> (<em>str</em>) – The comparison to make.</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – The reference value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The result of the comparison between the given ROS message field and the</p>
+</dd>
+</dl>
+<p>provided reference value.
+:rtype: bool</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.strategy.assess_different">
+<span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.strategy.</span></span><span class="sig-name descname"><span class="pre">assess_different</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/strategy.html#assess_different"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.strategy.assess_different" title="Permalink to this definition"></a></dt>
+<dd><p>Verify if a given ROS message field is different from a certain reference value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> (<em>Any</em>) – The ROS message field.</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – The reference value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the ROS message field is different from the reference value.</p>
+</dd>
+</dl>
+<p>False otherwise.
+:rtype: bool</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.strategy.assess_equal">
+<span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.strategy.</span></span><span class="sig-name descname"><span class="pre">assess_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/strategy.html#assess_equal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.strategy.assess_equal" title="Permalink to this definition"></a></dt>
+<dd><p>Verify if a given ROS message field equals a certain reference value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> (<em>Any</em>) – The ROS message field.</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – The reference value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the ROS message field and the reference value are equal.</p>
+</dd>
+</dl>
+<p>False otherwise.
+:rtype: bool</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.strategy.assess_greater">
+<span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.strategy.</span></span><span class="sig-name descname"><span class="pre">assess_greater</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/strategy.html#assess_greater"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.strategy.assess_greater" title="Permalink to this definition"></a></dt>
+<dd><p>Verify if a given ROS message field is greater than a certain reference value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> (<em>Any</em>) – The ROS message field.</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – The reference value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the ROS message field is greater than the reference value.</p>
+</dd>
+</dl>
+<p>False otherwise.
+:rtype: bool</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.strategy.assess_greater_than">
+<span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.strategy.</span></span><span class="sig-name descname"><span class="pre">assess_greater_than</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/strategy.html#assess_greater_than"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.strategy.assess_greater_than" title="Permalink to this definition"></a></dt>
+<dd><p>Verify if a given ROS message field is greater than or equal to a certain reference value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> (<em>Any</em>) – The ROS message field.</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – The reference value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the ROS message field is greater than or equal to the reference value.</p>
+</dd>
+</dl>
+<p>False otherwise.
+:rtype: bool</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.strategy.assess_lesser">
+<span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.strategy.</span></span><span class="sig-name descname"><span class="pre">assess_lesser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/strategy.html#assess_lesser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.strategy.assess_lesser" title="Permalink to this definition"></a></dt>
+<dd><p>Verify if a given ROS message field is lesser than a certain reference value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> (<em>Any</em>) – The ROS message field.</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – The reference value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the ROS message field is lesser than the reference value.</p>
+</dd>
+</dl>
+<p>False otherwise.
+:rtype: bool</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rigel.plugins.core.test.introspection.strategy.assess_lesser_than">
+<span class="sig-prename descclassname"><span class="pre">rigel.plugins.core.test.introspection.strategy.</span></span><span class="sig-name descname"><span class="pre">assess_lesser_than</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/rigel/plugins/core/test/introspection/strategy.html#assess_lesser_than"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.plugins.core.test.introspection.strategy.assess_lesser_than" title="Permalink to this definition"></a></dt>
+<dd><p>Verify if a given ROS message field is lesser than or equal to a certain reference value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> (<em>Any</em>) – The ROS message field.</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – The reference value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the ROS message field is lesser than or equal to the reference value.</p>
+</dd>
+</dl>
+<p>False otherwise.
+:rtype: bool</p>
+</dd></dl>
+
+</section>
+<section id="module-rigel.plugins.core.test.introspection">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-rigel.plugins.core.test.introspection" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Pedro Pereira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

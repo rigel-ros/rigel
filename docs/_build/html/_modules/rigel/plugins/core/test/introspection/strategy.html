@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rigel.plugins.core.test.introspection.strategy &mdash; Rigel 0.3.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../../" id="documentation_options" src="../../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../../_static/doctools.js"></script>
+        <script src="../../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../../index.html" class="icon icon-home"> Rigel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../../index.html">Rigel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">rigel.plugins.core.test.introspection.strategy</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for rigel.plugins.core.test.introspection.strategy</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+
+
+<div class="viewcode-block" id="assess_equal"><a class="viewcode-back" href="../../../../../../rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.assess_equal">[docs]</a><span class="k">def</span> <span class="nf">assess_equal</span><span class="p">(</span><span class="n">field</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Verify if a given ROS message field equals a certain reference value.</span>
+
+<span class="sd">    :param field: The ROS message field.</span>
+<span class="sd">    :type field: Any</span>
+<span class="sd">    :param value: The reference value.</span>
+<span class="sd">    :type value: Any</span>
+<span class="sd">    :return: True if the ROS message field and the reference value are equal.</span>
+<span class="sd">    False otherwise.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">field</span> <span class="o">==</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="assess_different"><a class="viewcode-back" href="../../../../../../rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.assess_different">[docs]</a><span class="k">def</span> <span class="nf">assess_different</span><span class="p">(</span><span class="n">field</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Verify if a given ROS message field is different from a certain reference value.</span>
+
+<span class="sd">    :param field: The ROS message field.</span>
+<span class="sd">    :type field: Any</span>
+<span class="sd">    :param value: The reference value.</span>
+<span class="sd">    :type value: Any</span>
+<span class="sd">    :return: True if the ROS message field is different from the reference value.</span>
+<span class="sd">    False otherwise.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">field</span> <span class="o">!=</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="assess_lesser"><a class="viewcode-back" href="../../../../../../rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.assess_lesser">[docs]</a><span class="k">def</span> <span class="nf">assess_lesser</span><span class="p">(</span><span class="n">field</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Verify if a given ROS message field is lesser than a certain reference value.</span>
+
+<span class="sd">    :param field: The ROS message field.</span>
+<span class="sd">    :type field: Any</span>
+<span class="sd">    :param value: The reference value.</span>
+<span class="sd">    :type value: Any</span>
+<span class="sd">    :return: True if the ROS message field is lesser than the reference value.</span>
+<span class="sd">    False otherwise.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">field</span> <span class="o">&lt;</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="assess_lesser_than"><a class="viewcode-back" href="../../../../../../rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.assess_lesser_than">[docs]</a><span class="k">def</span> <span class="nf">assess_lesser_than</span><span class="p">(</span><span class="n">field</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Verify if a given ROS message field is lesser than or equal to a certain reference value.</span>
+
+<span class="sd">    :param field: The ROS message field.</span>
+<span class="sd">    :type field: Any</span>
+<span class="sd">    :param value: The reference value.</span>
+<span class="sd">    :type value: Any</span>
+<span class="sd">    :return: True if the ROS message field is lesser than or equal to the reference value.</span>
+<span class="sd">    False otherwise.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">field</span> <span class="o">&lt;=</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="assess_greater"><a class="viewcode-back" href="../../../../../../rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.assess_greater">[docs]</a><span class="k">def</span> <span class="nf">assess_greater</span><span class="p">(</span><span class="n">field</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Verify if a given ROS message field is greater than a certain reference value.</span>
+
+<span class="sd">    :param field: The ROS message field.</span>
+<span class="sd">    :type field: Any</span>
+<span class="sd">    :param value: The reference value.</span>
+<span class="sd">    :type value: Any</span>
+<span class="sd">    :return: True if the ROS message field is greater than the reference value.</span>
+<span class="sd">    False otherwise.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">field</span> <span class="o">&gt;</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="assess_greater_than"><a class="viewcode-back" href="../../../../../../rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.assess_greater_than">[docs]</a><span class="k">def</span> <span class="nf">assess_greater_than</span><span class="p">(</span><span class="n">field</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Verify if a given ROS message field is greater than or equal to a certain reference value.</span>
+
+<span class="sd">    :param field: The ROS message field.</span>
+<span class="sd">    :type field: Any</span>
+<span class="sd">    :param value: The reference value.</span>
+<span class="sd">    :type value: Any</span>
+<span class="sd">    :return: True if the ROS message field is greater than or equal to the reference value.</span>
+<span class="sd">    False otherwise.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">field</span> <span class="o">&gt;=</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="assess_condition"><a class="viewcode-back" href="../../../../../../rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.assess_condition">[docs]</a><span class="k">def</span> <span class="nf">assess_condition</span><span class="p">(</span><span class="n">field</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">operator</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compare the value of a given ROS message field with a certain reference value.</span>
+
+<span class="sd">    :param field: The ROS message field.</span>
+<span class="sd">    :type field: Any</span>
+<span class="sd">    :param operator: The comparison to make.</span>
+<span class="sd">    :type operator: str</span>
+<span class="sd">    :param value: The reference value.</span>
+<span class="sd">    :type value: Any</span>
+<span class="sd">    :return: The result of the comparison between the given ROS message field and the</span>
+<span class="sd">    provided reference value.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">operator</span> <span class="o">==</span> <span class="s1">&#39;=&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">assess_equal</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">operator</span> <span class="o">==</span> <span class="s1">&#39;!=&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">assess_different</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">operator</span> <span class="o">==</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">assess_lesser</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">operator</span> <span class="o">==</span> <span class="s1">&#39;&lt;=&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">assess_lesser_than</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">operator</span> <span class="o">==</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">assess_greater</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">operator</span> <span class="o">==</span> <span class="s1">&#39;&gt;=&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">assess_greater_than</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No strategy for operator &quot;</span><span class="si">{</span><span class="n">operator</span><span class="si">}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AssessmentStrategy"><a class="viewcode-back" href="../../../../../../rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.AssessmentStrategy">[docs]</a><span class="k">class</span> <span class="nc">AssessmentStrategy</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for all assessment strategies.</span>
+
+<span class="sd">    :cvar finished: Flag that indicates when to stop assessing incoming ROS messages.</span>
+<span class="sd">    :type field: Any</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">finished</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="AssessmentStrategy.assess"><a class="viewcode-back" href="../../../../../../rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.AssessmentStrategy.assess">[docs]</a>    <span class="k">def</span> <span class="nf">assess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">operator</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Invalid simulation requirements assessment strategy.&quot;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="SingleMatchAssessmentStrategy"><a class="viewcode-back" href="../../../../../../rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.SingleMatchAssessmentStrategy">[docs]</a><span class="k">class</span> <span class="nc">SingleMatchAssessmentStrategy</span><span class="p">(</span><span class="n">AssessmentStrategy</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A requirement assessment strategy that consists in finding</span>
+<span class="sd">    a single ROS message that satisfies a given condition.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SingleMatchAssessmentStrategy.assess"><a class="viewcode-back" href="../../../../../../rigel.plugins.core.test.introspection.html#rigel.plugins.core.test.introspection.strategy.SingleMatchAssessmentStrategy.assess">[docs]</a>    <span class="k">def</span> <span class="nf">assess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">operator</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Assess if a ROS message satisfies a given condition.</span>
+<span class="sd">        Once a message is found to do that, no more messages are assessed.</span>
+
+<span class="sd">        :param field: The ROS message field.</span>
+<span class="sd">        :type field: Any</span>
+<span class="sd">        :param operator: The comparison to make and that must be satisfied.</span>
+<span class="sd">        :type operator: str</span>
+<span class="sd">        :param value: The reference value.</span>
+<span class="sd">        :type value: Any</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">finished</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">assess_condition</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">finished</span> <span class="o">=</span> <span class="kc">True</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Pedro Pereira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

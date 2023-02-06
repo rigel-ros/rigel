@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rigel.plugins.core.test.introspection.requirements.existence &mdash; Rigel 0.3.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../../../" id="documentation_options" src="../../../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../../../_static/doctools.js"></script>
+        <script src="../../../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../../../index.html" class="icon icon-home"> Rigel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../../../index.html">Rigel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">rigel.plugins.core.test.introspection.requirements.existence</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for rigel.plugins.core.test.introspection.requirements.existence</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">inf</span>
+<span class="kn">from</span> <span class="nn">rigel.plugins.core.test.introspection.command</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Command</span><span class="p">,</span>
+    <span class="n">CommandBuilder</span><span class="p">,</span>
+    <span class="n">CommandType</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.node</span> <span class="kn">import</span> <span class="n">SimulationRequirementNode</span>
+
+
+<div class="viewcode-block" id="ExistenceSimulationRequirementNode"><a class="viewcode-back" href="../../../../../../../rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode">[docs]</a><span class="k">class</span> <span class="nc">ExistenceSimulationRequirementNode</span><span class="p">(</span><span class="n">SimulationRequirementNode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An existence simulation requirement node ensures</span>
+<span class="sd">    that at least a ROS message was received that satisfies a given condition.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">inf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">father</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__timer</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_timeout</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="nb">repr</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="nb">repr</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">child</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="nb">repr</span>
+
+<div class="viewcode-block" id="ExistenceSimulationRequirementNode.assess_children_nodes"><a class="viewcode-back" href="../../../../../../../rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.assess_children_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">assess_children_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        An existence simulation requirement is considered satisfied</span>
+<span class="sd">        only if all children simulation requirements are also satisfied.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        :return: True if all children simulation requirements are satisfied. False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+
+            <span class="c1"># NOTE: the following assertion is required so that mypy</span>
+            <span class="c1"># doesn&#39;t throw an error related with multiple inheritance.</span>
+            <span class="c1"># All &#39;children&#39; are of type CommandHandler and</span>
+            <span class="c1"># &#39;satisfied&#39; is a member of SimulationRequirementNode</span>
+            <span class="c1"># that inherits from CommandHandler.</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">SimulationRequirementNode</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">child</span><span class="o">.</span><span class="n">satisfied</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ExistenceSimulationRequirementNode.handle_children_status_change"><a class="viewcode-back" href="../../../../../../../rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_children_status_change">[docs]</a>    <span class="k">def</span> <span class="nf">handle_children_status_change</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handle STATUS_CHANGE commands sent by children nodes.</span>
+<span class="sd">        Whenever a child changes state a disjoint requirement node must check its satisfability.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">assess_children_nodes</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">satisfied</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">__timer</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+
+            <span class="c1"># Issue children to stop receiving incoming ROS messages.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">send_downstream_cmd</span><span class="p">(</span><span class="n">CommandBuilder</span><span class="o">.</span><span class="n">build_rosbridge_disconnect_cmd</span><span class="p">())</span>
+
+            <span class="c1"># Inform father node about state change.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">send_upstream_cmd</span><span class="p">(</span><span class="n">CommandBuilder</span><span class="o">.</span><span class="n">build_status_change_cmd</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="ExistenceSimulationRequirementNode.handle_timeout"><a class="viewcode-back" href="../../../../../../../rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_timeout">[docs]</a>    <span class="k">def</span> <span class="nf">handle_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handle timeout events.</span>
+<span class="sd">        Issue children nodes to stop listening for ROS messages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">satisfied</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">send_upstream_cmd</span><span class="p">(</span><span class="n">CommandBuilder</span><span class="o">.</span><span class="n">build_stop_simulation_cmd</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="ExistenceSimulationRequirementNode.handle_rosbridge_connection_commands"><a class="viewcode-back" href="../../../../../../../rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_rosbridge_connection_commands">[docs]</a>    <span class="k">def</span> <span class="nf">handle_rosbridge_connection_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">Command</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handle commands of type ROSBRIDGE_CONNECT.</span>
+<span class="sd">        Forward command to all children nodes and initialize timer thread.</span>
+
+<span class="sd">        :param command: Received command.</span>
+<span class="sd">        :type command: Command</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send_downstream_cmd</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+        <span class="c1"># NOTE: code below will only execute after all ROS message handler were registered.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">!=</span> <span class="n">inf</span><span class="p">:</span>  <span class="c1"># start timer in case a time limit was specified</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__timer</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ExistenceSimulationRequirementNode.handle_rosbridge_disconnection_commands"><a class="viewcode-back" href="../../../../../../../rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_rosbridge_disconnection_commands">[docs]</a>    <span class="k">def</span> <span class="nf">handle_rosbridge_disconnection_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">Command</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handle commands of type ROSBRIDGE_DISCONNECT.</span>
+<span class="sd">        Forwars command to all children nodes and stop timer threads.</span>
+
+<span class="sd">        :param command: Received command.</span>
+<span class="sd">        :type command: Command</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__timer</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>  <span class="c1"># NOTE: this method does not require previous call to &#39;start()&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send_downstream_cmd</span><span class="p">(</span><span class="n">command</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ExistenceSimulationRequirementNode.handle_upstream_command"><a class="viewcode-back" href="../../../../../../../rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_upstream_command">[docs]</a>    <span class="k">def</span> <span class="nf">handle_upstream_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">Command</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generic command handler.</span>
+<span class="sd">        Forwards incoming upstream commands to their proper handler.</span>
+
+<span class="sd">        :param command: Received upstream command.</span>
+<span class="sd">        :type command: Command</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">CommandType</span><span class="o">.</span><span class="n">STATUS_CHANGE</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handle_children_status_change</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ExistenceSimulationRequirementNode.handle_downstream_command"><a class="viewcode-back" href="../../../../../../../rigel.plugins.core.test.introspection.requirements.html#rigel.plugins.core.test.introspection.requirements.existence.ExistenceSimulationRequirementNode.handle_downstream_command">[docs]</a>    <span class="k">def</span> <span class="nf">handle_downstream_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">Command</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generic command handler.</span>
+<span class="sd">        Forwards incoming downstream commands to their proper handler.</span>
+
+<span class="sd">        :param command: Received dowstream command.</span>
+<span class="sd">        :type command: Command</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">CommandType</span><span class="o">.</span><span class="n">ROSBRIDGE_CONNECT</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handle_rosbridge_connection_commands</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">command</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">CommandType</span><span class="o">.</span><span class="n">ROSBRIDGE_DISCONNECT</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handle_rosbridge_disconnection_commands</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">command</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">CommandType</span><span class="o">.</span><span class="n">TRIGGER</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">send_downstream_cmd</span><span class="p">(</span><span class="n">command</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Pedro Pereira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

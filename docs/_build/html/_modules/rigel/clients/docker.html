@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rigel.clients.docker &mdash; Rigel 0.3.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Rigel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rigel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">rigel.clients.docker</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for rigel.clients.docker</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">python_on_whales</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">rigel.exceptions</span> <span class="kn">import</span> <span class="n">DockerAPIError</span>
+<span class="kn">from</span> <span class="nn">rigel.loggers</span> <span class="kn">import</span> <span class="n">get_logger</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+
+<span class="n">MESSAGE_LOGGER</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="DockerClient"><a class="viewcode-back" href="../../../rigel.clients.html#rigel.clients.docker.DockerClient">[docs]</a><span class="k">class</span> <span class="nc">DockerClient</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A wrapper class for the docker.client.DockerClient.</span>
+<span class="sd">    Keeps the same functionality but allows for error handling that suits better Rigel.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">DOCKER_CONTAINER_ID_DISPLAY_SIZE</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">12</span>
+    <span class="n">DOCKER_RUN_TIMEOUT</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">120</span>  <span class="c1"># seconds</span>
+    <span class="n">DOCKER_RUN_WAIT_STATUS</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># seconds</span>
+
+    <span class="c1"># A Docker client instance.</span>
+    <span class="n">client</span><span class="p">:</span> <span class="n">python_on_whales</span><span class="o">.</span><span class="n">docker_client</span><span class="o">.</span><span class="n">DockerClient</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a Docker client instance.</span>
+
+<span class="sd">        :type client: Optional[python_on_whales.docker_client.DockerClient]</span>
+<span class="sd">        :param client: A Docker client instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">python_on_whales</span><span class="o">.</span><span class="n">docker</span>
+
+    <span class="k">def</span> <span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+
+        <span class="c1"># Wrapper for &#39;python_on_whales.docker_client.DockerClient&#39;.</span>
+        <span class="c1"># Look for arguments inside wrapped class before throwing an AttributeError.</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="n">__name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No &#39;DockerClient&#39; object has attribute &#39;</span><span class="si">{</span><span class="n">__name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DockerClient.get_builder"><a class="viewcode-back" href="../../../rigel.clients.html#rigel.clients.docker.DockerClient.get_builder">[docs]</a>    <span class="k">def</span> <span class="nf">get_builder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">python_on_whales</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">buildx</span><span class="o">.</span><span class="n">cli_wrapper</span><span class="o">.</span><span class="n">Builder</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a Docker builder</span>
+<span class="sd">        :param name: the name of the builder</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :return: the builder, if existent</span>
+<span class="sd">        :rtype: python_on_whales.components.buildx.cli_wrapper.Builder</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">buildx</span><span class="o">.</span><span class="n">inspect</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">python_on_whales</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">DockerException</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="DockerClient.create_builder"><a class="viewcode-back" href="../../../rigel.clients.html#rigel.clients.docker.DockerClient.create_builder">[docs]</a>    <span class="k">def</span> <span class="nf">create_builder</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">use</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">driver</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;docker-container&#39;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">python_on_whales</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">buildx</span><span class="o">.</span><span class="n">cli_wrapper</span><span class="o">.</span><span class="n">Builder</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a Docker builder.</span>
+
+<span class="sd">        :param name: the builder name</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param use: set to use, defaults to True</span>
+<span class="sd">        :type use: bool, optional</span>
+<span class="sd">        :return: the created Docker builder, if unexistent.</span>
+<span class="sd">        :rtype: python_on_whales.components.buildx.cli_wrapper.Builder</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">builder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_builder</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">builder</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">buildx</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">use</span><span class="o">=</span><span class="n">use</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="n">driver</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">python_on_whales</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">DockerException</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">DockerAPIError</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">builder</span>  <span class="c1"># return already existing builder</span></div>
+
+<div class="viewcode-block" id="DockerClient.remove_builder"><a class="viewcode-back" href="../../../rigel.clients.html#rigel.clients.docker.DockerClient.remove_builder">[docs]</a>    <span class="k">def</span> <span class="nf">remove_builder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove a Docker builder.</span>
+
+<span class="sd">        :type name: string</span>
+<span class="sd">        :param name: The name of the Docker builder.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">builder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_builder</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">builder</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">buildx</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">builder</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">python_on_whales</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">DockerException</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">DockerAPIError</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DockerClient.get_network"><a class="viewcode-back" href="../../../rigel.clients.html#rigel.clients.docker.DockerClient.get_network">[docs]</a>    <span class="k">def</span> <span class="nf">get_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">python_on_whales</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">cli_wrapper</span><span class="o">.</span><span class="n">Network</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a Docker network.</span>
+
+<span class="sd">        :type name: string</span>
+<span class="sd">        :param name: The name of the Docker network.</span>
+
+<span class="sd">        :rtype: Optional[python_on_whales.components.network.cli_wrapper.Network]</span>
+<span class="sd">        :return: The Docker network with the specified name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">inspect</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">python_on_whales</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">DockerException</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="DockerClient.create_network"><a class="viewcode-back" href="../../../rigel.clients.html#rigel.clients.docker.DockerClient.create_network">[docs]</a>    <span class="k">def</span> <span class="nf">create_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">driver</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">python_on_whales</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">cli_wrapper</span><span class="o">.</span><span class="n">Network</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a Docker network.</span>
+
+<span class="sd">        :type name: string</span>
+<span class="sd">        :param name: The name of the Docker network.</span>
+<span class="sd">        :type driver: string</span>
+<span class="sd">        :param driver: Name of driver used to create the network.</span>
+
+<span class="sd">        :rtype: python_on_whales.components.network.cli_wrapper.Network</span>
+<span class="sd">        :return: The Docker network with the specified name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">network</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_network</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">network</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="n">driver</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">python_on_whales</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">DockerException</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">DockerAPIError</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">network</span>  <span class="c1"># return already existing network</span></div>
+
+<div class="viewcode-block" id="DockerClient.remove_network"><a class="viewcode-back" href="../../../rigel.clients.html#rigel.clients.docker.DockerClient.remove_network">[docs]</a>    <span class="k">def</span> <span class="nf">remove_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove a Docker network.</span>
+
+<span class="sd">        :type name: string</span>
+<span class="sd">        :param name: The name of the Docker network.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">network</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_network</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">network</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">python_on_whales</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">DockerException</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">DockerAPIError</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DockerClient.get_container"><a class="viewcode-back" href="../../../rigel.clients.html#rigel.clients.docker.DockerClient.get_container">[docs]</a>    <span class="k">def</span> <span class="nf">get_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">python_on_whales</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">cli_wrapper</span><span class="o">.</span><span class="n">Container</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a Docker container.</span>
+
+<span class="sd">        :type name: string</span>
+<span class="sd">        :param name: The name of the Docker container.</span>
+
+<span class="sd">        :rtype: Optional[python_on_whales.components.container.cli_wrapper.Container]</span>
+<span class="sd">        :return: The Docker container with the specified name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">inspect</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">except</span> <span class="n">python_on_whales</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">DockerException</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DockerAPIError</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DockerClient.run_container"><a class="viewcode-back" href="../../../rigel.clients.html#rigel.clients.docker.DockerClient.run_container">[docs]</a>    <span class="k">def</span> <span class="nf">run_container</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">image</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">python_on_whales</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">cli_wrapper</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">]]]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run a Docker container with a given name.</span>
+
+<span class="sd">        :type name: string</span>
+<span class="sd">        :param name: The Docker container name.</span>
+<span class="sd">        :type image: string</span>
+<span class="sd">        :param name: The Docker image.</span>
+<span class="sd">        :type kwargs: Dict[str, Any]</span>
+<span class="sd">        :param kwargs: Keyword arguments. Consult the documentation for more information</span>
+<span class="sd">        (https://gabrieldemarmiesse.github.io/python-on-whales/sub-commands/container/)</span>
+
+<span class="sd">        :rtype: Union[python_on_whales.components.container.cli_wrapper.Container, str, Iterable[Tuple[str, bytes]]]</span>
+<span class="sd">        :return: The created Docker container</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">container</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_container</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">container</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">python_on_whales</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">DockerException</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">DockerAPIError</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">container</span>  <span class="c1"># return already existing container</span></div>
+
+<div class="viewcode-block" id="DockerClient.remove_container"><a class="viewcode-back" href="../../../rigel.clients.html#rigel.clients.docker.DockerClient.remove_container">[docs]</a>    <span class="k">def</span> <span class="nf">remove_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove a Docker container.</span>
+
+<span class="sd">        :type name: string</span>
+<span class="sd">        :param name: The name of the Docker container.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">container</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_container</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">container</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">container</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">volumes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">python_on_whales</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">DockerException</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">DockerAPIError</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DockerClient.wait_for_container_status"><a class="viewcode-back" href="../../../rigel.clients.html#rigel.clients.docker.DockerClient.wait_for_container_status">[docs]</a>    <span class="k">def</span> <span class="nf">wait_for_container_status</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">status</span><span class="p">:</span> <span class="nb">str</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wait for a container status to change to a desired value.</span>
+
+<span class="sd">        :type name: string</span>
+<span class="sd">        :param name: The name of the container to watch.</span>
+<span class="sd">        :type status: string</span>
+<span class="sd">        :param status: The desires container status.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">elapsed_time</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># seconds</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">container</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_container</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">container</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">elapsed_time</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">DOCKER_RUN_TIMEOUT</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">container</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">status</span><span class="p">:</span>
+                        <span class="k">return</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DOCKER_RUN_WAIT_STATUS</span><span class="p">)</span>
+                    <span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">elapsed_time</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">DOCKER_RUN_WAIT_STATUS</span>
+                    <span class="n">MESSAGE_LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Waiting for status of container </span><span class="si">{}</span><span class="s1"> to become &quot;</span><span class="si">{}</span><span class="s1">&quot;. Current status is &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">container</span><span class="o">.</span><span class="n">id</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">DOCKER_CONTAINER_ID_DISPLAY_SIZE</span><span class="p">],</span>
+                        <span class="n">status</span><span class="p">,</span>
+                        <span class="n">container</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">status</span>
+                    <span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">DockerAPIError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">(</span>
+                        <span class="s1">&#39;Timeout while waiting for status of container </span><span class="si">{}</span><span class="s1"> to become &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">container</span><span class="o">.</span><span class="n">id</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">DOCKER_CONTAINER_ID_DISPLAY_SIZE</span><span class="p">],</span>
+                            <span class="n">status</span>
+                        <span class="p">)</span>
+                    <span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">DockerAPIError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Unable to watch over status of container &quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; since it does not exist.&#39;</span>
+                <span class="p">))</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Pedro Pereira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
