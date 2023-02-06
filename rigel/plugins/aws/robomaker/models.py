@@ -119,5 +119,6 @@ class PluginModel(BaseModel, extra=Extra.forbid):
     # Optional fields
     output_location: Optional[str] = None
     simulation_duration: int = 300  # seconds
+    simulation_ignore: int = 0  # seconds
     vpc_config: Optional[VPCConfig] = None
     data_sources: List[DataSource] = []

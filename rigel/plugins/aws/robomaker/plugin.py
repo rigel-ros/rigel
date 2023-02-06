@@ -193,7 +193,10 @@ class Plugin(PluginBase):
         simulation_job_public_ip = self.__simulation_job['networkInterface']['publicIpAddress']
         print(f'Simulation job can be accessed on {simulation_job_public_ip}')
 
-        self.__requirements_manager = SimulationRequirementsManager(self.model.simulation_duration * 1.0)
+        self.__requirements_manager = SimulationRequirementsManager(
+            self.model.simulation_duration * 1.0,
+            min_timeout=self.model.simulation_ignore * 1.0
+        )
         self.__requirements_parser = SimulationRequirementsParser()
 
         requirements = self.model.robot_application.requirements
