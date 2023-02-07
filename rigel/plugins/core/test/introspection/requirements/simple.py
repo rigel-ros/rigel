@@ -7,6 +7,7 @@ from rigel.plugins.core.test.introspection.command import (
 )
 from typing import Any, Callable, Dict
 
+from .absence import AbsenceSimulationRequirementNode
 from .disjoint import DisjointSimulationRequirementNode
 from .node import SimulationRequirementNode
 
@@ -50,12 +51,15 @@ class SimpleSimulationRequirementNode(SimulationRequirementNode):
         self.trigger: bool = False
 
     def __str__(self) -> str:
+
+        if self.father and isinstance(self.father, AbsenceSimulationRequirementNode):
+            labels = {False: 'SATISFIED', True: 'UNSATISFIED'}
+        else:
+            labels = {True: 'SATISFIED', False: 'UNSATISFIED'}
+
         # TODO: use logger to make a more readable output.
         satisfied_msg = str(self.last_message) if self.last_message else "no ROS message received"
-        if self.satisfied:
-            return f'\n[{self.ros_topic}]\t- SATISFIED\t({satisfied_msg}): {self.predicate}'
-        else:
-            return f'\n[{self.ros_topic}]\t- UNSATISFIED\t({satisfied_msg}): {self.predicate}'
+        return f'\n[{self.ros_topic}]\t- {labels[self.satisfied]}\t({satisfied_msg}): {self.predicate}'
 
     def handle_upstream_command(self, command: Command) -> None:
         pass  # NOTE: nodes of this type don't have children and therefore will never receive upstream commands.

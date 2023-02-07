@@ -131,7 +131,7 @@ class Plugin(PluginBase):
                         self.__requirements_parser.parse(req) for req in test_component.introspection.requirements
                     ]
 
-                    self.__requirements_manager.children = requirements
+                    self.__requirements_manager.add_children(requirements)
 
                     # Connect to ROS bridge inside container
                     hostname = test_component.introspection.hostname or container_ip
@@ -207,7 +207,7 @@ class Plugin(PluginBase):
         self.bringup_ros_nodes()
         LOGGER.info("Testing the application!")
 
-        while self.__requirements_manager.children and (not self.__requirements_manager.assess_children_nodes()):
+        while not self.__requirements_manager.finished:
             pass  # TODO: separate this into a thread for efficiency
         print(self.__requirements_manager)
 

@@ -6,6 +6,7 @@ from rigel.plugins.core.test.introspection.command import (
     CommandBuilder,
     CommandType
 )
+from typing import List
 
 
 class SimulationRequirementsManager(SimulationRequirementNode):
@@ -19,8 +20,18 @@ class SimulationRequirementsManager(SimulationRequirementNode):
         self.father = None
         self.finished = False
 
+        self.__introspection_started = False
+
         self.__start_timer = threading.Timer(min_timeout, self.handle_start_timeout)
         self.__stop_timer = threading.Timer(max_timeout, self.handle_stop_timeout)
+
+    def add_child(self, child: SimulationRequirementNode) -> None:
+        child.father = self
+        self.children.append(child)
+
+    def add_children(self, children: List[SimulationRequirementNode]) -> None:
+        for child in children:
+            self.add_child(child)
 
     def __str__(self) -> str:
         if self.children:
@@ -38,7 +49,7 @@ class SimulationRequirementsManager(SimulationRequirementNode):
         :param rosbridge_client: The ROS bridge client.
         :type rosbridge_client: ROSBridgeClient
         """
-        self.send_downstream_cmd(CommandBuilder.build_trigger_cmd())
+        # self.send_downstream_cmd(CommandBuilder.build_trigger_cmd())
         self.send_downstream_cmd(CommandBuilder.build_rosbridge_connect_cmd(rosbridge_client))
 
         self.__start_timer.start()
@@ -69,6 +80,9 @@ class SimulationRequirementsManager(SimulationRequirementNode):
         # Ensure that manager detects if all children requirements are
         # already satisfied whenever the simulation starts.
         # For this emulate reception of a STATUS_CHANGE command.
+
+        self.__introspection_started = True
+        self.send_downstream_cmd(CommandBuilder.build_trigger_cmd())
         self.handle_children_status_change()
 
     def handle_stop_timeout(self) -> None:
@@ -81,7 +95,8 @@ class SimulationRequirementsManager(SimulationRequirementNode):
         :return: True if all simulation requirements were satisfied. False otherwise.
         :rtype: bool
         """
-        if self.children:
+        # if self.children:
+        if self.children and self.__introspection_started:
             for child in self.children:
 
                 # NOTE: the following assertion is required so that mypy
@@ -104,6 +119,7 @@ class SimulationRequirementsManager(SimulationRequirementNode):
         Whenever a child changes state a requirement node must check its satisfability.
         """
         if self.assess_children_nodes() != self.satisfied:  # only consider state changes
+
             self.satisfied = not self.satisfied
             # Stop simulation once all requirements are satisfied.
             if self.satisfied:

@@ -206,7 +206,7 @@ class Plugin(PluginBase):
                 self.__requirements_parser.parse(req) for req in requirements
             ]
 
-            self.__requirements_manager.children = nodes
+            self.__requirements_manager.add_children(nodes)
 
             # Connect to ROS bridge inside container
             port = self.model.robot_application.ports[0][0]
@@ -217,7 +217,7 @@ class Plugin(PluginBase):
 
         LOGGER.info("Testing the application!")
 
-        while self.__requirements_manager.children and (not self.__requirements_manager.assess_children_nodes()):
+        while not self.__requirements_manager.finished:
             pass  # TODO: separate this into a thread for efficiency
         print(self.__requirements_manager)
 
