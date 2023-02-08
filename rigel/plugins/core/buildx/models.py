@@ -14,6 +14,8 @@ class PluginModel(BaseModel, extra=Extra.forbid):
 
     :type image: str
     :cvar image: The name for the final Docker image.
+    :type tags: List[str]
+    :type tags: The list of image tags for the final Docker image.
     :type load: bool
     :cvar load: Flag to store built image locally. Defaults to False,
     :type platforms: List[str]
@@ -26,6 +28,8 @@ class PluginModel(BaseModel, extra=Extra.forbid):
     image: str
 
     # Optional fields.
+    tags: List[str] = ['latest']
+    force_tag_latest: bool = True
     buildargs: Dict[str, str] = {}
     load: bool = False
     platforms: List[str] = []

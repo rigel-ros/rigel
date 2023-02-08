@@ -8,7 +8,7 @@ from rigel.models.plugin import PluginRawData
 from rigel.models.rigelfile import RigelfileGlobalData
 from rigel.plugins import Plugin as PluginBase
 from rigel.providers.core import SSHProviderOutputModel
-from typing import Any, Dict
+from typing import Any, Dict, List
 from .models import PluginModel
 
 
@@ -89,30 +89,64 @@ class Plugin(PluginBase):
                         ssh_keys.append(key)
         return ssh_keys
 
+    def prepare_image_name(self) -> List[str]:
+
+        name_parts = self.model.image.rsplit(':', 1)
+        if not name_parts or '' in name_parts:
+            raise RigelError(base=f"Invalid image name was provided '{self.model.image}'")
+
+        tags = set(self.model.tags)
+
+        # Ensure 'latest' tag is always present when required
+        if 'latest' not in tags and self.model.force_tag_latest:
+            tags.add('latest')
+        if 'latest' in tags and not self.model.force_tag_latest:
+            tags.remove('latest')
+
+        if len(name_parts) > 1:  # a tag was declared alongside the image name
+
+            LOGGER.debug("Consider using the field 'tags' to define desired image tags")
+            tag = name_parts[-1]
+            if tag not in tags:
+                tags.add(tag)
+            return [f"{''.join(name_parts[:-1])}:{_tag}" for _tag in list(tags)]
+
+        else:  # no tag was declared alongside the image name
+
+            if not self.model.force_tag_latest:
+                raise RigelError(base=f"Image name '{self.model.image}' was declared without a tag")
+            return [f"{name_parts[0]}:{_tag}" for _tag in list(tags)]
+
     def setup(self) -> None:
         self.delete_qemu_files()
         self.configure_qemu()
         self.create_builder()
+
+    def export_keys(self, buildargs: Dict[str, Any]) -> None:
+        try:
+            for key in self.get_ssh_keys():
+                if key.env:
+                    buildargs[key.env] = os.environ[key.env]
+        except KeyError:
+            raise UndeclaredEnvironmentVariableError(env=key.env)
 
     def run(self) -> None:
 
         LOGGER.info(f"Building Docker image '{self.model.image}'.")
 
         complete_buildargs = self.model.buildargs.copy()
-        try:
-            for key in self.get_ssh_keys():
-                if key.env:
-                    complete_buildargs[key.env] = os.environ[key.env]
-        except KeyError:
-            raise UndeclaredEnvironmentVariableError(env=key.env)
+        self.export_keys(complete_buildargs)
+
+        tags = self.prepare_image_name()
 
         try:
             kwargs = {
+                "build_args": complete_buildargs,
+                "cache": False,
                 "file": f'{self.application.dir}/Dockerfile',
-                "tags": self.model.image,
                 "load": self.model.load,
                 "push": self.model.push,
-                "build_args": complete_buildargs
+                "tags": tags
             }
 
             if self.model.platforms:
@@ -121,9 +155,14 @@ class Plugin(PluginBase):
             self.__docker.build(self.application.dir, **kwargs)
 
             if self.model.push:
-                LOGGER.info(f"Docker image '{self.model.image}' built and pushed with success.")
+                LOGGER.info("The following Docker images were built and pushed with success:")
+                for tag in tags:
+                    print(f'- {tag}')
+
             elif self.model.load:
-                LOGGER.info(f"Docker image '{self.model.image}' built with success.")
+                LOGGER.info("The following Docker images were built with success:")
+                for tag in tags:
+                    print(f'- {tag}')
 
         except RigelError as err:
             LOGGER.error(err)
