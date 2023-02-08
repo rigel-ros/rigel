@@ -295,8 +295,17 @@ Keeps the same functionality but allows for error handling that suits better Rig
 <dt class="sig sig-object py" id="rigel.clients.rosbridge.ROSBridgeClient">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rigel.clients.rosbridge.</span></span><span class="sig-name descname"><span class="pre">ROSBridgeClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'localhost'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">9090</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rigel/clients/rosbridge.html#ROSBridgeClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.clients.rosbridge.ROSBridgeClient" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A wrapper class for the roslibpy.ros.Ros.
-A client for the ROS bridge websocket server.</p>
+<p>A client for the ROS bridge websocket server that supports multiple
+handler functions for a same ROS event.
+This is essentialy a wrapper class around the <code class="xref py py-class docutils literal notranslate"><span class="pre">roslibpy.ros.Ros</span></code> class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>handlers</strong> (<em>Dict</em><em>[</em><em>ROS_EVENT_TYPE</em><em>, </em><em>List</em><em>[</em><em>rigel.clients.rosbridge.ROS_EVENT_HANDLER_TYPE</em><em>]</em><em>]</em>) – A map between ROS events and their handlers</p></li>
+<li><p><strong>subscribers</strong> (<em>Dict</em><em>[</em><em>ROS_EVENT_TYPE</em><em>, </em><em>roslibpy.core.Topic</em><em>]</em>) – A map between ROS events and their subscribers</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="rigel.clients.rosbridge.ROSBridgeClient.close">
 <span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/clients/rosbridge.html#ROSBridgeClient.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.clients.rosbridge.ROSBridgeClient.close" title="Permalink to this definition"></a></dt>
@@ -315,24 +324,26 @@ A client for the ROS bridge websocket server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>topic</strong> (<em>string</em>) – The ROS topic to subscribe.</p></li>
-<li><p><strong>message_type</strong> (<em>string</em>) – The expected type of incoming ROS messages.</p></li>
-<li><p><strong>handler</strong> (<em>Callable</em><em>[</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em><em>, </em><em>None</em><em>]</em>) – The message handler function to be executed everytime a message is received.</p></li>
+<li><p><strong>topic</strong> (<em>str</em>) – The ROS topic to subscribe.</p></li>
+<li><p><strong>message_type</strong> (<em>str</em>) – The expected ROS message type.</p></li>
+<li><p><strong>handler</strong> (<em>ROS_EVENT_HANDLER_TYPE</em>) – The message handler function to be executed everytime</p></li>
 </ul>
 </dd>
 </dl>
+<p>a message is received.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="rigel.clients.rosbridge.ROSBridgeClient.remove_message_handler">
 <span class="sig-name descname"><span class="pre">remove_message_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/rigel/clients/rosbridge.html#ROSBridgeClient.remove_message_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rigel.clients.rosbridge.ROSBridgeClient.remove_message_handler" title="Permalink to this definition"></a></dt>
-<dd><p>Deletes a registered ROS message handler and stops forwarding ROS messages arriving on specified topic.</p>
+<dd><p>Deletes a registered ROS message handler and stops forwarding ROS messages
+arriving on specified topic.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>topic</strong> (<em>string</em>) – The ROS topic associated with the message handler.</p></li>
-<li><p><strong>message_type</strong> (<em>string</em>) – The type of ROS messages associated with the message handler.</p></li>
-<li><p><strong>handler</strong> (<em>Callable</em><em>[</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em><em>, </em><em>None</em><em>]</em>) – The message handler function to be removed.</p></li>
+<li><p><strong>topic</strong> (<em>str</em>) – The ROS topic associated with the message handler.</p></li>
+<li><p><strong>message_type</strong> (<em>str</em>) – The type of ROS messages associated with the message handler.</p></li>
+<li><p><strong>handler</strong> (<em>ROS_EVENT_HANDLER_TYPE</em>) – The message handler function to be removed.</p></li>
 </ul>
 </dd>
 </dl>

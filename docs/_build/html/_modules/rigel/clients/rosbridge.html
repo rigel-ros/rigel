@@ -65,29 +65,44 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
 
 
-<span class="n">MAX_CONNECTION_ATTEMPTS</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="n">ROS_EVENT_TYPE</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
 <span class="n">ROS_MESSAGE_TYPE</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
-<span class="n">ROS_MESSAGE_HANDLER_TYPE</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">ROS_MESSAGE_TYPE</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
+<span class="n">ROS_EVENT_HANDLER_TYPE</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">ROS_MESSAGE_TYPE</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
+
+<span class="n">MAX_CONNECTION_ATTEMPTS</span> <span class="o">=</span> <span class="mi">15</span>
 
 
 <div class="viewcode-block" id="ROSBridgeClient"><a class="viewcode-back" href="../../../rigel.clients.html#rigel.clients.rosbridge.ROSBridgeClient">[docs]</a><span class="k">class</span> <span class="nc">ROSBridgeClient</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A wrapper class for the roslibpy.ros.Ros.</span>
-<span class="sd">    A client for the ROS bridge websocket server.</span>
+    <span class="sd">&quot;&quot;&quot;A client for the ROS bridge websocket server that supports multiple</span>
+<span class="sd">    handler functions for a same ROS event.</span>
+<span class="sd">    This is essentialy a wrapper class around the :class:`roslibpy.ros.Ros` class.</span>
+
+<span class="sd">    :param handlers: A map between ROS events and their handlers</span>
+<span class="sd">    :type handlers: Dict[ROS_EVENT_TYPE, List[rigel.clients.rosbridge.ROS_EVENT_HANDLER_TYPE]]</span>
+<span class="sd">    :param subscribers: A map between ROS events and their subscribers</span>
+<span class="sd">    :type subscribers: Dict[ROS_EVENT_TYPE, roslibpy.core.Topic]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">handlers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">ROS_MESSAGE_HANDLER_TYPE</span><span class="p">]]</span>
-    <span class="n">subscribers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">roslibpy</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Topic</span><span class="p">]</span>
+    <span class="n">handlers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">ROS_EVENT_TYPE</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">ROS_EVENT_HANDLER_TYPE</span><span class="p">]]</span>
+    <span class="n">subscribers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">ROS_EVENT_TYPE</span><span class="p">,</span> <span class="n">roslibpy</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Topic</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9090</span><span class="p">,</span> <span class="n">retries</span><span class="o">=</span><span class="n">MAX_CONNECTION_ATTEMPTS</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Class constructor.</span>
+        <span class="sd">&quot;&quot;&quot;Class constructor.</span>
 <span class="sd">        Connects to the ROS bridge websocket server.</span>
 
-<span class="sd">        :type host: string</span>
-<span class="sd">        :param host: The IP address of the ROS bridge websocket server. Defaults to localhost.</span>
-<span class="sd">        :type port: int</span>
-<span class="sd">        :param port: The ROS bridge websocket port. Defaults to 9090.</span>
+<span class="sd">        :type host: str, optional</span>
+<span class="sd">        :param host: The IP address for the ROS bridge websocket server.</span>
+<span class="sd">            Defaults to `localhost`</span>
+<span class="sd">        :type port: int, optional</span>
+<span class="sd">        :param port: The ROS bridge websocket server port.</span>
+<span class="sd">            Defaults to 9090.</span>
+<span class="sd">        :type retries: int, optional</span>
+<span class="sd">        :param retries: Maximum number of connection attempts to the ROS bridge websocket server</span>
+<span class="sd">            before raising an exception.</span>
+<span class="sd">            Defaults to 15.</span>
+
+<span class="sd">        :raises :class:`rigel.exceptions.ClientError`: Raised whenever a connection to the</span>
+<span class="sd">            ROS bridge websocket server could not be established.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">subscribers</span> <span class="o">=</span> <span class="p">{}</span>
@@ -98,6 +113,7 @@
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempting connection to </span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__rosbridge_client</span> <span class="o">=</span> <span class="n">roslibpy</span><span class="o">.</span><span class="n">Ros</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__rosbridge_client</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Connected to ROS bridge server&quot;</span><span class="p">)</span>
                 <span class="k">break</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">attempts</span> <span class="o">&lt;</span> <span class="n">retries</span><span class="p">:</span>
@@ -105,19 +121,19 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">ClientError</span><span class="p">(</span><span class="s1">&#39;ROS bridge&#39;</span><span class="p">,</span> <span class="n">exception</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__create_generic_message_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">message_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ROS_MESSAGE_HANDLER_TYPE</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Creates a generic message handler function for a specific ROS message type on a specific ROS topic.</span>
-<span class="sd">        Generic message handlers forward received messages to all registered message handler functions.</span>
+    <span class="k">def</span> <span class="nf">__create_generic_message_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">message_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ROS_EVENT_HANDLER_TYPE</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Creates a generic message handler function for a specific ROS event.</span>
+<span class="sd">        Each generic message handler forward received messages to all registered</span>
+<span class="sd">        message handler functions.</span>
 
-<span class="sd">        :type topic: string</span>
+<span class="sd">        :type topic: str</span>
 <span class="sd">        :param topic: The ROS topic to subscribe.</span>
-<span class="sd">        :type message_type: string</span>
-<span class="sd">        :param message_type: The expected type of incoming ROS messages.</span>
+<span class="sd">        :type message_type: str</span>
+<span class="sd">        :param message_type: The expected ROS message type.</span>
 
-<span class="sd">        :rtype: Callable[[Dict[str, Any]], None]</span>
-<span class="sd">        :return: The message handler function to be executed everytime a ROS message of specified type</span>
-<span class="sd">        is received on the specified ROS topic.</span>
+<span class="sd">        :rtype: ROS_EVENT_HANDLER_TYPE</span>
+<span class="sd">        :return: The callback function to be executed everytime a ROS message</span>
+<span class="sd">        of the specified type is received on the specified ROS topic.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">handler_function</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">ROS_MESSAGE_TYPE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">message_type</span><span class="p">)</span>
@@ -127,16 +143,16 @@
 
         <span class="k">return</span> <span class="n">handler_function</span>
 
-<div class="viewcode-block" id="ROSBridgeClient.register_message_handler"><a class="viewcode-back" href="../../../rigel.clients.html#rigel.clients.rosbridge.ROSBridgeClient.register_message_handler">[docs]</a>    <span class="k">def</span> <span class="nf">register_message_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">message_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">handler</span><span class="p">:</span> <span class="n">ROS_MESSAGE_HANDLER_TYPE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Registers a ROS message handler and starts listening for incoming messages.</span>
+<div class="viewcode-block" id="ROSBridgeClient.register_message_handler"><a class="viewcode-back" href="../../../rigel.clients.html#rigel.clients.rosbridge.ROSBridgeClient.register_message_handler">[docs]</a>    <span class="k">def</span> <span class="nf">register_message_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">message_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">handler</span><span class="p">:</span> <span class="n">ROS_EVENT_HANDLER_TYPE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Registers a ROS message handler and starts listening for incoming messages.</span>
 
-<span class="sd">        :type topic: string</span>
+<span class="sd">        :type topic: str</span>
 <span class="sd">        :param topic: The ROS topic to subscribe.</span>
-<span class="sd">        :type message_type: string</span>
-<span class="sd">        :param message_type: The expected type of incoming ROS messages.</span>
-<span class="sd">        :type handler: Callable[[Dict[str, Any]], None]</span>
-<span class="sd">        :param handler: The message handler function to be executed everytime a message is received.</span>
+<span class="sd">        :type message_type: str</span>
+<span class="sd">        :param message_type: The expected ROS message type.</span>
+<span class="sd">        :type handler: ROS_EVENT_HANDLER_TYPE</span>
+<span class="sd">        :param handler: The message handler function to be executed everytime</span>
+<span class="sd">        a message is received.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">message_type</span><span class="p">)</span>
 
@@ -154,15 +170,15 @@
         <span class="n">subscriber</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__create_generic_message_handler</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">message_type</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">subscribers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">subscriber</span></div>
 
-<div class="viewcode-block" id="ROSBridgeClient.remove_message_handler"><a class="viewcode-back" href="../../../rigel.clients.html#rigel.clients.rosbridge.ROSBridgeClient.remove_message_handler">[docs]</a>    <span class="k">def</span> <span class="nf">remove_message_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">message_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">handler</span><span class="p">:</span> <span class="n">ROS_MESSAGE_HANDLER_TYPE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Deletes a registered ROS message handler and stops forwarding ROS messages arriving on specified topic.</span>
+<div class="viewcode-block" id="ROSBridgeClient.remove_message_handler"><a class="viewcode-back" href="../../../rigel.clients.html#rigel.clients.rosbridge.ROSBridgeClient.remove_message_handler">[docs]</a>    <span class="k">def</span> <span class="nf">remove_message_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">message_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">handler</span><span class="p">:</span> <span class="n">ROS_EVENT_HANDLER_TYPE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Deletes a registered ROS message handler and stops forwarding ROS messages</span>
+<span class="sd">        arriving on specified topic.</span>
 
-<span class="sd">        :type topic: string</span>
+<span class="sd">        :type topic: str</span>
 <span class="sd">        :param topic: The ROS topic associated with the message handler.</span>
-<span class="sd">        :type message_type: string</span>
+<span class="sd">        :type message_type: str</span>
 <span class="sd">        :param message_type: The type of ROS messages associated with the message handler.</span>
-<span class="sd">        :type handler: Callable[[Dict[str, Any]], None]</span>
+<span class="sd">        :type handler: ROS_EVENT_HANDLER_TYPE</span>
 <span class="sd">        :param handler: The message handler function to be removed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">message_type</span><span class="p">)</span>
@@ -178,8 +194,7 @@
                     <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">subscribers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="ROSBridgeClient.close"><a class="viewcode-back" href="../../../rigel.clients.html#rigel.clients.rosbridge.ROSBridgeClient.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Close connection between to the ROS bridge websocket server.</span>
+        <span class="sd">&quot;&quot;&quot;Close connection between to the ROS bridge websocket server.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">subscriber</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subscribers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>

@@ -70,7 +70,7 @@
 <span class="kn">from</span> <span class="nn">rigel.models.rigelfile</span> <span class="kn">import</span> <span class="n">RigelfileGlobalData</span>
 <span class="kn">from</span> <span class="nn">rigel.plugins</span> <span class="kn">import</span> <span class="n">Plugin</span> <span class="k">as</span> <span class="n">PluginBase</span>
 <span class="kn">from</span> <span class="nn">rigel.providers.core</span> <span class="kn">import</span> <span class="n">SSHProviderOutputModel</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
 <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">PluginModel</span>
 
 
@@ -151,30 +151,6 @@
                         <span class="n">ssh_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ssh_keys</span></div>
 
-<div class="viewcode-block" id="Plugin.prepare_image_name"><a class="viewcode-back" href="../../../../../rigel.plugins.core.buildx.html#rigel.plugins.core.buildx.plugin.Plugin.prepare_image_name">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_image_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-
-        <span class="n">name_parts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">name_parts</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span> <span class="ow">in</span> <span class="n">name_parts</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">RigelError</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Invalid image name was provided &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">image</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
-
-        <span class="n">tags</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">force_tag_latest</span><span class="p">:</span>
-            <span class="n">tags</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;latest&#39;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">name_parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># a tag was declared alongside the image name</span>
-
-            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Consider using the field &#39;tags&#39; to define desired image tags&quot;</span><span class="p">)</span>
-            <span class="n">tag</span> <span class="o">=</span> <span class="n">name_parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">tag</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
-                <span class="n">tags</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
-            <span class="k">return</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">name_parts</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">_tag</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">_tag</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">tags</span><span class="p">)]</span>
-
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># no tag was declared alongside the image name</span>
-
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">force_tag_latest</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">RigelError</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Image name &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">image</span><span class="si">}</span><span class="s2">&#39; was declared without a tag&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">_tag</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">_tag</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">tags</span><span class="p">)]</span></div>
-
 <div class="viewcode-block" id="Plugin.setup"><a class="viewcode-back" href="../../../../../rigel.plugins.core.buildx.html#rigel.plugins.core.buildx.plugin.Plugin.setup">[docs]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">delete_qemu_files</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configure_qemu</span><span class="p">()</span>
@@ -192,12 +168,10 @@
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">UndeclaredEnvironmentVariableError</span><span class="p">(</span><span class="n">env</span><span class="o">=</span><span class="n">key</span><span class="o">.</span><span class="n">env</span><span class="p">)</span>
 
-        <span class="n">tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepare_image_name</span><span class="p">()</span>
-
         <span class="k">try</span><span class="p">:</span>
             <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">dir</span><span class="si">}</span><span class="s1">/Dockerfile&#39;</span><span class="p">,</span>
-                <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="n">tags</span><span class="p">,</span>
+                <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
                 <span class="s2">&quot;load&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">load</span><span class="p">,</span>
                 <span class="s2">&quot;push&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">push</span><span class="p">,</span>
                 <span class="s2">&quot;build_args&quot;</span><span class="p">:</span> <span class="n">complete_buildargs</span>
@@ -209,14 +183,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">__docker</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">dir</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">push</span><span class="p">:</span>
-                <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The following Docker images were built and pushed with success:&quot;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;- </span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Docker image &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">image</span><span class="si">}</span><span class="s2">&#39; built and pushed with success.&quot;</span><span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">load</span><span class="p">:</span>
-                <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The following Docker images were built with success:&quot;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;- </span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Docker image &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">image</span><span class="si">}</span><span class="s2">&#39; built with success.&quot;</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="n">RigelError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span></div>

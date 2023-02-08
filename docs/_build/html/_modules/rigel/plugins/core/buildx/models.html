@@ -76,8 +76,6 @@
 
 <span class="sd">    :type image: str</span>
 <span class="sd">    :cvar image: The name for the final Docker image.</span>
-<span class="sd">    :type tags: List[str]</span>
-<span class="sd">    :type tags: The list of image tags for the final Docker image.</span>
 <span class="sd">    :type load: bool</span>
 <span class="sd">    :cvar load: Flag to store built image locally. Defaults to False,</span>
 <span class="sd">    :type platforms: List[str]</span>
@@ -90,8 +88,6 @@
     <span class="n">image</span><span class="p">:</span> <span class="nb">str</span>
 
     <span class="c1"># Optional fields.</span>
-    <span class="n">tags</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;latest&#39;</span><span class="p">]</span>
-    <span class="n">force_tag_latest</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">buildargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">load</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">platforms</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
