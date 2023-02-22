@@ -51,7 +51,7 @@ class AWSProvider(Provider):
     def disconnect(self) -> None:
         for service in self.model.services:
             if service == 'ecr':
-                self.disconnect_ecr
+                self.disconnect_ecr()
             elif service == 'robomaker':
                 self.disconnect_robomaker()
             else:
@@ -82,10 +82,11 @@ class AWSProvider(Provider):
 
     def disconnect_ecr(self) -> None:
 
-        server = self.model.server
+        servers = self.model.ecr_servers
 
         try:
-            self.__docker.logout(server)
+            for server in servers:
+                self.__docker.logout(server)
         except DockerException as exception:
             raise DockerAPIError(exception)
 
