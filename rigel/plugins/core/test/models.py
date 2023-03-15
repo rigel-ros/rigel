@@ -46,4 +46,9 @@ class TestComponent(BaseModel):
 
 
 class PluginModel(BaseModel):
+
+    # Required fields.
     components: List[TestComponent]
+
+    # Optional fields.
+    timeout: float = 600.0  # seconds

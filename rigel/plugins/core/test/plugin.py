@@ -39,7 +39,7 @@ class Plugin(PluginBase):
         self.__simulation_uuid = str(uuid.uuid1())
         self.__network_name = f'rigel-simulation-{self.__simulation_uuid}'
         self.__docker_client = DockerClient()
-        self.__requirements_manager = SimulationRequirementsManager(10 * 60.0)
+        self.__requirements_manager = SimulationRequirementsManager(self.model.timeout)
         self.__requirements_parser = SimulationRequirementsParser()
 
     def create_simulation_network(self) -> None:
