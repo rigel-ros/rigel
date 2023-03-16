@@ -20,8 +20,8 @@ class TestComponent(BaseModel):
     :param image: The Docker image.
     :type name: string
     :param name: The Docker container name.
-    :type files: List[string].
-    :param files: The files to copy from the container to the host machine.
+    :type artifacts: List[string].
+    :param artifacts: Files to copy from the container to the host machine.
     :type instrospection: Instrospection.
     :param instrospection: Information regarding test conditions.
     :type _kwargs: Dict[str, Any]
@@ -34,7 +34,7 @@ class TestComponent(BaseModel):
 
     # Optional fields
     introspection: Optional[Introspection] = None
-    files: List[str] = []
+    artifacts: List[str] = []
 
     # Private fields.
     _kwargs: Dict[str, Any] = PrivateAttr()
@@ -43,7 +43,7 @@ class TestComponent(BaseModel):
         super().__init__(**{
             'name': data.pop('name', None),
             'image': data.pop('image', None),
-            'files': data.pop('files', []),
+            'artifacts': data.pop('artifacts', []),
             'introspection': data.pop('introspection', None)
         })
         self._kwargs = data

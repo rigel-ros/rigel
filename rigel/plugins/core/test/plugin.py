@@ -1,7 +1,9 @@
 import os
 import uuid
+from datetime import datetime
 from pathlib import Path
 from python_on_whales.components.container.cli_wrapper import Container
+from python_on_whales.exceptions import DockerException
 from rigel.clients import DockerClient, ROSBridgeClient
 from rigel.loggers import get_logger
 from rigel.models.application import Application
@@ -199,21 +201,41 @@ class Plugin(PluginBase):
     def copy_files(self) -> None:
         """Copy files from a container to the host system.
         """
+        root_path = f"/home/{os.environ.get('USER')}/.rigel/archives/test"
+        base_path = Path(f"{root_path}/{datetime.now().strftime('%d-%m-%Y-%H-%M-%S')}")
+        latest_path = Path(f"{root_path}/latest")
+
+        copied_files = False
         for test_component in self.model.components:
+
             component_container = self.__docker_client.get_container(test_component.name)
             assert isinstance(component_container, Container)
-            if test_component.files:
+
+            if test_component.artifacts:
+
+                base_path.mkdir(parents=True, exist_ok=True)
+
                 LOGGER.info(f"Saving files from component '{test_component.name}':")
-                for file in test_component.files:
+                for file in test_component.artifacts:
 
-                    base_path = Path(f"/home/{os.environ.get('USER')}/.rigel/archives/test")
-                    base_path.mkdir(parents=True, exist_ok=True)
+                    complete_file_path = Path(f"{base_path}/{test_component.name}")
+                    complete_file_path.mkdir(parents=True, exist_ok=True)
 
-                    filename = file.rsplit('/')[-1]
-                    complete_file_path = Path(f"{base_path}/{filename}")
-                    component_container.copy_from(Path(file), complete_file_path)
+                    try:
 
-                    LOGGER.info(f"- {file} -> {str(complete_file_path.absolute())}")
+                        component_container.copy_from(Path(file), complete_file_path)
+
+                        filename = file.rsplit('/')[-1]
+                        LOGGER.info(f"- {file} -> {str(complete_file_path.absolute())}/{filename}")
+                        copied_files = True
+
+                    except DockerException:
+
+                        LOGGER.warning(f"File '{file}' does not exist inside container. Ignoring.")
+
+        if copied_files:
+            latest_path.unlink()
+            latest_path.symlink_to(base_path)
 
     def setup(self) -> None:
         self.create_simulation_network()
