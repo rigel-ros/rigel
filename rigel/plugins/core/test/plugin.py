@@ -234,7 +234,9 @@ class Plugin(PluginBase):
                         LOGGER.warning(f"File '{file}' does not exist inside container. Ignoring.")
 
         if copied_files:
-            latest_path.unlink()
+
+            if latest_path.exists():
+                latest_path.unlink()
             latest_path.symlink_to(base_path)
 
     def setup(self) -> None:
