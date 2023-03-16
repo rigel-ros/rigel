@@ -1,4 +1,6 @@
+import os
 import uuid
+from pathlib import Path
 from python_on_whales.components.container.cli_wrapper import Container
 from rigel.clients import DockerClient, ROSBridgeClient
 from rigel.loggers import get_logger
@@ -194,6 +196,25 @@ class Plugin(PluginBase):
             self.__docker_client.remove_container(test_component.name)
             LOGGER.info(f"Removed Docker container '{test_component.name}'")
 
+    def copy_files(self) -> None:
+        """Copy files from a container to the host system.
+        """
+        for test_component in self.model.components:
+            component_container = self.__docker_client.get_container(test_component.name)
+            assert isinstance(component_container, Container)
+            if test_component.files:
+                LOGGER.info(f"Saving files from component '{test_component.name}':")
+                for file in test_component.files:
+
+                    base_path = Path(f"/home/{os.environ.get('USER')}/.rigel/archives/test")
+                    base_path.mkdir(parents=True, exist_ok=True)
+
+                    filename = file.rsplit('/')[-1]
+                    complete_file_path = Path(f"{base_path}/{filename}")
+                    component_container.copy_from(Path(file), complete_file_path)
+
+                    LOGGER.info(f"- {file} -> {str(complete_file_path.absolute())}")
+
     def setup(self) -> None:
         self.create_simulation_network()
         self.start_dns_server()
@@ -215,6 +236,7 @@ class Plugin(PluginBase):
         """
         Plugin graceful closing mechanism.
         """
+        self.copy_files()
         self.stop_ros_master()
         self.stop_dns_server()
         self.remove_package_containers()
