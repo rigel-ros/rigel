@@ -23,7 +23,9 @@ class Plugin:
         self.application = application
         self.providers_data = providers_data
 
-    def setup(self) -> None:
+        self.shared_data: Dict[str, Any] = {}
+
+    def setup(self) -> None:  # noqa
         """Use this function to allocate plugin resoures.
         """
         pass

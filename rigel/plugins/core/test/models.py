@@ -1,13 +1,13 @@
 from pydantic import BaseModel
-from typing import List, Tuple
+from typing import List, Optional
 
 
 class PluginModel(BaseModel):
 
     # Required fields.
-    hostname: str
     requirements: List[str]
 
     # Optional fields
-    publish: Tuple[int, int] = (9090, 9090)
+    hostname: Optional[str] = None
+    port: int = 9090
     timeout: float = 600.0  # seconds

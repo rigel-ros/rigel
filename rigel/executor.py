@@ -7,7 +7,7 @@ from rigel.models.sequence import (
 )
 from rigel.loggers import get_logger
 from rigel.plugins.plugin import Plugin
-from typing import List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 LOGGER = get_logger()
 
@@ -60,6 +60,7 @@ class SequentialStageExecutor(StageExecutor):
     def __init__(self, jobs: List[Plugin]) -> None:
         self.jobs = jobs
         self.current_job: Optional[Plugin] = None
+        self.plugin_shared_data: Dict[str, Any] = {}
 
     def cancel(self) -> None:
         if self.current_job:
@@ -72,6 +73,7 @@ class SequentialStageExecutor(StageExecutor):
             assert isinstance(job, Plugin)
             self.current_job = job
 
+            job.shared_data = self.plugin_shared_data
             job.setup()
             job.start()
             job.process()
@@ -86,6 +88,7 @@ class ConcurrentStagesExecutor(StageExecutor):
         self.jobs = jobs
         self.dependencies = dependencies
         self.current_job: Optional[Plugin] = None
+        self.plugin_shared_data: Dict[str, Any] = {}
 
     def cancel(self) -> None:
 
@@ -100,12 +103,14 @@ class ConcurrentStagesExecutor(StageExecutor):
 
         for job in self.dependencies:
             assert isinstance(job, Plugin)
+            job.shared_data = self.plugin_shared_data
             job.setup()
             job.start()
 
         for job in self.jobs:
             assert isinstance(job, Plugin)
             self.current_job = job
+            job.shared_data = self.plugin_shared_data
             job.setup()
             job.start()
             job.process()

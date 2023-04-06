@@ -22,6 +22,7 @@ class ApplicationComponent(BaseModel):
 
     # Optional fields
     artifacts: List[str] = []
+    introspection: bool = False
 
     # Private fields.
     _kwargs: Dict[str, Any] = PrivateAttr()
@@ -31,6 +32,7 @@ class ApplicationComponent(BaseModel):
             'name': data.pop('name', None),
             'image': data.pop('image', None),
             'artifacts': data.pop('artifacts', []),
+            'introspection': data.pop('introspection', False)
         })
         self._kwargs = data
 

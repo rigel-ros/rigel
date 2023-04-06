@@ -119,9 +119,9 @@ class WorkspaceManager:
             job_identifier = job.name
 
         # Is this really necessary?
-        for application_id, application_data in self.workspace.applications.items():
+        for _, application_data in self.workspace.applications.items():
 
-            LOGGER.info(f"Working with application '{application_id}'")
+            # LOGGER.info(f"Working with application '{application_id}'")
 
             if job_identifier in application_data.jobs:
 
@@ -154,7 +154,6 @@ class WorkspaceManager:
 
     def create_parallel_executor(self, stage: ParallelStage) -> ParallelStageExecutor:
         inner_stages = []
-
         for inner_stage in stage.parallel:
             if isinstance(inner_stage, SequentialStage):
                 inner_stages.append(self.create_sequential_executor(inner_stage))

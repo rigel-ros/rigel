@@ -122,7 +122,7 @@ class Plugin(PluginBase):
             if container:
 
                 container_ip = container.network_settings.networks[self.__network_name].ip_address
-                LOGGER.info(f"Created container '{test_component.name}' ({container_ip})")
+                LOGGER.info(f"Created container '{test_component.name}-{self.__simulation_uuid}' ({container_ip})")
 
     def run_package_container(self, component: ApplicationComponent, master: str) -> Optional[Container]:
         """
@@ -136,10 +136,11 @@ class Plugin(PluginBase):
         :rtype: docker.models.containers.Container
         :return: The Docker container serving as ROS master.
         """
+        component_name = f"{component.name}-{self.__simulation_uuid}"
         kwargs = component._kwargs.copy()
 
         kwargs['detach'] = True
-        kwargs['hostname'] = component.name
+        kwargs['hostname'] = component_name
 
         if 'envs' not in kwargs:
             kwargs['envs'] = {}
@@ -154,12 +155,16 @@ class Plugin(PluginBase):
             kwargs['restart'] = 'on-failure'
 
         self.__docker_client.run_container(
-            component.name,
+            component_name,
             component.image,
             **kwargs
         )
-        self.__docker_client.wait_for_container_status(component.name, 'running')
-        return self.__docker_client.get_container(component.name)  # this call to 'get_container' ensures updated container data
+        self.__docker_client.wait_for_container_status(component_name, 'running')
+
+        if component.introspection:
+            self.shared_data["simulation_address"] = component_name
+
+        return self.__docker_client.get_container(component_name)  # this call to 'get_container' ensures updated container data
 
     def remove_package_containers(self) -> None:
         """Remove a single containerized ROS node.
@@ -168,8 +173,9 @@ class Plugin(PluginBase):
         :param plugin: Test components for this package.
         """
         for test_component in self.model.components:
-            self.__docker_client.remove_container(test_component.name)
-            LOGGER.info(f"Removed Docker container '{test_component.name}'")
+            component_name = f"{test_component.name}-{self.__simulation_uuid}"
+            self.__docker_client.remove_container(component_name)
+            LOGGER.info(f"Removed Docker container '{component_name}'")
 
     def copy_files(self) -> None:
         """Copy files from a container to the host system.
@@ -181,17 +187,19 @@ class Plugin(PluginBase):
         copied_files = False
         for test_component in self.model.components:
 
-            component_container = self.__docker_client.get_container(test_component.name)
+            component_name = f"{test_component.name}-{self.__simulation_uuid}"
+
+            component_container = self.__docker_client.get_container(component_name)
             assert isinstance(component_container, Container)
 
             if test_component.artifacts:
 
                 base_path.mkdir(parents=True, exist_ok=True)
 
-                LOGGER.info(f"Saving files from component '{test_component.name}':")
+                LOGGER.info(f"Saving files from component '{component_name}':")
                 for file in test_component.artifacts:
 
-                    complete_file_path = Path(f"{base_path}/{test_component.name}")
+                    complete_file_path = Path(f"{base_path}/{component_name}")
                     complete_file_path.mkdir(parents=True, exist_ok=True)
 
                     try:

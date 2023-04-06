@@ -37,7 +37,7 @@ class Plugin(PluginBase):
 
         self.__ssh_keys: SSHProviderOutputModel = None
 
-    def setup(self) -> None:
+    def setup(self) -> None:  # noqa
         providers = [provider for _, provider in self.providers_data.items() if isinstance(provider, SSHProviderOutputModel)]
         if len(providers) > 1:
             raise RigelError(base='Multiple SSH key providers were found. Please specify which provider you want to use.')

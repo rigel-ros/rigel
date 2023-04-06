@@ -131,7 +131,7 @@ class Plugin(PluginBase):
                 raise RigelError(base=f"Image name '{self.model.image}' was declared without a tag")
             return [f"{name_parts[0]}:{_tag}" for _tag in list(tags)]
 
-    def setup(self) -> None:
+    def setup(self) -> None:  # noqa
         # self.delete_qemu_files()
         self.configure_qemu()
         self.create_builder()
