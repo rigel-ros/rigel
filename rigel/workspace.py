@@ -1,15 +1,30 @@
 import signal
+from rigel.exceptions import RigelError
+from rigel.executor import (
+    ConcurrentStagesExecutor,
+    ParallelStageExecutor,
+    SequentialStageExecutor,
+    StageExecutor
+)
 from rigel.files.decoder import YAMLDataDecoder
 from rigel.files.loader import YAMLDataLoader
 from rigel.loggers import get_logger
 from rigel.models.builder import ModelBuilder
 from rigel.models.plugin import PluginDataModel
 from rigel.models.rigelfile import Rigelfile
+from rigel.models.sequence import (
+    ConcurrentStage,
+    ParallelStage,
+    Sequence,
+    SequenceJobEntry,
+    SequentialStage
+)
+
 from rigel.plugins.manager import PluginManager
 from rigel.plugins.plugin import Plugin
 from rigel.providers.manager import ProviderManager
 from rigel.providers.provider import Provider
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 LOGGER = get_logger()
 
@@ -34,9 +49,10 @@ class WorkspaceManager:
 
         self.providers: List[Provider] = []
         self.providers_data: Dict[str, Any] = {}
-        self.__active_plugin: Optional[Plugin] = None
         self.__plugin_manager: PluginManager = PluginManager()
         self.__provider_manager: ProviderManager = ProviderManager()
+
+        self.__current_stage: Optional[StageExecutor] = None
 
         # Initialize providers
         self.initializate_providers()
@@ -79,39 +95,100 @@ class WorkspaceManager:
         Ensure that executing plugin is properly terminated and disconnect
         from all declared providers.
         """
-        print('Stopping execution...')
-        if self.__active_plugin:
-            self.__active_plugin.stop()
-            self.__active_plugin = None
-        self.disconnect_providers()
+        print()  # to avoid ^C character on the same line
+        LOGGER.error('Stopping execution')
+        if self.__current_stage:
+            self.__current_stage.cancel()
+            self.__current_stage = None
         exit(1)
 
-    def execute_plugin(self, job: str) -> None:
-        """Run the plugin associated with a given job.
+    def load_plugin(
+        self,
+        job: Union[str, SequenceJobEntry],
+        overwrite_data: Dict[str, Any] = {}  # noqa
+    ) -> Plugin:
+        """Load the Rigel plugin associated with a given job.
 
         :param job: The job identifier.
-        :type job: str
+        :type job: Union[str, SequenceJobEntry]
         """
+
+        if isinstance(job, str):
+            job_identifier = job
+        else:  # isinstance(job, SequenceJobEntry)
+            job_identifier = job.name
+
+        # Is this really necessary?
         for application_id, application_data in self.workspace.applications.items():
 
             LOGGER.info(f"Working with application '{application_id}'")
 
-            if job in application_data.jobs:
+            if job_identifier in application_data.jobs:
 
-                job_data = application_data.jobs[job]
+                job_data = application_data.jobs[job_identifier]
                 assert isinstance(job_data, PluginDataModel)
 
-                self.__active_plugin = self.__plugin_manager.load(
+                with_ = job_data.with_
+
+                if isinstance(job, SequenceJobEntry):
+                    with_.update(overwrite_data)
+
+                return self.__plugin_manager.load(
                     job_data.plugin,
-                    job_data.with_,
+                    with_,
                     self.workspace.vars,
                     application_data,
                     self.providers_data
                 )
-                self.__active_plugin.setup()
-                self.__active_plugin.run()
-                self.__active_plugin.stop()
-                self.__active_plugin = None
+
+    def create_sequential_executor(self, stage: SequentialStage) -> SequentialStageExecutor:
+        return SequentialStageExecutor(
+            [self.load_plugin(job) for job in stage.jobs]
+        )
+
+    def create_concurrent_executor(self, stage: ConcurrentStage) -> ConcurrentStagesExecutor:
+        return ConcurrentStagesExecutor(
+            [self.load_plugin(job) for job in stage.jobs],
+            [self.load_plugin(job) for job in stage.dependencies],
+        )
+
+    def create_parallel_executor(self, stage: ParallelStage) -> ParallelStageExecutor:
+        return ParallelStageExecutor(
+            [[self.load_plugin(job) for job in branch] for branch in stage.parallel]
+        )
+
+    def generate_execution_plan(self, sequence: Sequence) -> List[StageExecutor]:
+        """Generate an execution plan from a sequence of jobs.
+
+        :param sequence: the sequence of jobs
+        :type sequence: Sequence
+        :return: an execution plan
+        :rtype: List[StageExecutor]
+        """
+        execution_plan: List[StageExecutor] = []
+        for stage in sequence.stages:
+
+            if isinstance(stage, ParallelStage):
+                executor = self.create_parallel_executor(stage)
+            elif isinstance(stage, SequentialStage):
+                executor = self.create_sequential_executor(stage)
+            elif isinstance(stage, ConcurrentStage):
+                executor = self.create_concurrent_executor(stage)
+
+            execution_plan.append(executor)
+
+        return execution_plan
+
+    def execute(self, execution_plan: List[StageExecutor]) -> None:
+        """Run an execution plan.
+
+        :param execution_plan: the execution plan to be executed
+        :type execution_plan: List[StageExecutor]
+        """
+        for stage in execution_plan:
+            self.__current_stage = stage
+            stage.execute()
+        self.__current_stage = None
 
     def run_job(self, job: str) -> None:
         """Run a single job.
@@ -119,20 +196,31 @@ class WorkspaceManager:
         :param job: The job identifier.
         :type job: str
         """
+        # Create a wrapper sequence for the single job being executed
+        sequence = Sequence(
+            stages=[SequentialStage(jobs=[job])]
+        )
+
+        execution_plan = self.generate_execution_plan(sequence)
+
         self.handle_signals()
         self.connect_providers()
-        self.execute_plugin(job)
+        self.execute(execution_plan)
         self.disconnect_providers()
 
-    def run_sequence(self, sequence: str) -> None:
+    def run_sequence(self, name: str) -> None:
         """Run a sequence of jobs.
 
         :param sequence: The sequence identifier.
         :type sequence: str
         """
+        sequence = self.workspace.sequences.get(name, None)
+        if not sequence:
+            raise RigelError(f"Sequence '{name}' not found")
+
+        execution_plan = self.generate_execution_plan(sequence)
+
         self.handle_signals()
         self.connect_providers()
-        if sequence in self.workspace.sequences:
-            for job in self.workspace.sequences[sequence]:
-                self.execute_plugin(job)
+        self.execute(execution_plan)
         self.disconnect_providers()

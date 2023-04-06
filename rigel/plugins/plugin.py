@@ -28,8 +28,13 @@ class Plugin:
         """
         pass
 
-    def run(self) -> None:
-        """Use this function as an entry point for your plugin.
+    def start(self) -> None:
+        """Use this function to start executing business logic of your plugin.
+        """
+        pass
+
+    def process(self) -> None:
+        """Use this function to perform any evaluation of your plugin execution.
         """
         pass
 

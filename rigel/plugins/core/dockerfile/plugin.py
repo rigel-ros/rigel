@@ -44,7 +44,7 @@ class Plugin(PluginBase):
         elif providers:
             self.__ssh_keys = providers[0]
 
-    def run(self) -> None:
+    def start(self) -> None:
 
         dir = self.application.dir
 

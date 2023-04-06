@@ -1,8 +1,9 @@
 from pydantic import BaseModel, Extra
-from typing import List, Dict, Union
+from typing import Dict, Union
 from .application import Application
 from .data import ComplexDataModel, SimpleDataModel
 from .provider import ProviderDataModel
+from .sequence import Sequence
 
 RigelfileGlobalData = Dict[str, Union[ComplexDataModel, SimpleDataModel]]
 
@@ -15,7 +16,7 @@ class Rigelfile(BaseModel, extra=Extra.forbid):
 
     :type applications: Dict[str, Application]
     :cvar applications: The set of relevant ROS applications.
-    :type sequences: Dict[str, List[str]]
+    :type sequences: Dict[str, Sequence]
     :cvar sequences: The supported sequence of jobs.
     :type providers: Dict[str, ProviderDataModel]
     :cvar providers: A list of required providers.
@@ -28,5 +29,5 @@ class Rigelfile(BaseModel, extra=Extra.forbid):
 
     # Optional fields.
     providers: Dict[str, ProviderDataModel] = {}
-    sequences: Dict[str, List[str]] = {}
+    sequences: Dict[str, Sequence] = {}
     vars: RigelfileGlobalData = {}

@@ -1,4 +1,6 @@
 import os
+import random
+import string
 from rigel.clients import DockerClient
 from rigel.exceptions import RigelError, UndeclaredEnvironmentVariableError
 from rigel.loggers import get_logger
@@ -13,8 +15,6 @@ from .models import PluginModel
 
 
 LOGGER = get_logger()
-
-BUILDX_BUILDER_NAME = 'rigel-builder'
 
 
 class Plugin(PluginBase):
@@ -38,19 +38,29 @@ class Plugin(PluginBase):
         assert isinstance(self.model, PluginModel)
 
         self.__docker: DockerClient = DockerClient()
+        self.__builder_id = f"rigel-builder-{self.__builder_id_generator()}"
+
+    # Extracted and adapted from:
+    # https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits
+    def __builder_id_generator(self, size=16, chars=string.ascii_uppercase + string.digits) -> str:
+        return ''.join(random.choice(chars) for _ in range(size))
 
     def configure_qemu(self) -> None:
         """ Create the required QEMU configuration files.
         These configuration files support the building of multi-architecture Docker images.
         """
 
-        self.__docker.run_container(
-            'qus',
-            'aptman/qus',
-            command=['-s -- -c -p'],
-            privileged=True,
-            remove=True,
-        )
+        try:
+            self.__docker.run_container(
+                'qus',
+                'aptman/qus',
+                command=['-s -- -c -p'],
+                privileged=True,
+                remove=True,
+            )
+        except Exception:
+            # LOGGER.error('Ignoring error')
+            pass  # TODO: improve QEMU configuration mechanism
 
         LOGGER.info("QEMU configuration files were created.")
 
@@ -58,27 +68,31 @@ class Plugin(PluginBase):
         """ Delete required QEMU configuration files.
         """
 
-        self.__docker.run_container(
-            'qus',
-            'aptman/qus',
-            command=['-- -r'],
-            privileged=True,
-            remove=True,
-        )
+        try:
+            self.__docker.run_container(
+                'qus',
+                'aptman/qus',
+                command=['-- -r'],
+                privileged=True,
+                remove=True,
+            )
+        except Exception:
+            # LOGGER.error('Ignoring error')
+            pass  # TODO: improve QEMU removal mechanism
 
         LOGGER.info("QEMU configuration files were delete.")
 
     def create_builder(self) -> None:
         """ Create a dedicated Docker Buildx builder.
         """
-        self.__docker.create_builder(BUILDX_BUILDER_NAME, use=True)
-        LOGGER.info(f"Create builder '{BUILDX_BUILDER_NAME}'.")
+        self.__docker.create_builder(self.__builder_id, use=True)
+        LOGGER.info(f"Create builder '{self.__builder_id}'.")
 
     def remove_builder(self) -> None:
         """ Remove dedicated Docker Buildx builder.
         """
-        self.__docker.remove_builder(BUILDX_BUILDER_NAME)
-        LOGGER.info(f"Removed builder '{BUILDX_BUILDER_NAME}'.")
+        self.__docker.remove_builder(self.__builder_id)
+        LOGGER.info(f"Removed builder '{self.__builder_id}'.")
 
     def get_ssh_keys(self) -> None:
         ssh_keys = []
@@ -118,7 +132,7 @@ class Plugin(PluginBase):
             return [f"{name_parts[0]}:{_tag}" for _tag in list(tags)]
 
     def setup(self) -> None:
-        self.delete_qemu_files()
+        # self.delete_qemu_files()
         self.configure_qemu()
         self.create_builder()
 
@@ -130,7 +144,7 @@ class Plugin(PluginBase):
         except KeyError:
             raise UndeclaredEnvironmentVariableError(env=key.env)
 
-    def run(self) -> None:
+    def start(self) -> None:
 
         LOGGER.info(f"Building Docker image '{self.model.image}'.")
 
