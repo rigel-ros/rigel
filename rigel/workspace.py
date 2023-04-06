@@ -153,9 +153,15 @@ class WorkspaceManager:
         )
 
     def create_parallel_executor(self, stage: ParallelStage) -> ParallelStageExecutor:
-        return ParallelStageExecutor(
-            [[self.load_plugin(job) for job in branch] for branch in stage.parallel]
-        )
+        inner_stages = []
+
+        for inner_stage in stage.parallel:
+            if isinstance(inner_stage, SequentialStage):
+                inner_stages.append(self.create_sequential_executor(inner_stage))
+            elif isinstance(inner_stage, ConcurrentStage):
+                inner_stages.append(self.create_concurrent_executor(inner_stage))
+
+        return ParallelStageExecutor(inner_stages)
 
     def generate_execution_plan(self, sequence: Sequence) -> List[StageExecutor]:
         """Generate an execution plan from a sequence of jobs.

@@ -7,7 +7,7 @@ from rigel.models.sequence import (
 )
 from rigel.loggers import get_logger
 from rigel.plugins.plugin import Plugin
-from typing import List, Optional
+from typing import List, Optional, Union
 
 LOGGER = get_logger()
 
@@ -23,9 +23,9 @@ class StageExecutor:
 
 class ExecutionBranch(threading.Thread):
 
-    def __init__(self, branch: List[Plugin]) -> None:
+    def __init__(self, stage: Union[SequentialStage, ConcurrentStage]) -> None:
         super(ExecutionBranch, self).__init__()
-        self.executor = SequentialStageExecutor(branch)
+        self.executor = SequentialStageExecutor(stage)
 
     def cancel(self) -> None:
         self.executor.cancel()
@@ -36,8 +36,8 @@ class ExecutionBranch(threading.Thread):
 
 class ParallelStageExecutor(StageExecutor):
 
-    def __init__(self, branches: List[List[Plugin]]) -> None:
-        self.branches = branches
+    def __init__(self, stages: List[Union[SequentialStage, ConcurrentStage]]) -> None:
+        self.stages = stages
         self.threads = []
 
     def cancel(self) -> None:
@@ -45,8 +45,8 @@ class ParallelStageExecutor(StageExecutor):
             thread.cancel()
 
     def execute(self) -> None:
-        for branch in self.branches:
-            self.threads.append(ExecutionBranch(branch))
+        for stage in self.stages:
+            self.threads.append(ExecutionBranch(stage))
 
         for thread in self.threads:
             thread.start()

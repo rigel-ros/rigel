@@ -21,17 +21,17 @@ class SequentialStage(StageBaseModel, extra=Extra.forbid):
     jobs: List[Union[str, SequenceJobEntry]]
 
 
-class ParallelStage(StageBaseModel, extra=Extra.forbid):
-
-    # Required fields.
-    parallel: List[List[Union[str, SequenceJobEntry]]]
-
-
 class ConcurrentStage(StageBaseModel, extra=Extra.forbid):
 
     # Required fields.
     jobs: List[Union[str, SequenceJobEntry]]
     dependencies: List[Union[str, SequenceJobEntry]]
+
+
+class ParallelStage(StageBaseModel, extra=Extra.forbid):
+
+    # Required fields.
+    parallel: List[Union[SequentialStage, ConcurrentStage]]
 
 
 SequenceStage = Union[SequentialStage, ParallelStage, ConcurrentStage]
