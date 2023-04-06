@@ -25,7 +25,7 @@ class ExecutionBranch(threading.Thread):
 
     def __init__(self, stage: Union[SequentialStage, ConcurrentStage]) -> None:
         super(ExecutionBranch, self).__init__()
-        self.executor = SequentialStageExecutor(stage)
+        self.executor = stage
 
     def cancel(self) -> None:
         self.executor.cancel()
