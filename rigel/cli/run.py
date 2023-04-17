@@ -2,7 +2,7 @@ import click
 from rigel.cli.command import CLICommand
 from rigel.exceptions import RigelError
 from rigel.loggers import get_logger
-from rigel.workspace import WorkspaceManager
+from rigel.orchestrator import Orchestrator
 from sys import exit
 
 LOGGER = get_logger()
@@ -21,8 +21,8 @@ class RunJobCommand(CLICommand):
         """Run a single job
         """
         try:
-            manager = WorkspaceManager('./Rigelfile')
-            manager.run_job(job)
+            orchestrator = Orchestrator('./Rigelfile')
+            orchestrator.run_job(job)
         except RigelError as err:
             LOGGER.error(err)
             exit(1)
@@ -33,8 +33,8 @@ class RunJobCommand(CLICommand):
         """Run a sequence of jobs
         """
         try:
-            manager = WorkspaceManager('./Rigelfile')
-            manager.run_sequence(sequence)
+            orchestrator = Orchestrator('./Rigelfile')
+            orchestrator.run_sequence(sequence)
         except RigelError as err:
             LOGGER.error(err)
             exit(1)

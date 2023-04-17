@@ -19,7 +19,6 @@ from rigel.models.sequence import (
     SequenceJobEntry,
     SequentialStage
 )
-
 from rigel.plugins.manager import PluginManager
 from rigel.plugins.plugin import Plugin
 from rigel.providers.manager import ProviderManager
@@ -29,23 +28,24 @@ from typing import Any, Dict, List, Optional, Union
 LOGGER = get_logger()
 
 
-class WorkspaceManager:
+class Orchestrator:
 
-    def __init__(self, path: str) -> None:
+    def __init__(self, rigelfile: str) -> None:
         """Class constructor.
-        Retrieve workspace information from a Rigelfile.
+        Job orchestrator.
 
-        :path: path to Rigelfile.
+        :rigelfile: path to Rigelfile.
         :type: str
         """
+
         # Parse YAML Rigelfile
-        loader = YAMLDataLoader(path)
+        loader = YAMLDataLoader(rigelfile)
         decoder = YAMLDataDecoder()
         yaml_data = decoder.decode(loader.load())
 
         # Initialize internal data structures
-        self.workspace: Rigelfile = ModelBuilder(Rigelfile).build([], yaml_data)
-        assert isinstance(self.workspace, Rigelfile)
+        self.rigelfile: Rigelfile = ModelBuilder(Rigelfile).build([], yaml_data)
+        assert isinstance(self.rigelfile, Rigelfile)
 
         self.providers: List[Provider] = []
         self.providers_data: Dict[str, Any] = {}
@@ -58,13 +58,13 @@ class WorkspaceManager:
         self.initializate_providers()
 
     def initializate_providers(self) -> None:
-        for provider_id, provider_data in self.workspace.providers.items():
+        for provider_id, provider_data in self.rigelfile.providers.items():
             self.providers.append(
                 self.__provider_manager.load(
                     provider_data.provider,
                     provider_id,
                     provider_data.with_,
-                    self.workspace.vars,
+                    self.rigelfile.vars,
                     self.providers_data
                 )
             )
@@ -113,7 +113,7 @@ class WorkspaceManager:
             job_identifier = job.name
 
         try:
-            return self.workspace.jobs[job_identifier]
+            return self.rigelfile.jobs[job_identifier]
         except KeyError:
             raise RigelError(f"Unknown job '{job_identifier}'")
 
@@ -138,8 +138,8 @@ class WorkspaceManager:
         return self.__plugin_manager.load(
             job_data.plugin,
             with_,
-            self.workspace.vars,
-            self.workspace.application,
+            self.rigelfile.vars,
+            self.rigelfile.application,
             self.providers_data
         )
 
@@ -221,7 +221,7 @@ class WorkspaceManager:
         :param sequence: The sequence identifier.
         :type sequence: str
         """
-        sequence = self.workspace.sequences.get(name, None)
+        sequence = self.rigelfile.sequences.get(name, None)
         if not sequence:
             raise RigelError(f"Sequence '{name}' not found")
 
