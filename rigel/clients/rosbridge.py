@@ -36,7 +36,6 @@ class ROSBridgeClient:
                 print(f"Attempting connection to {host}:{port}")
                 self.__rosbridge_client = roslibpy.Ros(host=host, port=port)
                 self.__rosbridge_client.run()
-                print("Connected to ROS bridge server")
                 break
             except Exception as exception:
                 if attempts < retries:

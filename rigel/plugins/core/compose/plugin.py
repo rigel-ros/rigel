@@ -49,8 +49,9 @@ class Plugin(PluginBase):
         LOGGER.info(f"Created Docker network '{self.__network_name}'")
 
     def start_dns_server(self) -> None:
+        dns_container = f'rigel-dns-{self.__simulation_uuid}'
         self.__docker_client.run_container(
-            'rigel-dns',
+            dns_container,
             'dvdarias/docker-hoster',
             detach=True,
             networks=[self.__network_name],
@@ -60,30 +61,33 @@ class Plugin(PluginBase):
                 ('/etc/hosts', '/tmp/hosts')
             ]
         )
-        LOGGER.info("Created DNS server")
+        LOGGER.info(f"Created DNS server '{dns_container}'")
 
     def stop_dns_server(self) -> None:
-        self.__docker_client.remove_container('rigel-dns')
-        LOGGER.info("Stopped DNS server")
+        dns_container = f'rigel-dns-{self.__simulation_uuid}'
+        self.__docker_client.remove_container(dns_container)
+        LOGGER.info(f"Stopped DNS server '{dns_container}'")
 
     def start_ros_master(self) -> None:
+        master_container = f'master-{self.__simulation_uuid}'
         self.__docker_client.run_container(
-            'master',
+            master_container,
             f'ros:{self.application.distro}',
-            hostname='master',
+            hostname=master_container,
             command=['roscore'],
             envs={
-                'ROS_HOSTNAME': 'master',
-                'ROS_MASTER_URI': 'http://master:11311'
+                'ROS_HOSTNAME': master_container,
+                'ROS_MASTER_URI': f'http://{master_container}:11311'
             },
             networks=[self.__network_name],
             detach=True
         )
-        LOGGER.info("Created ROS master")
+        LOGGER.info(f"Created ROS master '{master_container}'")
 
     def stop_ros_master(self) -> None:
-        self.__docker_client.remove_container('master')
-        LOGGER.info("Stopped ROS master")
+        master_container = f'master-{self.__simulation_uuid}'
+        self.__docker_client.remove_container(master_container)
+        LOGGER.info(f"Stopped ROS master '{master_container}'")
 
     def remove_simulation_network(self) -> None:
         """
@@ -109,8 +113,9 @@ class Plugin(PluginBase):
         """
         Launch all containerized ROS nodes required for a given simulation.
         """
-        self.__docker_client.wait_for_container_status('master', 'running')
-        master_container = self.__docker_client.get_container('master')
+        master_container = f'master-{self.__simulation_uuid}'
+        self.__docker_client.wait_for_container_status(master_container, 'running')
+        master_container = self.__docker_client.get_container(master_container)
         assert master_container
         master_ip = master_container.network_settings.networks[self.__network_name].ip_address
 
@@ -118,11 +123,12 @@ class Plugin(PluginBase):
         for test_component in self.model.components:
 
             container = self.run_package_container(test_component, master_ip)
+            # container = self.run_package_container(test_component, master_container)
 
             if container:
 
                 container_ip = container.network_settings.networks[self.__network_name].ip_address
-                LOGGER.info(f"Created container '{test_component.name}-{self.__simulation_uuid}' ({container_ip})")
+                LOGGER.info(f"Created container '{test_component.name}-{self.__simulation_uuid}' ({container_ip} -> {master_ip})")
 
     def run_package_container(self, component: ApplicationComponent, master: str) -> Optional[Container]:
         """
