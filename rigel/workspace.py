@@ -102,6 +102,21 @@ class WorkspaceManager:
             self.__current_stage = None
         exit(1)
 
+    def get_job_data(
+        self,
+        job: Union[str, SequenceJobEntry]
+    ) -> PluginDataModel:
+
+        if isinstance(job, str):
+            job_identifier = job
+        else:  # isinstance(job, SequenceJobEntry)
+            job_identifier = job.name
+
+        try:
+            return self.workspace.jobs[job_identifier]
+        except KeyError:
+            raise RigelError(f"Unknown job '{job_identifier}'")
+
     def load_plugin(
         self,
         job: Union[str, SequenceJobEntry],
@@ -113,33 +128,20 @@ class WorkspaceManager:
         :type job: Union[str, SequenceJobEntry]
         """
 
-        if isinstance(job, str):
-            job_identifier = job
-        else:  # isinstance(job, SequenceJobEntry)
-            job_identifier = job.name
+        job_data = self.get_job_data(job)
 
-        # Is this really necessary?
-        for _, application_data in self.workspace.applications.items():
+        with_ = job_data.with_
 
-            # LOGGER.info(f"Working with application '{application_id}'")
+        if isinstance(job, SequenceJobEntry):
+            with_.update(overwrite_data)
 
-            if job_identifier in application_data.jobs:
-
-                job_data = application_data.jobs[job_identifier]
-                assert isinstance(job_data, PluginDataModel)
-
-                with_ = job_data.with_
-
-                if isinstance(job, SequenceJobEntry):
-                    with_.update(overwrite_data)
-
-                return self.__plugin_manager.load(
-                    job_data.plugin,
-                    with_,
-                    self.workspace.vars,
-                    application_data,
-                    self.providers_data
-                )
+        return self.__plugin_manager.load(
+            job_data.plugin,
+            with_,
+            self.workspace.vars,
+            self.workspace.application,
+            self.providers_data
+        )
 
     def create_sequential_executor(self, stage: SequentialStage) -> SequentialStageExecutor:
         return SequentialStageExecutor(
