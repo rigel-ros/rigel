@@ -51,6 +51,7 @@ class Orchestrator:
         self.providers_data: Dict[str, Any] = {}
         self.__plugin_manager: PluginManager = PluginManager()
         self.__provider_manager: ProviderManager = ProviderManager()
+        self.__job_shared_data: Dict[str, Any] = {}
 
         self.__current_stage: Optional[StageExecutor] = None
 
@@ -100,6 +101,7 @@ class Orchestrator:
         if self.__current_stage:
             self.__current_stage.cancel()
             self.__current_stage = None
+        # print(self.__job_shared_data)
         exit(1)
 
     def get_job_data(
@@ -194,7 +196,9 @@ class Orchestrator:
         """
         for stage in execution_plan:
             self.__current_stage = stage
+            stage.job_shared_data = self.__job_shared_data
             stage.execute()
+        # print(self.__job_shared_data)
         self.__current_stage = None
 
     def run_job(self, job: str) -> None:

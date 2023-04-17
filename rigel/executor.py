@@ -1,8 +1,7 @@
+import copy
 import threading
 from rigel.models.sequence import (
     ConcurrentStage,
-    ParallelStage,
-    Sequence,
     SequentialStage
 )
 from rigel.loggers import get_logger
@@ -14,6 +13,8 @@ LOGGER = get_logger()
 
 class StageExecutor:
 
+    job_shared_data: Dict[str, Any] = {}
+
     def cancel(self) -> None:
         raise NotImplementedError
 
@@ -23,9 +24,17 @@ class StageExecutor:
 
 class ExecutionBranch(threading.Thread):
 
-    def __init__(self, stage: Union[SequentialStage, ConcurrentStage]) -> None:
+    def __init__(
+        self,
+        stage: Union[SequentialStage, ConcurrentStage],
+        job_shared_data: Dict[str, Any]
+    ) -> None:
         super(ExecutionBranch, self).__init__()
+
         self.executor = stage
+        assert isinstance(self.executor, StageExecutor)
+
+        self.executor.job_shared_data = job_shared_data
 
     def cancel(self) -> None:
         self.executor.cancel()
@@ -45,8 +54,18 @@ class ParallelStageExecutor(StageExecutor):
             thread.cancel()
 
     def execute(self) -> None:
+
+        # TODO: consider / implement a mechanism that allows shared plugin data to passed
+        # from a ParallelStageExecutor instance to other stage executors
+
         for stage in self.stages:
-            self.threads.append(ExecutionBranch(stage))
+
+            # NOTE: a deep copy of data is passed to each thread
+            # to avoid conflicts
+
+            self.threads.append(
+                ExecutionBranch(stage, copy.deepcopy(self.job_shared_data))
+            )
 
         for thread in self.threads:
             thread.start()
@@ -60,7 +79,6 @@ class SequentialStageExecutor(StageExecutor):
     def __init__(self, jobs: List[Plugin]) -> None:
         self.jobs = jobs
         self.current_job: Optional[Plugin] = None
-        self.plugin_shared_data: Dict[str, Any] = {}
 
     def cancel(self) -> None:
         if self.current_job:
@@ -73,7 +91,7 @@ class SequentialStageExecutor(StageExecutor):
             assert isinstance(job, Plugin)
             self.current_job = job
 
-            job.shared_data = self.plugin_shared_data
+            job.shared_data = self.job_shared_data
             job.setup()
             job.start()
             job.process()
@@ -88,7 +106,6 @@ class ConcurrentStagesExecutor(StageExecutor):
         self.jobs = jobs
         self.dependencies = dependencies
         self.current_job: Optional[Plugin] = None
-        self.plugin_shared_data: Dict[str, Any] = {}
 
     def cancel(self) -> None:
 
@@ -103,14 +120,14 @@ class ConcurrentStagesExecutor(StageExecutor):
 
         for job in self.dependencies:
             assert isinstance(job, Plugin)
-            job.shared_data = self.plugin_shared_data
+            job.shared_data = self.job_shared_data
             job.setup()
             job.start()
 
         for job in self.jobs:
             assert isinstance(job, Plugin)
             self.current_job = job
-            job.shared_data = self.plugin_shared_data
+            job.shared_data = self.job_shared_data
             job.setup()
             job.start()
             job.process()
@@ -120,27 +137,3 @@ class ConcurrentStagesExecutor(StageExecutor):
 
         for job in self.dependencies:
             job.stop()
-
-
-if __name__ == '__main__':
-
-    sequence = Sequence(
-        stages=[
-            ParallelStage(
-                description="Build the required Docker images",
-                parallel=[
-                    ["dockerfile_robot", "build_robot"],
-                    ["dockerfile_simulation", "build_simulation"]
-                ]
-            ),
-            ConcurrentStage(
-                description="Ensure application works as expected",
-                core=["introspection_job"],
-                depends=["simulation_robomaker"]
-            ),
-            SequentialStage(
-                description="Build final Docker image",
-                jobs=["dockerfile_final", "build_final_image"]
-            )
-        ]
-    )
