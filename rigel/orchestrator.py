@@ -19,8 +19,6 @@ from rigel.models.sequence import (
     SequenceJobEntry,
     SequentialStage
 )
-from rigel.plugins.manager import PluginManager
-from rigel.plugins.plugin import Plugin
 from rigel.providers.manager import ProviderManager
 from rigel.providers.provider import Provider
 from typing import Any, Dict, List, Optional, Union
@@ -49,7 +47,6 @@ class Orchestrator:
 
         self.providers: List[Provider] = []
         self.providers_data: Dict[str, Any] = {}
-        self.__plugin_manager: PluginManager = PluginManager()
         self.__provider_manager: ProviderManager = ProviderManager()
         self.__job_shared_data: Dict[str, Any] = {}
 
@@ -109,51 +106,31 @@ class Orchestrator:
         job: Union[str, SequenceJobEntry]
     ) -> PluginDataModel:
 
-        if isinstance(job, str):
-            job_identifier = job
-        else:  # isinstance(job, SequenceJobEntry)
-            job_identifier = job.name
-
         try:
-            return self.rigelfile.jobs[job_identifier]
+
+            if isinstance(job, str):
+                job_identifier = job
+                job_data = self.rigelfile.jobs[job_identifier]
+
+            else:  # isinstance(job, SequenceJobEntry)
+                job_identifier = job.name
+                job_data = self.rigelfile.jobs[job_identifier]
+                job_data.with_.update(job.with_)
+
+            return job_data
+
         except KeyError:
             raise RigelError(f"Unknown job '{job_identifier}'")
 
-    def load_plugin(
-        self,
-        job: Union[str, SequenceJobEntry],
-        overwrite_data: Dict[str, Any] = {}  # noqa
-    ) -> Plugin:
-        """Load the Rigel plugin associated with a given job.
-
-        :param job: The job identifier.
-        :type job: Union[str, SequenceJobEntry]
-        """
-
-        job_data = self.get_job_data(job)
-
-        with_ = job_data.with_
-
-        if isinstance(job, SequenceJobEntry):
-            with_.update(overwrite_data)
-
-        return self.__plugin_manager.load(
-            job_data.plugin,
-            with_,
-            self.rigelfile.vars,
-            self.rigelfile.application,
-            self.providers_data
-        )
-
     def create_sequential_executor(self, stage: SequentialStage) -> SequentialStageExecutor:
         return SequentialStageExecutor(
-            [self.load_plugin(job) for job in stage.jobs]
+            [self.get_job_data(job) for job in stage.jobs]
         )
 
     def create_concurrent_executor(self, stage: ConcurrentStage) -> ConcurrentStagesExecutor:
         return ConcurrentStagesExecutor(
-            [self.load_plugin(job) for job in stage.jobs],
-            [self.load_plugin(job) for job in stage.dependencies],
+            [self.get_job_data(job) for job in stage.jobs],
+            [self.get_job_data(job) for job in stage.dependencies],
         )
 
     def create_parallel_executor(self, stage: ParallelStage) -> ParallelStageExecutor:
@@ -164,7 +141,7 @@ class Orchestrator:
             elif isinstance(inner_stage, ConcurrentStage):
                 inner_stages.append(self.create_concurrent_executor(inner_stage))
 
-        return ParallelStageExecutor(inner_stages)
+        return ParallelStageExecutor(inner_stages, stage.matrix)
 
     def generate_execution_plan(self, sequence: Sequence) -> List[StageExecutor]:
         """Generate an execution plan from a sequence of jobs.
@@ -197,7 +174,11 @@ class Orchestrator:
         for stage in execution_plan:
             self.__current_stage = stage
             stage.job_shared_data = self.__job_shared_data
-            stage.execute()
+            stage.execute(
+                self.rigelfile.vars,
+                self.rigelfile.application,
+                self.providers_data
+            )
         # print(self.__job_shared_data)
         self.__current_stage = None
 
