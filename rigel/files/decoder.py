@@ -82,15 +82,20 @@ class YAMLDataDecoder:
             new_path = f'{path}.{k}' if path else k
 
             if isinstance(v, str):  # in order to contain delimiters the field must be of type str
-                matches = re.findall(r'{{[a-zA-Z0-9_\s\-\!\?]+}}', v)
+                matches = re.findall(r'{{[a-zA-Z0-9_\s\-\!\?\.]+}}', v)
                 for match in matches:
+
                     variable_name = self.__extract_variable_name(match)
-                    if variable_name in vars:
-                        data[k] = data[k].replace(match, vars[variable_name])
-                    elif variable_name in os.environ:
-                        data[k] = data[k].replace(match, os.environ[variable_name])
+                    if len(variable_name.split('.', 1)) == 1:  # ensure variable can be decoded right away
+
+                        if variable_name in vars:
+                            data[k] = data[k].replace(match, vars[variable_name])
+                        elif variable_name in os.environ:
+                            data[k] = data[k].replace(match, os.environ[variable_name])
+                        else:  # otherwise keep the variable name for runtime decoding
+                            raise UndeclaredGlobalVariableError(new_path, variable_name)
                     else:
-                        raise UndeclaredGlobalVariableError(new_path, variable_name)
+                        data[k] = data[k].replace(match, variable_name)
             else:
                 self.__aux_decode(v, vars, new_path)
 
@@ -115,7 +120,9 @@ class YAMLDataDecoder:
             if isinstance(k, str):  # in order to contain delimiters the field must be of type str
                 matches = re.findall(r'{{[a-zA-Z0-9_\s\-\!\?]+}}', k)
                 for match in matches:
+
                     variable_name = self.__extract_variable_name(match)
+
                     if variable_name in vars:
                         data[vars[variable_name]] = data.pop(k)
                     elif variable_name in os.environ:
@@ -143,13 +150,16 @@ class YAMLDataDecoder:
             if isinstance(elem, str):  # in order to contain delimiters the field must be of type str
                 matches = re.findall(r'{{[a-zA-Z0-9_\s\-\!\?]+}}', elem)
                 for match in matches:
+
                     variable_name = self.__extract_variable_name(match)
+
                     if variable_name in vars:
                         data[idx] = data[idx].replace(match, vars[variable_name])
                     elif variable_name in os.environ:
                         data[idx] = data[idx].replace(match, os.environ[variable_name])
                     else:
                         raise UndeclaredGlobalVariableError(new_path, variable_name)
+
             else:
                 self.__aux_decode(elem, vars, new_path)
 

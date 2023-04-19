@@ -34,7 +34,7 @@ class ParallelStage(StageBaseModel, extra=Extra.forbid):
     parallel: List[Union[SequentialStage, ConcurrentStage]]
 
     # Optional fields.
-    matrix: Dict[str, List[Any]] = {}
+    matrix: Dict[str, Union[str, List[Any]]] = {}
 
 
 SequenceStage = Union[SequentialStage, ParallelStage, ConcurrentStage]

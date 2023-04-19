@@ -1,6 +1,7 @@
 import copy
 import itertools
 import threading
+from rigel.exceptions import RigelError
 from rigel.loggers import get_logger
 from rigel.models.application import Application
 from rigel.models.plugin import PluginDataModel
@@ -111,15 +112,37 @@ class ParallelStageExecutor(StageExecutor):
         self.matrix = matrix
         self.threads = []
 
-    def __combine_matrix_data(self) -> List[Dict[str, Any]]:
-        keys = self.matrix.keys()
-        values = self.matrix.values()
+    def __combine_matrix_data(self, matrix: Dict[str, List[Any]]) -> List[Dict[str, Any]]:
+        keys = matrix.keys()
+        values = matrix.values()
 
         # NOTE: it returns [{}] if no matrix data was provided.
         # This ensures that 'execute' can always be called.
 
         combinations = list(itertools.product(*values))
         return [dict(zip(keys, combo)) for combo in combinations]
+
+    def __decode_matrix_data(self) -> Dict[str, List[Any]]:
+        decoded_matrix = {}
+        for key, value in self.matrix.items():
+            if isinstance(value, str):
+
+                try:
+                    header, identifier = value.split('.')
+                except ValueError:
+                    raise RigelError(f"Invalid runtime variable declaration '{value}'")
+
+                if header != 'data':
+                    raise RigelError(f"Unable to decode matrix. Unknown field '{header}'")
+
+                try:
+                    decoded_matrix[key] = self.job_shared_data[identifier]
+                except KeyError:
+                    raise RigelError(f"No field '{identifier}' found in shared runtime data")
+
+            else:
+                decoded_matrix[key] = value
+        return decoded_matrix
 
     def cancel(self) -> None:
         for thread in self.threads:
@@ -132,10 +155,9 @@ class ParallelStageExecutor(StageExecutor):
         providers_data: Dict[str, Any]
     ) -> None:
 
-        # TODO: consider / implement a mechanism that allows shared plugin data to passed
-        # from a ParallelStageExecutor instance to other stage executors
+        decoded_matrix = self.__decode_matrix_data()
+        combinations = self.__combine_matrix_data(decoded_matrix)
 
-        combinations = self.__combine_matrix_data()
         for combination in combinations:
 
             # NOTE: a deep copy of data is passed to each thread
@@ -160,6 +182,9 @@ class ParallelStageExecutor(StageExecutor):
 
         for thread in self.threads:
             thread.join()
+
+        # TODO: consider / implement a mechanism that allows shared plugin data to passed
+        # from a ParallelStageExecutor instance to other stage executors
 
 
 class SequentialStageExecutor(LoaderStageExecutor):

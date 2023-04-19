@@ -174,6 +174,7 @@ class Orchestrator:
         for stage in execution_plan:
             self.__current_stage = stage
             stage.job_shared_data = self.__job_shared_data
+
             stage.execute(
                 self.rigelfile.vars,
                 self.rigelfile.application,
