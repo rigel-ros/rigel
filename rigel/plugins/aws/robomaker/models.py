@@ -70,7 +70,6 @@ class RobotApplication(BaseModel, extra=Extra.forbid):
     name: str = DEFAULT_ROBOT_APPLICATION_NAME
     environment: List[str] = []
     ports: List[Tuple[int, int]] = []
-    requirements: List[str] = []
     streamUI: bool = Field(alias='stream_ui', default=False)
     tools: List[Tool] = []
 

@@ -1,6 +1,5 @@
 import boto3
 import time
-from rigel.clients import ROSBridgeClient
 from rigel.exceptions import RigelError
 from rigel.loggers import get_logger
 from rigel.models.application import Application
@@ -9,9 +8,6 @@ from rigel.models.plugin import PluginRawData
 from rigel.models.rigelfile import RigelfileGlobalData
 from rigel.providers.aws import AWSProviderOutputModel
 from rigel.plugins.plugin import Plugin as PluginBase
-from rigel.plugins.core.test.introspection.command import CommandHandler
-from rigel.plugins.core.test.introspection.parser import SimulationRequirementsParser
-from rigel.plugins.core.test.introspection.requirements.manager import SimulationRequirementsManager
 from typing import Any, Dict, List
 from .models import PluginModel
 
@@ -188,38 +184,17 @@ class Plugin(PluginBase):
         self.__simulation_application = self.create_simulation_application()
         self.__simulation_job = self.create_simulation_job()
 
-    def run(self) -> None:
+    def start(self) -> None:
+
         self.wait_simulation_job_status('Running')
+
         simulation_job_public_ip = self.__simulation_job['networkInterface']['publicIpAddress']
-        print(f'Simulation job can be accessed on {simulation_job_public_ip}')
+        simulation_job_public_port = self.model.robot_application.ports[0][0]
 
-        self.__requirements_manager = SimulationRequirementsManager(
-            self.model.simulation_duration * 1.0,
-            min_timeout=self.model.simulation_ignore * 1.0
-        )
-        self.__requirements_parser = SimulationRequirementsParser()
+        print(f'Simulation job can be accessed on {simulation_job_public_ip}:{simulation_job_public_port}')
 
-        requirements = self.model.robot_application.requirements
-        if requirements:
-
-            nodes: List[CommandHandler] = [
-                self.__requirements_parser.parse(req) for req in requirements
-            ]
-
-            self.__requirements_manager.add_children(nodes)
-
-            # Connect to ROS bridge inside container
-            port = self.model.robot_application.ports[0][0]
-            rosbridge_client = ROSBridgeClient(simulation_job_public_ip, port)
-            LOGGER.info(f"Connected to ROS bridge server at '{simulation_job_public_ip}:{port}'")
-
-            self.__requirements_manager.connect_to_rosbridge(rosbridge_client)
-
-        LOGGER.info("Testing the application!")
-
-        while not self.__requirements_manager.finished:
-            pass  # TODO: separate this into a thread for efficiency
-        print(self.__requirements_manager)
+        self.shared_data["simulation_address"] = simulation_job_public_ip
+        self.shared_data["simulation_port"] = simulation_job_public_port
 
     def stop(self) -> None:
         self.cancel_simulation_job(self.__simulation_job['arn'])
