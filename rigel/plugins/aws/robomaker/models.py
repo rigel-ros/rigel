@@ -87,13 +87,13 @@ class DataSource(BaseModel, extra=Extra.forbid):
     """
 
     # Required field
+    destination: str
     name: str
     s3Bucket: str = Field(alias='s3_bucket')
     s3Keys: List[str] = Field(alias='s3_keys')
 
     # Optional fields:
     type: str = 'File'
-    destination: str
 
     @validator('type')
     def validate_data_source_type(cls, ds_type: str) -> str:
@@ -118,6 +118,5 @@ class PluginModel(BaseModel, extra=Extra.forbid):
     # Optional fields
     output_location: Optional[str] = None
     simulation_duration: int = 300  # seconds
-    simulation_ignore: int = 0  # seconds
     vpc_config: Optional[VPCConfig] = None
     data_sources: List[DataSource] = []

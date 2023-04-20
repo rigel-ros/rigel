@@ -35,13 +35,11 @@ class Plugin(PluginBase):
 
         assert isinstance(self.model, PluginModel)
 
-        self.__requirements_manager = SimulationRequirementsManager(self.model.timeout)
-        self.__requirements_parser = SimulationRequirementsParser()
-
     def connect_to_rosbridge_server(self) -> None:
         """
         Launch all containerized ROS nodes required for a given simulation.
         """
+
         requirements: List[CommandHandler] = [
             self.__requirements_parser.parse(req) for req in self.model.requirements
         ]
@@ -56,6 +54,16 @@ class Plugin(PluginBase):
         LOGGER.info(f"Connected to ROS bridge server at '{hostname}:{port}'")
 
         self.__requirements_manager.connect_to_rosbridge(rosbridge_client)
+
+    def setup(self) -> None:
+
+        timeout = self.shared_data.get("simulation_duration", None) or self.model.timeout
+
+        self.__requirements_manager = SimulationRequirementsManager(
+            timeout * 1.0,
+            self.model.ignore * 1.0
+        )
+        self.__requirements_parser = SimulationRequirementsParser()
 
     def start(self) -> None:
         """

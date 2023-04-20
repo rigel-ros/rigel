@@ -10,4 +10,5 @@ class PluginModel(BaseModel):
     # Optional fields
     hostname: Optional[str] = None
     port: int = 9090
-    timeout: float = 600.0  # seconds
+    timeout: float = 300.0  # seconds
+    ignore: float = 0.0  # seconds

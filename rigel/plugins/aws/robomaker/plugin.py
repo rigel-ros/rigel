@@ -9,7 +9,7 @@ from rigel.models.rigelfile import RigelfileGlobalData
 from rigel.providers.aws import AWSProviderOutputModel
 from rigel.plugins.plugin import Plugin as PluginBase
 from typing import Any, Dict, List
-from .models import PluginModel
+from .models import PluginModel, DataSource
 
 LOGGER = get_logger()
 
@@ -156,8 +156,29 @@ class Plugin(PluginBase):
                 'assignPublicIp': self.model.vpc_config.assignPublicIp
             },
         }
-        if self.model.data_sources:
-            kwargs['dataSources'] = [source.dict() for source in self.model.data_sources]
+
+        # Prepare data sources and WorldForge exports
+        kwargs['dataSources'] = [source.dict() for source in self.model.data_sources]
+
+        # Check if a custom WorldForge export job was provided in the Rigelfile.
+        worldforge_exported_jobs = [
+            source for source in self.model.data_sources if source.s3Keys[0].startswith('aws-robomaker-worldforge-export')
+        ]
+
+        if not worldforge_exported_jobs:
+
+            # Ensure that at least a WorldForge export job was provided
+            if not self.shared_data['worldforge_exported_job']:
+                raise RigelError("No WorldForge world was provided as a data source")
+
+            else:
+                kwargs['dataSources'].append(
+                    DataSource(
+                        name='ExportedWorldJob',
+                        type='Archive',
+                        **self.shared_data['worldforge_exported_job']
+                    ).dict()
+                )
 
         simulation_job = self.__robomaker_client.create_simulation_job(**kwargs)
         LOGGER.info('Created simulation job')
@@ -190,11 +211,13 @@ class Plugin(PluginBase):
 
         simulation_job_public_ip = self.__simulation_job['networkInterface']['publicIpAddress']
         simulation_job_public_port = self.model.robot_application.ports[0][0]
+        simulation_job_duration = self.model.simulation_duration
 
         print(f'Simulation job can be accessed on {simulation_job_public_ip}:{simulation_job_public_port}')
 
         self.shared_data["simulation_address"] = simulation_job_public_ip
         self.shared_data["simulation_port"] = simulation_job_public_port
+        self.shared_data["simulation_duration"] = simulation_job_duration
 
     def stop(self) -> None:
         self.cancel_simulation_job(self.__simulation_job['arn'])
