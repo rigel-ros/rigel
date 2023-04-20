@@ -98,8 +98,6 @@ class AWSProvider(Provider):
 
     def connect_robomaker(self) -> None:
 
-        LOGGER.debug("Authenticated with Robomaker")
-
         try:
 
             # Obtain Robomaker authentication token
@@ -113,7 +111,7 @@ class AWSProvider(Provider):
         except BotocoreClientError as err:
             raise ClientError('AWS', err)
 
-        LOGGER.info('Authenticated with AWS RoboMaker.')
+        LOGGER.debug('Authenticated with AWS RoboMaker.')
 
         self.__raw_output_model['robomaker_client'] = robomaker_client
 

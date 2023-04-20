@@ -8,7 +8,7 @@ from rigel.models.plugin import PluginRawData
 from rigel.models.rigelfile import RigelfileGlobalData
 from rigel.providers.aws import AWSProviderOutputModel
 from rigel.plugins.plugin import Plugin as PluginBase
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from .models import PluginModel, DataSource
 
 LOGGER = get_logger()
@@ -59,7 +59,7 @@ class Plugin(PluginBase):
             }
         }
         robot_application = self.__robomaker_client.create_robot_application(**kwargs)
-        LOGGER.info("Robot application created with success")
+        LOGGER.info(f"New robot application '{self.model.robot_application.name}' created with success")
         return robot_application
 
     def delete_robot_application(
@@ -84,7 +84,7 @@ class Plugin(PluginBase):
             }
         }
         simulation_application = self.__robomaker_client.create_simulation_application(**kwargs)
-        LOGGER.info("Simulation application created with success")
+        LOGGER.info(f"New simulation application '{self.model.simulation_application.name}' created with success")
         return simulation_application
 
     def delete_simulation_application(
@@ -199,10 +199,44 @@ class Plugin(PluginBase):
                 break
             time.sleep(0.5)
 
+    def get_robot_application(self) -> Optional[Dict[str, Any]]:
+        kwargs = {
+            "maxResults": 1,
+            "filters":
+            [
+                {
+                    "name": "name",
+                    "values": [self.model.robot_application.name]
+                }
+            ]
+        }
+        response = self.__robomaker_client.list_robot_applications(**kwargs)
+        if response['robotApplicationSummaries']:
+            LOGGER.info(f"Found existing robot application '{self.model.robot_application.name}'")
+            return response['robotApplicationSummaries'][0]
+        return None
+
+    def get_simulation_application(self) -> Optional[Dict[str, Any]]:
+        kwargs = {
+            "maxResults": 1,
+            "filters":
+            [
+                {
+                    "name": "name",
+                    "values": [self.model.simulation_application.name]
+                }
+            ]
+        }
+        response = self.__robomaker_client.list_simulation_applications(**kwargs)
+        if response['simulationApplicationSummaries']:
+            LOGGER.info(f"Found existing simulation application '{self.model.simulation_application.name}'")
+            return response['simulationApplicationSummaries'][0]
+        return None
+
     def setup(self) -> None:
         self.__robomaker_client = self.retrieve_robomaker_client()
-        self.__robot_application = self.create_robot_application()
-        self.__simulation_application = self.create_simulation_application()
+        self.__robot_application = self.get_robot_application() or self.create_robot_application()
+        self.__simulation_application = self.get_simulation_application() or self.create_simulation_application()
         self.__simulation_job = self.create_simulation_job()
 
     def start(self) -> None:
