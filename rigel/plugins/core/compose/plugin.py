@@ -1,4 +1,5 @@
 import os
+import time
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -239,9 +240,15 @@ class Plugin(PluginBase):
         self.bringup_ros_nodes()
 
     def process(self) -> None:
+
         LOGGER.info("Press CTRL-C/CTRL-Z to stop plugin execution.")
-        while True:
-            pass  # do nothing until user CTRL-Z
+
+        if self.model.timeout:
+            time.sleep(self.model.timeout)
+        else:
+            LOGGER.warning("Containers will run indefinitely since no timeout value was provided.")
+            while True:
+                pass  # do nothing until user CTRL-Z
 
     def stop(self) -> None:
         """

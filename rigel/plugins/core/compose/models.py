@@ -41,3 +41,6 @@ class PluginModel(BaseModel):
 
     # Required fields.
     components: List[ApplicationComponent]
+
+    # Optional fields.
+    timeout: float = 0.0
