@@ -212,7 +212,7 @@ class SequentialStageExecutor(LoaderStageExecutor):
         for job in self.__jobs:
 
             assert isinstance(job, Plugin)
-            self.current_job = job
+            self.__current_job = job
 
             job.shared_data = self.job_shared_data
             job.setup()
@@ -220,7 +220,7 @@ class SequentialStageExecutor(LoaderStageExecutor):
             job.process()
             job.stop()
 
-        self.current_job = None
+        self.__current_job = None
 
 
 class ConcurrentStagesExecutor(LoaderStageExecutor):
@@ -260,14 +260,14 @@ class ConcurrentStagesExecutor(LoaderStageExecutor):
 
         for job in self.__jobs:
             assert isinstance(job, Plugin)
-            self.current_job = job
+            self.__current_job = job
             job.shared_data = self.job_shared_data
             job.setup()
             job.start()
             job.process()
             job.stop()
 
-        self.current_job = None
+        self.__current_job = None
 
         for job in self.__dependencies:
             job.stop()
