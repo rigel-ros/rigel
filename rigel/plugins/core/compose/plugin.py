@@ -203,10 +203,10 @@ class Plugin(PluginBase):
 
                 base_path.mkdir(parents=True, exist_ok=True)
 
-                LOGGER.info(f"Saving files from component '{component_name}':")
+                LOGGER.info(f"Saving files from component '{test_component.name}':")
                 for file in test_component.artifacts:
 
-                    complete_file_path = Path(f"{base_path}/{component_name}")
+                    complete_file_path = Path(f"{base_path}/{test_component.name}")
                     complete_file_path.mkdir(parents=True, exist_ok=True)
 
                     try:
