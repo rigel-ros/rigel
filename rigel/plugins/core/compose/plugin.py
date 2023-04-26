@@ -245,6 +245,7 @@ class Plugin(PluginBase):
 
         if self.model.timeout:
             time.sleep(self.model.timeout)
+            self.shared_data["simulation_duration"] = self.model.timeout
         else:
             LOGGER.warning("Containers will run indefinitely since no timeout value was provided.")
             while True:
