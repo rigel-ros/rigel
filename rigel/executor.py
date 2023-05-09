@@ -1,7 +1,7 @@
 import copy
 import itertools
 import threading
-from rigel.exceptions import RigelError
+from rigel.files.decoder import HEADER_SHARED_DATA, YAMLDataDecoder
 from rigel.loggers import get_logger
 from rigel.models.application import Application
 from rigel.models.plugin import PluginDataModel
@@ -13,6 +13,7 @@ from rigel.models.sequence import (
 from rigel.plugins.manager import PluginManager
 from rigel.plugins.plugin import Plugin
 from typing import Any, Dict, List, Optional, Union
+
 
 LOGGER = get_logger()
 
@@ -43,6 +44,7 @@ class LoaderStageExecutor(StageExecutor):
         global_data: RigelfileGlobalData,
         application: Application,
         providers_data: Dict[str, Any],
+        shared_data: Dict[str, Any],
         overwrite_data: Dict[str, Any] = {}  # noqa
     ) -> Plugin:
         """Load the Rigel plugin associated with a given job.
@@ -61,7 +63,8 @@ class LoaderStageExecutor(StageExecutor):
             job_raw_data,
             global_data,
             application,
-            providers_data
+            providers_data,
+            shared_data
         )
 
 
@@ -123,26 +126,13 @@ class ParallelStageExecutor(StageExecutor):
         return [dict(zip(keys, combo)) for combo in combinations]
 
     def __decode_matrix_data(self) -> Dict[str, List[Any]]:
-        decoded_matrix = {}
-        for key, value in self.matrix.items():
-            if isinstance(value, str):
 
-                try:
-                    header, identifier = value.split('.')
-                except ValueError:
-                    raise RigelError(f"Invalid runtime variable declaration '{value}'")
-
-                if header != 'data':
-                    raise RigelError(f"Unable to decode matrix. Unknown field '{header}'")
-
-                try:
-                    decoded_matrix[key] = self.job_shared_data[identifier]
-                except KeyError:
-                    raise RigelError(f"No field '{identifier}' found in shared runtime data")
-
-            else:
-                decoded_matrix[key] = value
-        return decoded_matrix
+        decoder = YAMLDataDecoder()
+        return decoder.decode(
+            self.matrix,
+            self.job_shared_data,
+            HEADER_SHARED_DATA
+        )
 
     def cancel(self) -> None:
         for thread in self.threads:
@@ -191,9 +181,7 @@ class SequentialStageExecutor(LoaderStageExecutor):
 
     def __init__(self, jobs: List[PluginDataModel]) -> None:
         self.job_models = jobs
-
         self.__current_job: Optional[Plugin] = None
-        self.__jobs: List[Plugin] = []
 
     def cancel(self) -> None:
         if self.__current_job:
@@ -207,14 +195,19 @@ class SequentialStageExecutor(LoaderStageExecutor):
         providers_data: Dict[str, Any],
     ) -> None:
 
-        self.__jobs = [self.load_plugin(job, global_data, application, providers_data) for job in self.job_models]
+        for job_model in self.job_models:
 
-        for job in self.__jobs:
-
+            job = self.load_plugin(
+                job_model,
+                global_data,
+                application,
+                providers_data,
+                self.job_shared_data
+            )
             assert isinstance(job, Plugin)
+
             self.__current_job = job
 
-            job.shared_data = self.job_shared_data
             job.setup()
             job.start()
             job.process()
@@ -230,7 +223,6 @@ class ConcurrentStagesExecutor(LoaderStageExecutor):
         self.dependency_models = dependencies
 
         self.__current_job: Optional[Plugin] = None
-        self.__jobs: List[Plugin] = []
         self.__dependencies: List[Plugin] = []
 
     def cancel(self) -> None:
@@ -249,19 +241,34 @@ class ConcurrentStagesExecutor(LoaderStageExecutor):
         providers_data: Dict[str, Any],
     ) -> None:
 
-        self.__jobs = [self.load_plugin(job, global_data, application, providers_data) for job in self.job_models]
-        self.__dependencies = [self.load_plugin(job, global_data, application, providers_data) for job in self.dependency_models]
+        for job_model in self.dependency_models:
 
-        for job in self.__dependencies:
+            job = self.load_plugin(
+                job_model,
+                global_data,
+                application,
+                providers_data,
+                self.job_shared_data
+            )
+            self.__dependencies.append(job)
             assert isinstance(job, Plugin)
-            job.shared_data = self.job_shared_data
+
             job.setup()
             job.start()
 
-        for job in self.__jobs:
+        for job_model in self.job_models:
+
+            job = self.load_plugin(
+                job_model,
+                global_data,
+                application,
+                providers_data,
+                self.job_shared_data
+            )
             assert isinstance(job, Plugin)
+
             self.__current_job = job
-            job.shared_data = self.job_shared_data
+
             job.setup()
             job.start()
             job.process()

@@ -1,3 +1,4 @@
+import copy
 import signal
 from rigel.exceptions import RigelError
 from rigel.executor import (
@@ -6,7 +7,7 @@ from rigel.executor import (
     SequentialStageExecutor,
     StageExecutor
 )
-from rigel.files.decoder import YAMLDataDecoder
+from rigel.files.decoder import HEADER_GLOBAL_VARIABLE, YAMLDataDecoder
 from rigel.files.loader import YAMLDataLoader
 from rigel.loggers import get_logger
 from rigel.models.builder import ModelBuilder
@@ -38,8 +39,27 @@ class Orchestrator:
 
         # Parse YAML Rigelfile
         loader = YAMLDataLoader(rigelfile)
+        raw_yaml_data = loader.load()
+
+        # Decode global template variables
         decoder = YAMLDataDecoder()
-        yaml_data = decoder.decode(loader.load())
+
+        if raw_yaml_data.get('vars', None):
+
+            variables = decoder.decode(
+                raw_yaml_data.get('vars'),
+                raw_yaml_data.get('vars'),
+                HEADER_GLOBAL_VARIABLE
+            )
+
+        else:
+            variables = {}
+
+        yaml_data = decoder.decode(
+            raw_yaml_data,
+            variables,
+            HEADER_GLOBAL_VARIABLE
+        )
 
         # Initialize internal data structures
         self.rigelfile: Rigelfile = ModelBuilder(Rigelfile).build([], yaml_data)
@@ -110,11 +130,11 @@ class Orchestrator:
 
             if isinstance(job, str):
                 job_identifier = job
-                job_data = self.rigelfile.jobs[job_identifier]
+                job_data = copy.deepcopy(self.rigelfile.jobs[job_identifier])
 
             else:  # isinstance(job, SequenceJobEntry)
                 job_identifier = job.name
-                job_data = self.rigelfile.jobs[job_identifier]
+                job_data = copy.deepcopy(self.rigelfile.jobs[job_identifier])
                 job_data.with_.update(job.with_)
 
             return job_data
@@ -140,6 +160,7 @@ class Orchestrator:
                 inner_stages.append(self.create_sequential_executor(inner_stage))
             elif isinstance(inner_stage, ConcurrentStage):
                 inner_stages.append(self.create_concurrent_executor(inner_stage))
+        print()
 
         return ParallelStageExecutor(inner_stages, stage.matrix)
 
@@ -180,7 +201,7 @@ class Orchestrator:
                 self.rigelfile.application,
                 self.providers_data
             )
-        # print(self.__job_shared_data)
+
         self.__current_stage = None
 
     def run_job(self, job: str) -> None:

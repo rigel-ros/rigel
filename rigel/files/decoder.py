@@ -1,7 +1,17 @@
 import os
 import re
-from rigel.exceptions import UndeclaredGlobalVariableError
+from rigel.exceptions import RigelError, UndeclaredGlobalVariableError
 from typing import Any, Dict
+
+
+# Define supported data headers
+HEADER_GLOBAL_VARIABLE = "vars"
+HEADER_SHARED_DATA = "data"
+
+SUPPORTED_HEADERS = [
+    HEADER_GLOBAL_VARIABLE,
+    HEADER_SHARED_DATA
+]
 
 
 class YAMLDataDecoder:
@@ -32,7 +42,7 @@ class YAMLDataDecoder:
             variable_name = variable_name.replace(c, '')
         return variable_name
 
-    def __aux_decode(self, data: Any, vars: Dict[str, Any], path: str = '') -> None:
+    def __aux_decode(self, data: Any, vars: Dict[str, Any], header: str, path: str = '') -> None:
         """Auxiliary function that recursively looks for fields to decode inside YAML data.
 
         :param data: Any
@@ -43,11 +53,11 @@ class YAMLDataDecoder:
         :type path: str
         """
         if isinstance(data, dict):
-            self.__aux_decode_dict(data, vars, path)
+            self.__aux_decode_dict(data, vars, header, path)
         elif isinstance(data, list):
-            self.__aux_decode_list(data, vars, path)
+            self.__aux_decode_list(data, vars, header, path)
 
-    def __aux_decode_dict(self, data: Any, vars: Dict[str, Any], path: str = '') -> None:
+    def __aux_decode_dict(self, data: Any, vars: Dict[str, Any], header: str, path: str = '') -> None:
         """This auxiliary function decodes only dict elements inside YAML data.
 
         Fields to decode have values delimited by {{ and }}.
@@ -61,10 +71,10 @@ class YAMLDataDecoder:
         :param path: The path for the YAML element being parsed.
         :type path: str
         """
-        self.__aux_decode_dict_values(data, vars, path)
-        self.__aux_decode_dict_keys(data, vars, path)
+        self.__aux_decode_dict_values(data, vars, header, path)
+        self.__aux_decode_dict_keys(data, vars, header, path)
 
-    def __aux_decode_dict_values(self, data: Any, vars: Dict[str, Any], path: str = '') -> None:
+    def __aux_decode_dict_values(self, data: Any, vars: Dict[str, Any], header, path: str = '') -> None:
         """This auxiliary function decodes only the values of dict elements inside the YAML data.
 
         Fields to decode have values delimited by {{ and }}.
@@ -85,21 +95,40 @@ class YAMLDataDecoder:
                 matches = re.findall(r'{{[a-zA-Z0-9_\s\-\!\?\.]+}}', v)
                 for match in matches:
 
-                    variable_name = self.__extract_variable_name(match)
-                    if len(variable_name.split('.', 1)) == 1:  # ensure variable can be decoded right away
+                    try:
+                        extracted_variable_name = self.__extract_variable_name(match)
+                        __header, variable_name = extracted_variable_name.split('.', 1)
+                    except ValueError:
+                        raise RigelError(f"Template variable '{extracted_variable_name}' declared without a header")
+
+                    if __header not in SUPPORTED_HEADERS:
+                        raise RigelError(f"Template variable declared with an unsupported header '{__header}'")
+
+                    if __header == header:
 
                         if variable_name in vars:
-                            data[k] = data[k].replace(match, vars[variable_name])
-                        elif variable_name in os.environ:
-                            data[k] = data[k].replace(match, os.environ[variable_name])
-                        else:  # otherwise keep the variable name for runtime decoding
-                            raise UndeclaredGlobalVariableError(new_path, variable_name)
-                    else:
-                        data[k] = data[k].replace(match, variable_name)
-            else:
-                self.__aux_decode(v, vars, new_path)
 
-    def __aux_decode_dict_keys(self, data: Any, vars: Dict[str, Any], path: str = '') -> None:
+                            value = vars[variable_name]
+                            if isinstance(value, str):
+                                data[k] = data[k].replace(match, value)
+                            else:
+                                data[k] = value
+
+                        elif variable_name in os.environ and __header == HEADER_GLOBAL_VARIABLE:
+                            data[k] = data[k].replace(match, os.environ[variable_name])
+
+                        else:
+
+                            if header == HEADER_GLOBAL_VARIABLE:
+                                raise UndeclaredGlobalVariableError(new_path, variable_name)
+
+                            elif header == HEADER_SHARED_DATA:
+                                raise RigelError(f"Field '{new_path}' set to undeclared shared variable '{variable_name}'")
+
+            else:
+                self.__aux_decode(v, vars, header, new_path)
+
+    def __aux_decode_dict_keys(self, data: Any, vars: Dict[str, Any], header: str, path: str = '') -> None:
         """This auxiliary function decodes only the keys of dict elements inside the YAML data.
 
         Fields to decode have values delimited by {{ and }}.
@@ -118,19 +147,35 @@ class YAMLDataDecoder:
             new_path = f'{path}.{k}' if path else k
 
             if isinstance(k, str):  # in order to contain delimiters the field must be of type str
-                matches = re.findall(r'{{[a-zA-Z0-9_\s\-\!\?]+}}', k)
+                matches = re.findall(r'{{[a-zA-Z0-9_\s\-\!\?\.]+}}', k)
                 for match in matches:
 
-                    variable_name = self.__extract_variable_name(match)
+                    try:
+                        extracted_variable_name = self.__extract_variable_name(match)
+                        __header, variable_name = extracted_variable_name.split('.', 1)
+                    except ValueError:
+                        raise RigelError(f"Template variable '{extracted_variable_name}' declared without a header")
 
-                    if variable_name in vars:
-                        data[vars[variable_name]] = data.pop(k)
-                    elif variable_name in os.environ:
-                        data[os.environ[variable_name]] = data.pop(k)
-                    else:
-                        raise UndeclaredGlobalVariableError(new_path, variable_name)
+                    if __header not in SUPPORTED_HEADERS:
+                        raise RigelError(f"Template variable declared with an unsupported header '{__header}'")
 
-    def __aux_decode_list(self, data: Any, vars: Dict[str, Any], path: str = '') -> None:
+                    if __header == header:
+
+                        if variable_name in vars:
+                            data[vars[variable_name]] = data.pop(k)
+
+                        elif variable_name in os.environ and __header == HEADER_GLOBAL_VARIABLE:
+                            data[os.environ[variable_name]] = data.pop(k)
+
+                        else:
+
+                            if header == HEADER_GLOBAL_VARIABLE:
+                                raise UndeclaredGlobalVariableError(new_path, variable_name)
+
+                            elif header == HEADER_SHARED_DATA:
+                                raise RigelError(f"Field '{new_path}' set to undeclared shared variable '{variable_name}'")
+
+    def __aux_decode_list(self, data: Any, vars: Dict[str, Any], header: str, path: str = '') -> None:
         """This auxiliary function decodes only list elements inside YAML data.
 
         Fields to decode have values delimited by {{ and }}.
@@ -148,22 +193,48 @@ class YAMLDataDecoder:
             new_path = f'{path}[{idx}]'
 
             if isinstance(elem, str):  # in order to contain delimiters the field must be of type str
-                matches = re.findall(r'{{[a-zA-Z0-9_\s\-\!\?]+}}', elem)
+                matches = re.findall(r'{{[a-zA-Z0-9_\s\-\!\?\.]+}}', elem)
                 for match in matches:
 
-                    variable_name = self.__extract_variable_name(match)
+                    try:
+                        extracted_variable_name = self.__extract_variable_name(match)
+                        __header, variable_name = extracted_variable_name.split('.', 1)
+                    except ValueError:
+                        raise RigelError(f"Template variable '{extracted_variable_name}' declared without a header")
 
-                    if variable_name in vars:
-                        data[idx] = data[idx].replace(match, vars[variable_name])
-                    elif variable_name in os.environ:
-                        data[idx] = data[idx].replace(match, os.environ[variable_name])
-                    else:
-                        raise UndeclaredGlobalVariableError(new_path, variable_name)
+                    if __header not in SUPPORTED_HEADERS:
+                        raise RigelError(f"Template variable declared with an unsupported header '{__header}'")
+
+                    if __header == header:
+
+                        if variable_name in vars:
+
+                            value = vars[variable_name]
+                            if isinstance(value, str):
+                                data[idx] = data[idx].replace(match, value)
+                            else:
+                                data[idx] = value
+
+                        elif variable_name in os.environ and __header == HEADER_GLOBAL_VARIABLE:
+                            data[idx] = data[idx].replace(match, os.environ[variable_name])
+
+                        else:
+
+                            if header == HEADER_GLOBAL_VARIABLE:
+                                raise UndeclaredGlobalVariableError(new_path, variable_name)
+
+                            elif header == HEADER_SHARED_DATA:
+                                raise RigelError(f"Field '{new_path}' set to undeclared shared variable '{variable_name}'")
 
             else:
-                self.__aux_decode(elem, vars, new_path)
+                self.__aux_decode(elem, vars, header, new_path)
 
-    def decode(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def decode(
+        self,
+        data: Dict[str, Any],
+        variables: Dict[str, Any],
+        header: str
+    ) -> Dict[str, Any]:
         """
         Decode YAML data.
 
@@ -174,9 +245,5 @@ class YAMLDataDecoder:
         :return: The decoded YAML data.
         """
 
-        # Function entry point.
-        variables = data.get('vars') or {}
-        if variables:
-            self.__aux_decode(variables, variables)
-        self.__aux_decode(data, variables)
+        self.__aux_decode(data, variables, header)
         return data
