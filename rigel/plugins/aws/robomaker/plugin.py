@@ -21,13 +21,15 @@ class Plugin(PluginBase):
         raw_data: PluginRawData,
         global_data: RigelfileGlobalData,
         application: Application,
-        providers_data: Dict[str, Any]
+        providers_data: Dict[str, Any],
+        shared_data: Dict[str, Any] = {}  # noqa
     ) -> None:
         super().__init__(
             raw_data,
             global_data,
             application,
-            providers_data
+            providers_data,
+            shared_data
         )
 
         # Ensure model instance was properly initialized
