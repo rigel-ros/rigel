@@ -221,7 +221,7 @@ class Plugin(PluginBase):
 
                     except DockerException:
 
-                        LOGGER.warning(f"File '{file}' does not exist inside container. Ignoring.")
+                        LOGGER.warning(f"File '{file}' does not exist inside container '{component_name}'. Ignoring.")
 
         if copied_files:
 
