@@ -33,7 +33,7 @@ class ROSBridgeClient:
         attempts = 0
         while True:
             try:
-                print(f"Attempting connection to {host}:{port}")
+                print(f"Attempting connection to '{host}:{port}'")
                 self.__rosbridge_client = roslibpy.Ros(host=host, port=port)
                 self.__rosbridge_client.run()
                 break

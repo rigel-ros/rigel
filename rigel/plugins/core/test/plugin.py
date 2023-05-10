@@ -49,8 +49,8 @@ class Plugin(PluginBase):
         self.__requirements_manager.add_children(requirements)
 
         # Connect to ROS bridge inside container
-        hostname = self.shared_data.get("simulation_address", None) or self.model.hostname
-        port = self.shared_data.get("simulation_port", None) or self.model.port
+        hostname = self.model.hostname
+        port = self.model.port
 
         rosbridge_client = ROSBridgeClient(hostname, port)
         LOGGER.info(f"Connected to ROS bridge server at '{hostname}:{port}'")
@@ -59,7 +59,7 @@ class Plugin(PluginBase):
 
     def setup(self) -> None:
 
-        timeout = self.shared_data.get("simulation_duration", None) or self.model.timeout
+        timeout = self.model.timeout
 
         self.__requirements_manager = SimulationRequirementsManager(
             timeout * 1.0,

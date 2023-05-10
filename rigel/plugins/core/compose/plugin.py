@@ -240,6 +240,7 @@ class Plugin(PluginBase):
         Create simulation network and all containers required for a given simulation.
         """
         self.bringup_ros_nodes()
+        self.shared_data["simulation_duration"] = self.model.timeout
 
     def process(self) -> None:
 
@@ -247,7 +248,6 @@ class Plugin(PluginBase):
 
         if self.model.timeout:
             time.sleep(self.model.timeout)
-            self.shared_data["simulation_duration"] = self.model.timeout
         else:
             LOGGER.warning("Containers will run indefinitely since no timeout value was provided.")
             while True:

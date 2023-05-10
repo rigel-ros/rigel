@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Extra, Field, validator
 from rigel.exceptions import InvalidValueError
-from typing import Dict, List, Literal, Optional, Tuple
+from typing import Any, Dict, List, Literal, Optional, Tuple
 
 DEFAULT_ROBOT_APPLICATION_NAME: str = 'rigel_robomaker_robot_application'
 DEFAULT_SIMULATION_APPLICATION_NAME: str = 'rigel_robomaker_simulation_application'
@@ -81,6 +81,14 @@ class SimulationApplication(RobotApplication):
     worldConfigs: List[Dict[Literal["world"], str]] = Field(alias='world_configs', default=[])
 
 
+# class WorldForgeExportedJob(BaseModel, extra=Extra.forbid):
+
+#     # Required field
+#     destination: str
+#     s3Bucket: str = Field(alias='s3_bucket')
+#     s3Keys: str = Field(alias='s3_keys')
+
+
 class DataSource(BaseModel, extra=Extra.forbid):
     """A data source consists of read-only files from S3
     used into RoboMaker simulations.
@@ -116,6 +124,7 @@ class PluginModel(BaseModel, extra=Extra.forbid):
     simulation_application: SimulationApplication
 
     # Optional fields
+    worldforge_exported_job: Optional[Dict[str, Any]] = None
     output_location: Optional[str] = None
     simulation_duration: int = 300  # seconds
     vpc_config: Optional[VPCConfig] = None

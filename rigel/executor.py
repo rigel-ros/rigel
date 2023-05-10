@@ -58,9 +58,16 @@ class LoaderStageExecutor(StageExecutor):
         if overwrite_data:
             job_raw_data.update(overwrite_data)
 
+        decoder = YAMLDataDecoder()
+        job_decoded_raw_data = decoder.decode(
+            job_raw_data,
+            shared_data,
+            HEADER_SHARED_DATA
+        )
+
         return self.__plugin_manager.load(
             job.plugin,
-            job_raw_data,
+            job_decoded_raw_data,
             global_data,
             application,
             providers_data,
