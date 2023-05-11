@@ -217,7 +217,7 @@ class YAMLDataDecoder:
 
                             value = vars[variable_name]
 
-                            if isinstance(value, list):
+                            if isinstance(value, list) or isinstance(value, dict):
                                 data[idx] = value
 
                             else:
