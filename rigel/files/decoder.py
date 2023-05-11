@@ -93,8 +93,8 @@ class YAMLDataDecoder:
 
             if isinstance(v, str):  # in order to contain delimiters the field must be of type str
                 matches = re.findall(r'{{[a-zA-Z0-9_\s\-\!\?\.]+}}', v)
-                for match in matches:
 
+                for match in matches:
                     try:
                         extracted_variable_name = self.__extract_variable_name(match)
                         __header, variable_name = extracted_variable_name.split('.', 1)
@@ -109,10 +109,16 @@ class YAMLDataDecoder:
                         if variable_name in vars:
 
                             value = vars[variable_name]
-                            if isinstance(value, str):
-                                data[k] = data[k].replace(match, value)
-                            else:
+
+                            if isinstance(value, list) or isinstance(value, dict):
                                 data[k] = value
+
+                            else:
+                                remainder = data[k].replace(match, '').strip()
+                                if remainder:
+                                    data[k] = data[k].replace(match, str(value))
+                                else:
+                                    data[k] = value
 
                         elif variable_name in os.environ and __header == HEADER_GLOBAL_VARIABLE:
                             data[k] = data[k].replace(match, os.environ[variable_name])
@@ -210,10 +216,16 @@ class YAMLDataDecoder:
                         if variable_name in vars:
 
                             value = vars[variable_name]
-                            if isinstance(value, str):
-                                data[idx] = data[idx].replace(match, value)
-                            else:
+
+                            if isinstance(value, list):
                                 data[idx] = value
+
+                            else:
+                                remainder = data[idx].replace(match, '').strip()
+                                if remainder:
+                                    data[idx] = data[idx].replace(match, str(value))
+                                else:
+                                    data[idx] = value
 
                         elif variable_name in os.environ and __header == HEADER_GLOBAL_VARIABLE:
                             data[idx] = data[idx].replace(match, os.environ[variable_name])
