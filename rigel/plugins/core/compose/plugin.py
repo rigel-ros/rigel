@@ -51,26 +51,6 @@ class Plugin(PluginBase):
         self.__docker_client.create_network(self.__network_name, 'bridge')
         LOGGER.info(f"Created Docker network '{self.__network_name}'")
 
-    def start_dns_server(self) -> None:
-        dns_container = f'rigel-dns-{self.__simulation_uuid}'
-        self.__docker_client.run_container(
-            dns_container,
-            'dvdarias/docker-hoster',
-            detach=True,
-            networks=[self.__network_name],
-            privileged=True,
-            volumes=[
-                ('/var/run/docker.sock', '/tmp/docker.sock'),
-                ('/etc/hosts', '/tmp/hosts')
-            ]
-        )
-        LOGGER.info(f"Created DNS server '{dns_container}'")
-
-    def stop_dns_server(self) -> None:
-        dns_container = f'rigel-dns-{self.__simulation_uuid}'
-        self.__docker_client.remove_container(dns_container)
-        LOGGER.info(f"Stopped DNS server '{dns_container}'")
-
     def start_ros_master(self) -> None:
         master_container = f'master-{self.__simulation_uuid}'
         self.__docker_client.run_container(
@@ -163,7 +143,7 @@ class Plugin(PluginBase):
         if 'restart' not in kwargs:
             kwargs['restart'] = 'on-failure'
 
-        self.__docker_client.run_container(
+        container = self.__docker_client.run_container(
             component_name,
             component.image,
             **kwargs
@@ -171,7 +151,7 @@ class Plugin(PluginBase):
         self.__docker_client.wait_for_container_status(component_name, 'running')
 
         if component.introspection:
-            self.shared_data["simulation_address"] = component_name
+            self.shared_data["simulation_address"] = container.network_settings.networks[self.__network_name].ip_address
 
         return self.__docker_client.get_container(component_name)  # this call to 'get_container' ensures updated container data
 
@@ -231,7 +211,7 @@ class Plugin(PluginBase):
 
     def setup(self) -> None:
         self.create_simulation_network()
-        self.start_dns_server()
+        # self.start_dns_server()
         self.start_ros_master()
 
     def start(self) -> None:
@@ -259,6 +239,5 @@ class Plugin(PluginBase):
         """
         self.copy_files()
         self.stop_ros_master()
-        self.stop_dns_server()
         self.remove_package_containers()
         self.remove_simulation_network()
