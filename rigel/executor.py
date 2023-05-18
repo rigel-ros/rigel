@@ -98,7 +98,7 @@ class ExecutionBranch(threading.Thread):
 
     def cancel(self) -> None:
         if self.__current_stage:
-            self.__current_stage.stop()
+            self.__current_stage.cancel()
             self.__current_stage = None
 
     def run(self) -> None:
