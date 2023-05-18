@@ -5,7 +5,7 @@ from rigel.models.builder import ModelBuilder
 from rigel.models.plugin import PluginRawData
 from rigel.models.rigelfile import RigelfileGlobalData
 from rigel.plugins import Plugin as PluginBase
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from .models import PluginModel
 from .introspection.command import CommandHandler
 from .introspection.requirements.manager import SimulationRequirementsManager
@@ -35,34 +35,48 @@ class Plugin(PluginBase):
         # Ensure model instance was properly initialized
         self.model = ModelBuilder(PluginModel).build([], self.raw_data)
 
+        # Ensure a reference exists to the ROS bridge client
+        # to ensure safe stop at any moment
+        self.__rosbridge_client: Optional[ROSBridgeClient] = None
+
+        # Ensure a reference exists to the requirement introspection manager
+        # to ensure safe stop at any moment
+        self.__requirements_manager: Optional[SimulationRequirementsManager] = None
+
         assert isinstance(self.model, PluginModel)
 
     def connect_to_rosbridge_server(self) -> None:
-        """
-        Launch all containerized ROS nodes required for a given simulation.
-        """
+
+        self.__rosbridge_client = ROSBridgeClient(self.model.hostname, self.model.port)
+        self.__rosbridge_client.connect()
+        LOGGER.info(f"Connected to ROS bridge server at '{self.model.hostname}:{self.model.port}'")
+
+    def disconnect_from_rosbridge_server(self) -> None:
+        if self.__rosbridge_client:
+            self.__rosbridge_client.close()
+            LOGGER.info(f"Disconnected from ROS bridge server at '{self.model.hostname}:{self.model.port}'")
+        self.__rosbridge_client = None
+
+    def start_introspection(self) -> None:
 
         requirements: List[CommandHandler] = [
             self.__requirements_parser.parse(req) for req in self.model.requirements
         ]
 
         self.__requirements_manager.add_children(requirements)
+        self.__requirements_manager.connect_to_rosbridge(self.__rosbridge_client)
 
-        # Connect to ROS bridge inside container
-        hostname = self.model.hostname
-        port = self.model.port
+    def stop_introspection(self) -> None:
 
-        rosbridge_client = ROSBridgeClient(hostname, port)
-        LOGGER.info(f"Connected to ROS bridge server at '{hostname}:{port}'")
-
-        self.__requirements_manager.connect_to_rosbridge(rosbridge_client)
+        if self.__requirements_manager:
+            self.__requirements_manager.disconnect_from_rosbridge()
 
     def setup(self) -> None:
 
-        timeout = self.model.timeout
+        self.connect_to_rosbridge_server()
 
         self.__requirements_manager = SimulationRequirementsManager(
-            timeout * 1.0,
+            self.model.timeout * 1.0,
             self.model.ignore * 1.0
         )
         self.__requirements_parser = SimulationRequirementsParser()
@@ -72,10 +86,14 @@ class Plugin(PluginBase):
         Plugin entrypoint.
         Connect to the ROS system to be tested.
         """
-        self.connect_to_rosbridge_server()
-        LOGGER.info("Testing the application!")
+        self.start_introspection()
 
+    def process(self) -> None:
+        LOGGER.info("Testing the application!")
         while not self.__requirements_manager.finished:
             pass
-
         print(self.__requirements_manager)
+
+    def stop(self) -> None:
+        self.stop_introspection()
+        self.disconnect_from_rosbridge_server()

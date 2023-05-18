@@ -1,11 +1,18 @@
 import roslibpy
 from rigel.exceptions import ClientError
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 
 MAX_CONNECTION_ATTEMPTS = 15
 ROS_MESSAGE_TYPE = Dict[str, Any]
 ROS_MESSAGE_HANDLER_TYPE = Callable[[ROS_MESSAGE_TYPE], None]
+
+
+def client_is_active(f: Callable) -> Callable:
+    def wrapper(self, *args, **kwargs):
+        if self.rosbridge_client is not None:
+            return f(self, *args, **kwargs)
+    return wrapper
 
 
 class ROSBridgeClient:
@@ -17,7 +24,9 @@ class ROSBridgeClient:
     handlers: Dict[Tuple[str, str], List[ROS_MESSAGE_HANDLER_TYPE]]
     subscribers: Dict[Tuple[str, str], roslibpy.core.Topic]
 
-    def __init__(self, host: str = 'localhost', port: int = 9090, retries=MAX_CONNECTION_ATTEMPTS) -> None:
+    rosbridge_client: Optional[roslibpy.Ros] = None
+
+    def __init__(self, host: str = 'localhost', port: int = 9090) -> None:
         """
         Class constructor.
         Connects to the ROS bridge websocket server.
@@ -29,13 +38,21 @@ class ROSBridgeClient:
         """
         self.handlers = {}
         self.subscribers = {}
+        self.host = host
+        self.port = port
+
+        self.__persist = True
+
+        self.rosbridge_client = roslibpy.Ros(host=host, port=port)
+
+    @client_is_active
+    def connect(self, retries=MAX_CONNECTION_ATTEMPTS) -> None:
 
         attempts = 0
-        while True:
+        while self.__persist:
             try:
-                print(f"Attempting connection to '{host}:{port}'")
-                self.__rosbridge_client = roslibpy.Ros(host=host, port=port)
-                self.__rosbridge_client.run()
+                print(f"Attempting connection to '{self.host}:{self.port}'")
+                self.rosbridge_client.run()
                 break
             except Exception as exception:
                 if attempts < retries:
@@ -65,6 +82,7 @@ class ROSBridgeClient:
 
         return handler_function
 
+    @client_is_active
     def register_message_handler(self, topic: str, message_type: str, handler: ROS_MESSAGE_HANDLER_TYPE) -> None:
         """
         Registers a ROS message handler and starts listening for incoming messages.
@@ -88,10 +106,11 @@ class ROSBridgeClient:
 
             self.handlers[key] = [handler]
 
-        subscriber = roslibpy.Topic(self.__rosbridge_client, topic, message_type)
+        subscriber = roslibpy.Topic(self.rosbridge_client, topic, message_type)
         subscriber.subscribe(self.__create_generic_message_handler(topic, message_type))
         self.subscribers[key] = subscriber
 
+    @client_is_active
     def remove_message_handler(self, topic: str, message_type: str, handler: ROS_MESSAGE_HANDLER_TYPE) -> None:
         """
         Deletes a registered ROS message handler and stops forwarding ROS messages arriving on specified topic.
@@ -115,12 +134,15 @@ class ROSBridgeClient:
                     self.subscribers[key].unsubscribe()
                     del self.subscribers[key]
 
+    @client_is_active
     def close(self) -> None:
         """
         Close connection between to the ROS bridge websocket server.
         """
+        self.__persist = False
         self.handlers = {}
         for _, subscriber in self.subscribers.items():
             subscriber.unsubscribe()
         self.subscribers = {}
-        self.__rosbridge_client.terminate()
+
+        self.rosbridge_client.close()
