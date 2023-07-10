@@ -136,6 +136,9 @@ class Plugin(PluginBase):
         kwargs['envs']['ROS_MASTER_URI'] = f'http://{master}:11311'
         kwargs['envs']['ROS_HOSTNAME'] = f"{kwargs['hostname']}"
 
+        if 'volumes' in kwargs:
+            kwargs['volumes'] = self.convert_volumes(kwargs['volumes'])
+
         # TODO: ensure that networks can be costumized.
         # Probably not required.
         kwargs['networks'] = [self.__network_name]
@@ -211,7 +214,6 @@ class Plugin(PluginBase):
 
     def setup(self) -> None:
         self.create_simulation_network()
-        # self.start_dns_server()
         self.start_ros_master()
 
     def start(self) -> None:
