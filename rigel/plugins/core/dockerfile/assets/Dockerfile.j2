@@ -129,7 +129,11 @@ RUN /bin/bash -c "source /opt/ros/{{ distro }}/setup.bash \
         && sudo rosdep init \
     {%- endif %}
     && sudo rosdep fix-permissions \
+{%- if 'melodic' == distro %}
+    && rosdep update --include-eol-distros \
+{%- else %}
     && rosdep update \
+{%- endif %}
     && rosdep install --rosdistro {{ distro }} --from-paths src --ignore-src -r -y \
     {% if configuration.compiler.name == 'catkin_make' -%}
         && catkin_make {{ cmake_args }}"
