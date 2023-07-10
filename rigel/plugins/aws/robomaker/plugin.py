@@ -159,6 +159,10 @@ class Plugin(PluginBase):
             },
         }
 
+        # Add compute information
+        if self.model.compute is not None:
+            kwargs['compute'] = self.model.compute.dict()
+
         # Prepare data sources and WorldForge exports
         kwargs['dataSources'] = [source.dict() for source in self.model.data_sources]
 

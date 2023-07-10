@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Extra, Field, validator
 from rigel.exceptions import InvalidValueError
-from typing import Any, Dict, List, Literal, Optional, Tuple
+from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
 DEFAULT_ROBOT_APPLICATION_NAME: str = 'rigel_robomaker_robot_application'
 DEFAULT_SIMULATION_APPLICATION_NAME: str = 'rigel_robomaker_simulation_application'
@@ -116,6 +116,15 @@ class DataSource(BaseModel, extra=Extra.forbid):
     # is set according to the value of field 'type'
 
 
+class Compute(BaseModel, extra=Extra.forbid):
+    """Compute information for the simulation job.
+    """
+
+    computeType: Union[Literal['CPU'], Literal['GPU_AND_CPU']] = Field(alias='compute_type')
+    gpuUnitLimit: int = Field(alias='gpu_unit_limit')
+    simulationUnitLimit: int = Field(alias='simulation_unit_limit')
+
+
 class PluginModel(BaseModel, extra=Extra.forbid):
 
     # Required fields
@@ -128,4 +137,5 @@ class PluginModel(BaseModel, extra=Extra.forbid):
     output_location: Optional[str] = None
     simulation_duration: int = 300  # seconds
     vpc_config: Optional[VPCConfig] = None
+    compute: Optional[Compute] = None
     data_sources: List[DataSource] = []
