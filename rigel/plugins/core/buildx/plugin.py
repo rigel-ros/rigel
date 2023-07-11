@@ -158,7 +158,7 @@ class Plugin(PluginBase):
         try:
             kwargs = {
                 "build_args": complete_buildargs,
-                "cache": False,
+                "cache": True,
                 "file": f'{self.application.dir}/Dockerfile',
                 "load": self.model.load,
                 "push": self.model.push,
