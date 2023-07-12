@@ -179,7 +179,6 @@ class Plugin(PluginBase):
 
         if not worldforge_exported_jobs:
 
-            # Ensure that at least a WorldForge export job was provided
             if self.model.worldforge_exported_job:
 
                 kwargs['dataSources'].append(
@@ -261,15 +260,27 @@ class Plugin(PluginBase):
 
         self.wait_simulation_job_status('Running')
 
-        simulation_job_public_ip = self.__simulation_job['networkInterface']['publicIpAddress']
-        simulation_job_public_port = self.model.robot_application.ports[0][0]
         simulation_job_duration = self.model.simulation_duration
-
-        print(f'Simulation job can be accessed on {simulation_job_public_ip}:{simulation_job_public_port}')
-
-        self.shared_data["simulation_address"] = simulation_job_public_ip
-        self.shared_data["simulation_port"] = simulation_job_public_port
         self.shared_data["simulation_duration"] = simulation_job_duration
+
+        if self.__robot_application is not None:
+
+            simulation_job_public_ip = self.__simulation_job['networkInterface']['publicIpAddress']
+            self.shared_data["simulation_address"] = simulation_job_public_ip
+
+            simulation_job_public_port = self.model.robot_application.ports[0][0]
+            self.shared_data["simulation_port"] = simulation_job_public_port
+
+            print(f'Simulation job can be accessed on {simulation_job_public_ip}:{simulation_job_public_port}')
+
+    def process(self) -> None:
+
+        if self.model.simulation_duration:
+
+            LOGGER.info("Waiting for simulation job to finish.")
+            LOGGER.info("Press CTRL-C/CTRL-Z to cancel simulation job.")
+
+            time.sleep(self.model.simulation_duration)
 
     def stop(self) -> None:
         self.cancel_simulation_job(self.__simulation_job['arn'])
