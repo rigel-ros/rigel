@@ -180,16 +180,15 @@ class Plugin(PluginBase):
         if not worldforge_exported_jobs:
 
             # Ensure that at least a WorldForge export job was provided
-            if not self.model.worldforge_exported_job:
-                raise RigelError("No WorldForge world was provided as a data source")
+            if self.model.worldforge_exported_job:
 
-            kwargs['dataSources'].append(
-                DataSource(
-                    name='ExportedWorldJob',
-                    type='Archive',
-                    **self.shared_data['worldforge_exported_job']
-                ).dict()
-            )
+                kwargs['dataSources'].append(
+                    DataSource(
+                        name='ExportedWorldJob',
+                        type='Archive',
+                        **self.model.worldforge_exported_job
+                    ).dict()
+                )
 
         simulation_job = self.__robomaker_client.create_simulation_job(**kwargs)
         LOGGER.info('Created simulation job')
