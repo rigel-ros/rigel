@@ -129,10 +129,10 @@ class PluginModel(BaseModel, extra=Extra.forbid):
 
     # Required fields
     iam_role: str
-    robot_application: RobotApplication
-    simulation_application: SimulationApplication
 
     # Optional fields
+    robot_application: Optional[RobotApplication] = None
+    simulation_application: Optional[SimulationApplication] = None
     worldforge_exported_job: Optional[Dict[str, Any]] = None
     output_location: Optional[str] = None
     simulation_duration: int = 300  # seconds

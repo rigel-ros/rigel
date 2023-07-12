@@ -109,7 +109,16 @@ class Plugin(PluginBase):
             'iamRole': self.model.iam_role,
             'outputLocation': {'s3Bucket': self.model.output_location} if self.model.output_location else {},
             'maxJobDurationInSeconds': self.model.simulation_duration,
-            'robotApplications': [
+            'vpcConfig': {
+                'subnets': self.model.vpc_config.subnets,
+                'securityGroups': self.model.vpc_config.securityGroups,
+                'assignPublicIp': self.model.vpc_config.assignPublicIp
+            },
+        }
+
+        if self.__robot_application is not None:
+
+            kwargs['robotApplications'] = [
                 {
                     'application': self.__robot_application['arn'],
                     'launchConfig': {
@@ -129,8 +138,11 @@ class Plugin(PluginBase):
                     },
                     'tools': [tool.dict() for tool in self.model.robot_application.tools]
                 }
-            ],
-            'simulationApplications': [
+            ]
+
+        if self.__simulation_application is not None:
+
+            kwargs['simulationApplications'] = [
                 {
                     'application': self.__simulation_application['arn'],
                     'launchConfig': {
@@ -151,13 +163,7 @@ class Plugin(PluginBase):
                     'worldConfigs': [config.dict() for config in self.model.simulation_application.worldConfigs],
                     'tools': [tool.dict() for tool in self.model.simulation_application.tools]
                 }
-            ],
-            'vpcConfig': {
-                'subnets': self.model.vpc_config.subnets,
-                'securityGroups': self.model.vpc_config.securityGroups,
-                'assignPublicIp': self.model.vpc_config.assignPublicIp
-            },
-        }
+            ]
 
         # Add compute information
         if self.model.compute is not None:
@@ -240,8 +246,16 @@ class Plugin(PluginBase):
 
     def setup(self) -> None:
         self.__robomaker_client = self.retrieve_robomaker_client()
-        self.__robot_application = self.get_robot_application() or self.create_robot_application()
-        self.__simulation_application = self.get_simulation_application() or self.create_simulation_application()
+
+        self.__robot_application = None
+        self.__simulation_application = None
+
+        if self.model.robot_application is not None:
+            self.__robot_application = self.get_robot_application() or self.create_robot_application()
+
+        if self.model.simulation_application is not None:
+            self.__simulation_application = self.get_simulation_application() or self.create_simulation_application()
+
         self.__simulation_job = self.create_simulation_job()
 
     def start(self) -> None:
@@ -260,5 +274,9 @@ class Plugin(PluginBase):
 
     def stop(self) -> None:
         self.cancel_simulation_job(self.__simulation_job['arn'])
-        self.delete_robot_application(self.__robot_application['arn'])
-        self.delete_simulation_application(self.__simulation_application['arn'])
+
+        if self.__robot_application is not None:
+            self.delete_robot_application(self.__robot_application['arn'])
+
+        if self.__simulation_application is not None:
+            self.delete_simulation_application(self.__simulation_application['arn'])
