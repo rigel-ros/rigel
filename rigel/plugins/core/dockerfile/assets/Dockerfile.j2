@@ -117,7 +117,7 @@ RUN sh -c 'sudo chown -R {{ configuration.username }}:{{ configuration.username 
 {%- endif %}
 
 # Copy this repository into the ROS workspace.
-COPY . /home/{{ configuration.username }}/ros_workspace/src/rigel_local_packages
+COPY . /home/{{ configuration.username }}/ros_workspace/src/{{ workdir }}
 
 # Copy bringup script.
 COPY dockerfile_entrypoint.sh /home/{{ configuration.username }}/robot-entrypoint.sh

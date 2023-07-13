@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from rigel.exceptions import RigelError
 from rigel.loggers import get_logger
@@ -50,9 +51,11 @@ class Plugin(PluginBase):
 
         dir = self.application.dir
 
+        workdir = os.path.abspath(dir).split('/')[-1]
+
         Path(dir).mkdir(parents=True, exist_ok=True)
 
-        renderer = Renderer(self.application.distro, self.model, self.__ssh_keys)
+        renderer = Renderer(self.application.distro, workdir, self.model, self.__ssh_keys)
 
         renderer.render('Dockerfile.j2', f'{dir}/Dockerfile')
         LOGGER.info(f"Created file {dir}/Dockerfile")
