@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from rigel.exceptions import RigelError
 from rigel.loggers import get_logger
@@ -21,13 +22,15 @@ class Plugin(PluginBase):
         raw_data: PluginRawData,
         global_data: RigelfileGlobalData,
         application: Application,
-        providers_data: Dict[str, Any]
+        providers_data: Dict[str, Any],
+        shared_data: Dict[str, Any] = {}  # noqa
     ) -> None:
         super().__init__(
             raw_data,
             global_data,
             application,
-            providers_data
+            providers_data,
+            shared_data
         )
 
         # Ensure model instance was properly initialized
@@ -37,20 +40,22 @@ class Plugin(PluginBase):
 
         self.__ssh_keys: SSHProviderOutputModel = None
 
-    def setup(self) -> None:
+    def setup(self) -> None:  # noqa
         providers = [provider for _, provider in self.providers_data.items() if isinstance(provider, SSHProviderOutputModel)]
         if len(providers) > 1:
             raise RigelError(base='Multiple SSH key providers were found. Please specify which provider you want to use.')
         elif providers:
             self.__ssh_keys = providers[0]
 
-    def run(self) -> None:
+    def start(self) -> None:
 
         dir = self.application.dir
 
+        workdir = os.path.abspath(dir).split('/')[-1]
+
         Path(dir).mkdir(parents=True, exist_ok=True)
 
-        renderer = Renderer(self.application.distro, self.model, self.__ssh_keys)
+        renderer = Renderer(self.application.distro, workdir, self.model, self.__ssh_keys)
 
         renderer.render('Dockerfile.j2', f'{dir}/Dockerfile')
         LOGGER.info(f"Created file {dir}/Dockerfile")

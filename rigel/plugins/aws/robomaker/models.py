@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Extra, Field, validator
 from rigel.exceptions import InvalidValueError
-from typing import Dict, List, Literal, Optional, Tuple
+from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
 DEFAULT_ROBOT_APPLICATION_NAME: str = 'rigel_robomaker_robot_application'
 DEFAULT_SIMULATION_APPLICATION_NAME: str = 'rigel_robomaker_simulation_application'
@@ -70,7 +70,6 @@ class RobotApplication(BaseModel, extra=Extra.forbid):
     name: str = DEFAULT_ROBOT_APPLICATION_NAME
     environment: List[str] = []
     ports: List[Tuple[int, int]] = []
-    requirements: List[str] = []
     streamUI: bool = Field(alias='stream_ui', default=False)
     tools: List[Tool] = []
 
@@ -82,19 +81,27 @@ class SimulationApplication(RobotApplication):
     worldConfigs: List[Dict[Literal["world"], str]] = Field(alias='world_configs', default=[])
 
 
+# class WorldForgeExportedJob(BaseModel, extra=Extra.forbid):
+
+#     # Required field
+#     destination: str
+#     s3Bucket: str = Field(alias='s3_bucket')
+#     s3Keys: str = Field(alias='s3_keys')
+
+
 class DataSource(BaseModel, extra=Extra.forbid):
     """A data source consists of read-only files from S3
     used into RoboMaker simulations.
     """
 
     # Required field
+    destination: str
     name: str
     s3Bucket: str = Field(alias='s3_bucket')
     s3Keys: List[str] = Field(alias='s3_keys')
 
     # Optional fields:
     type: str = 'File'
-    destination: str
 
     @validator('type')
     def validate_data_source_type(cls, ds_type: str) -> str:
@@ -109,16 +116,26 @@ class DataSource(BaseModel, extra=Extra.forbid):
     # is set according to the value of field 'type'
 
 
+class Compute(BaseModel, extra=Extra.forbid):
+    """Compute information for the simulation job.
+    """
+
+    computeType: Union[Literal['CPU'], Literal['GPU_AND_CPU']] = Field(alias='compute_type')
+    gpuUnitLimit: int = Field(alias='gpu_unit_limit')
+    simulationUnitLimit: int = Field(alias='simulation_unit_limit')
+
+
 class PluginModel(BaseModel, extra=Extra.forbid):
 
     # Required fields
     iam_role: str
-    robot_application: RobotApplication
-    simulation_application: SimulationApplication
 
     # Optional fields
+    robot_application: Optional[RobotApplication] = None
+    simulation_application: Optional[SimulationApplication] = None
+    worldforge_exported_job: Optional[Dict[str, Any]] = None
     output_location: Optional[str] = None
     simulation_duration: int = 300  # seconds
-    simulation_ignore: int = 0  # seconds
     vpc_config: Optional[VPCConfig] = None
+    compute: Optional[Compute] = None
     data_sources: List[DataSource] = []

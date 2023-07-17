@@ -13,6 +13,7 @@ class Renderer:
     def __init__(
         self,
         distro: str,
+        workdir: str,
         configuration_file: PluginModel,
         ssh_keys: Optional[SSHProviderOutputModel]
     ) -> None:
@@ -21,6 +22,7 @@ class Renderer:
         :param configuration_file: An aggregator of information about the containerization of the ROS application.
         """
         self.distro = distro
+        self.workdir = workdir
         self.configuration_file = configuration_file
         if ssh_keys:
             self.ssh_keys = ssh_keys.dict()
@@ -51,6 +53,7 @@ class Renderer:
         with open(output, 'w+') as output_file:
             output_file.write(dockerfile_templater.render(
                 distro=self.distro,
+                workdir=self.workdir,
                 configuration=self.configuration_file.dict(),
                 cmake_args=cmake_args,
                 ssh_keys=self.ssh_keys

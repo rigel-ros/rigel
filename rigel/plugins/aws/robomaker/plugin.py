@@ -1,6 +1,5 @@
 import boto3
 import time
-from rigel.clients import ROSBridgeClient
 from rigel.exceptions import RigelError
 from rigel.loggers import get_logger
 from rigel.models.application import Application
@@ -9,11 +8,8 @@ from rigel.models.plugin import PluginRawData
 from rigel.models.rigelfile import RigelfileGlobalData
 from rigel.providers.aws import AWSProviderOutputModel
 from rigel.plugins.plugin import Plugin as PluginBase
-from rigel.plugins.core.test.introspection.command import CommandHandler
-from rigel.plugins.core.test.introspection.parser import SimulationRequirementsParser
-from rigel.plugins.core.test.introspection.requirements.manager import SimulationRequirementsManager
-from typing import Any, Dict, List
-from .models import PluginModel
+from typing import Any, Dict, List, Optional
+from .models import PluginModel, DataSource
 
 LOGGER = get_logger()
 
@@ -25,13 +21,15 @@ class Plugin(PluginBase):
         raw_data: PluginRawData,
         global_data: RigelfileGlobalData,
         application: Application,
-        providers_data: Dict[str, Any]
+        providers_data: Dict[str, Any],
+        shared_data: Dict[str, Any] = {}  # noqa
     ) -> None:
         super().__init__(
             raw_data,
             global_data,
             application,
-            providers_data
+            providers_data,
+            shared_data
         )
 
         # Ensure model instance was properly initialized
@@ -63,7 +61,7 @@ class Plugin(PluginBase):
             }
         }
         robot_application = self.__robomaker_client.create_robot_application(**kwargs)
-        LOGGER.info("Robot application created with success")
+        LOGGER.info(f"New robot application '{self.model.robot_application.name}' created with success")
         return robot_application
 
     def delete_robot_application(
@@ -88,7 +86,7 @@ class Plugin(PluginBase):
             }
         }
         simulation_application = self.__robomaker_client.create_simulation_application(**kwargs)
-        LOGGER.info("Simulation application created with success")
+        LOGGER.info(f"New simulation application '{self.model.simulation_application.name}' created with success")
         return simulation_application
 
     def delete_simulation_application(
@@ -111,7 +109,16 @@ class Plugin(PluginBase):
             'iamRole': self.model.iam_role,
             'outputLocation': {'s3Bucket': self.model.output_location} if self.model.output_location else {},
             'maxJobDurationInSeconds': self.model.simulation_duration,
-            'robotApplications': [
+            'vpcConfig': {
+                'subnets': self.model.vpc_config.subnets,
+                'securityGroups': self.model.vpc_config.securityGroups,
+                'assignPublicIp': self.model.vpc_config.assignPublicIp
+            },
+        }
+
+        if self.__robot_application is not None:
+
+            kwargs['robotApplications'] = [
                 {
                     'application': self.__robot_application['arn'],
                     'launchConfig': {
@@ -131,8 +138,11 @@ class Plugin(PluginBase):
                     },
                     'tools': [tool.dict() for tool in self.model.robot_application.tools]
                 }
-            ],
-            'simulationApplications': [
+            ]
+
+        if self.__simulation_application is not None:
+
+            kwargs['simulationApplications'] = [
                 {
                     'application': self.__simulation_application['arn'],
                     'launchConfig': {
@@ -153,15 +163,31 @@ class Plugin(PluginBase):
                     'worldConfigs': [config.dict() for config in self.model.simulation_application.worldConfigs],
                     'tools': [tool.dict() for tool in self.model.simulation_application.tools]
                 }
-            ],
-            'vpcConfig': {
-                'subnets': self.model.vpc_config.subnets,
-                'securityGroups': self.model.vpc_config.securityGroups,
-                'assignPublicIp': self.model.vpc_config.assignPublicIp
-            },
-        }
-        if self.model.data_sources:
-            kwargs['dataSources'] = [source.dict() for source in self.model.data_sources]
+            ]
+
+        # Add compute information
+        if self.model.compute is not None:
+            kwargs['compute'] = self.model.compute.dict()
+
+        # Prepare data sources and WorldForge exports
+        kwargs['dataSources'] = [source.dict() for source in self.model.data_sources]
+
+        # Check if a custom WorldForge export job was provided in the Rigelfile.
+        worldforge_exported_jobs = [
+            source for source in self.model.data_sources if source.s3Keys[0].startswith('aws-robomaker-worldforge-export')
+        ]
+
+        if not worldforge_exported_jobs:
+
+            if self.model.worldforge_exported_job:
+
+                kwargs['dataSources'].append(
+                    DataSource(
+                        name='ExportedWorldJob',
+                        type='Archive',
+                        **self.model.worldforge_exported_job
+                    ).dict()
+                )
 
         simulation_job = self.__robomaker_client.create_simulation_job(**kwargs)
         LOGGER.info('Created simulation job')
@@ -182,46 +208,85 @@ class Plugin(PluginBase):
                 break
             time.sleep(0.5)
 
+    def get_robot_application(self) -> Optional[Dict[str, Any]]:
+        kwargs = {
+            "maxResults": 1,
+            "filters":
+            [
+                {
+                    "name": "name",
+                    "values": [self.model.robot_application.name]
+                }
+            ]
+        }
+        response = self.__robomaker_client.list_robot_applications(**kwargs)
+        if response['robotApplicationSummaries']:
+            LOGGER.info(f"Found existing robot application '{self.model.robot_application.name}'")
+            return response['robotApplicationSummaries'][0]
+        return None
+
+    def get_simulation_application(self) -> Optional[Dict[str, Any]]:
+        kwargs = {
+            "maxResults": 1,
+            "filters":
+            [
+                {
+                    "name": "name",
+                    "values": [self.model.simulation_application.name]
+                }
+            ]
+        }
+        response = self.__robomaker_client.list_simulation_applications(**kwargs)
+        if response['simulationApplicationSummaries']:
+            LOGGER.info(f"Found existing simulation application '{self.model.simulation_application.name}'")
+            return response['simulationApplicationSummaries'][0]
+        return None
+
     def setup(self) -> None:
         self.__robomaker_client = self.retrieve_robomaker_client()
-        self.__robot_application = self.create_robot_application()
-        self.__simulation_application = self.create_simulation_application()
+
+        self.__robot_application = None
+        self.__simulation_application = None
+
+        if self.model.robot_application is not None:
+            self.__robot_application = self.get_robot_application() or self.create_robot_application()
+
+        if self.model.simulation_application is not None:
+            self.__simulation_application = self.get_simulation_application() or self.create_simulation_application()
+
         self.__simulation_job = self.create_simulation_job()
 
-    def run(self) -> None:
+    def start(self) -> None:
+
         self.wait_simulation_job_status('Running')
-        simulation_job_public_ip = self.__simulation_job['networkInterface']['publicIpAddress']
-        print(f'Simulation job can be accessed on {simulation_job_public_ip}')
 
-        self.__requirements_manager = SimulationRequirementsManager(
-            self.model.simulation_duration * 1.0,
-            min_timeout=self.model.simulation_ignore * 1.0
-        )
-        self.__requirements_parser = SimulationRequirementsParser()
+        simulation_job_duration = self.model.simulation_duration
+        self.shared_data["simulation_duration"] = simulation_job_duration
 
-        requirements = self.model.robot_application.requirements
-        if requirements:
+        if self.__robot_application is not None:
 
-            nodes: List[CommandHandler] = [
-                self.__requirements_parser.parse(req) for req in requirements
-            ]
+            simulation_job_public_ip = self.__simulation_job['networkInterface']['publicIpAddress']
+            self.shared_data["simulation_address"] = simulation_job_public_ip
 
-            self.__requirements_manager.add_children(nodes)
+            simulation_job_public_port = self.model.robot_application.ports[0][0]
+            self.shared_data["simulation_port"] = simulation_job_public_port
 
-            # Connect to ROS bridge inside container
-            port = self.model.robot_application.ports[0][0]
-            rosbridge_client = ROSBridgeClient(simulation_job_public_ip, port)
-            LOGGER.info(f"Connected to ROS bridge server at '{simulation_job_public_ip}:{port}'")
+            print(f'Simulation job can be accessed on {simulation_job_public_ip}:{simulation_job_public_port}')
 
-            self.__requirements_manager.connect_to_rosbridge(rosbridge_client)
+    def process(self) -> None:
 
-        LOGGER.info("Testing the application!")
+        if self.model.simulation_duration:
 
-        while not self.__requirements_manager.finished:
-            pass  # TODO: separate this into a thread for efficiency
-        print(self.__requirements_manager)
+            LOGGER.info("Waiting for simulation job to finish.")
+            LOGGER.info("Press CTRL-C/CTRL-Z to cancel simulation job.")
+
+            time.sleep(self.model.simulation_duration)
 
     def stop(self) -> None:
         self.cancel_simulation_job(self.__simulation_job['arn'])
-        self.delete_robot_application(self.__robot_application['arn'])
-        self.delete_simulation_application(self.__simulation_application['arn'])
+
+        if self.__robot_application is not None:
+            self.delete_robot_application(self.__robot_application['arn'])
+
+        if self.__simulation_application is not None:
+            self.delete_simulation_application(self.__simulation_application['arn'])

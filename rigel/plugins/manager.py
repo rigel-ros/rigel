@@ -35,7 +35,8 @@ class PluginManager:
         plugin_raw_data: PluginRawData,
         global_data: RigelfileGlobalData,
         application: Application,
-        providers_data: Dict[str, Any]
+        providers_data: Dict[str, Any],
+        shared_data: Dict[str, Any]
     ) -> Plugin:
         """Parse a list of plugins.
 
@@ -73,7 +74,7 @@ class PluginManager:
             global_data,
             application,
             providers_data
-        ], {})
+        ], {'shared_data': shared_data})
         assert isinstance(plugin, Plugin)
 
         return plugin

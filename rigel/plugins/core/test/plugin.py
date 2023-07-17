@@ -1,18 +1,12 @@
-import os
-import uuid
-from datetime import datetime
-from pathlib import Path
-from python_on_whales.components.container.cli_wrapper import Container
-from python_on_whales.exceptions import DockerException
-from rigel.clients import DockerClient, ROSBridgeClient
+from rigel.clients import ROSBridgeClient
 from rigel.loggers import get_logger
 from rigel.models.application import Application
 from rigel.models.builder import ModelBuilder
 from rigel.models.plugin import PluginRawData
 from rigel.models.rigelfile import RigelfileGlobalData
 from rigel.plugins import Plugin as PluginBase
-from typing import Any, Dict, List, Optional, Tuple
-from .models import PluginModel, TestComponent
+from typing import Any, Dict, List, Optional
+from .models import PluginModel
 from .introspection.command import CommandHandler
 from .introspection.requirements.manager import SimulationRequirementsManager
 from .introspection.parser import SimulationRequirementsParser
@@ -27,241 +21,79 @@ class Plugin(PluginBase):
         raw_data: PluginRawData,
         global_data: RigelfileGlobalData,
         application: Application,
-        providers_data: Dict[str, Any]
+        providers_data: Dict[str, Any],
+        shared_data: Dict[str, Any] = {}  # noqa
     ) -> None:
         super().__init__(
             raw_data,
             global_data,
             application,
-            providers_data
+            providers_data,
+            shared_data
         )
 
         # Ensure model instance was properly initialized
         self.model = ModelBuilder(PluginModel).build([], self.raw_data)
+
+        # Ensure a reference exists to the ROS bridge client
+        # to ensure safe stop at any moment
+        self.__rosbridge_client: Optional[ROSBridgeClient] = None
+
+        # Ensure a reference exists to the requirement introspection manager
+        # to ensure safe stop at any moment
+        self.__requirements_manager: Optional[SimulationRequirementsManager] = None
+
         assert isinstance(self.model, PluginModel)
 
-        self.__simulation_uuid = str(uuid.uuid1())
-        self.__network_name = f'rigel-simulation-{self.__simulation_uuid}'
-        self.__docker_client = DockerClient()
-        self.__requirements_manager = SimulationRequirementsManager(self.model.timeout)
-        self.__requirements_parser = SimulationRequirementsParser()
+    def connect_to_rosbridge_server(self) -> None:
 
-    def create_simulation_network(self) -> None:
-        """
-        Create dedicated Docker network created for a simulation.
-        """
-        self.__docker_client.create_network(self.__network_name, 'bridge')
-        LOGGER.info(f"Created Docker network '{self.__network_name}'")
+        self.__rosbridge_client = ROSBridgeClient(self.model.hostname, self.model.port)
+        self.__rosbridge_client.connect()
+        LOGGER.info(f"Connected to ROS bridge server at '{self.model.hostname}:{self.model.port}'")
 
-    def start_dns_server(self) -> None:
-        self.__docker_client.run_container(
-            'rigel-dns',
-            'dvdarias/docker-hoster',
-            detach=True,
-            networks=[self.__network_name],
-            privileged=True,
-            volumes=[
-                ('/var/run/docker.sock', '/tmp/docker.sock'),
-                ('/etc/hosts', '/tmp/hosts')
-            ]
-        )
-        LOGGER.info("Created DNS server")
+    def disconnect_from_rosbridge_server(self) -> None:
+        if self.__rosbridge_client:
+            self.__rosbridge_client.close()
+            LOGGER.info(f"Disconnected from ROS bridge server at '{self.model.hostname}:{self.model.port}'")
+        self.__rosbridge_client = None
 
-    def stop_dns_server(self) -> None:
-        self.__docker_client.remove_container('rigel-dns')
-        LOGGER.info("Stopped DNS server")
+    def start_introspection(self) -> None:
 
-    def start_ros_master(self) -> None:
-        self.__docker_client.run_container(
-            'master',
-            f'ros:{self.application.distro}',
-            hostname='master',
-            command=['roscore'],
-            envs={
-                'ROS_HOSTNAME': 'master',
-                'ROS_MASTER_URI': 'http://master:11311'
-            },
-            networks=[self.__network_name],
-            detach=True
-        )
-        LOGGER.info("Created ROS master")
+        requirements: List[CommandHandler] = [
+            self.__requirements_parser.parse(req) for req in self.model.requirements
+        ]
 
-    def stop_ros_master(self) -> None:
-        self.__docker_client.remove_container('master')
-        LOGGER.info("Stopped ROS master")
+        self.__requirements_manager.add_children(requirements)
+        self.__requirements_manager.connect_to_rosbridge(self.__rosbridge_client)
 
-    def remove_simulation_network(self) -> None:
-        """
-        Remove dedicated Docker network created for a simulation.
-        """
-        self.__docker_client.remove_network(self.__network_name)
-        LOGGER.info(f"Removed Docker network '{self.__network_name}'")
+    def stop_introspection(self) -> None:
 
-    def convert_envs(self, envs: List[str]) -> Dict[str, str]:
-        result = {}
-        for env in envs:
-            key, value = env.split('=')
-            result[key.strip()] = value.strip()
-        return result
-
-    def convert_volumes(self, volumes: List[str]) -> List[Tuple[str, ...]]:
-        result = []
-        for volume in volumes:
-            result.append(tuple(volume.split(':')))
-        return result
-
-    def bringup_ros_nodes(self) -> None:
-        """
-        Launch all containerized ROS nodes required for a given simulation.
-        """
-        self.__docker_client.wait_for_container_status('master', 'running')
-        master_container = self.__docker_client.get_container('master')
-        assert master_container
-        master_ip = master_container.network_settings.networks[self.__network_name].ip_address
-
-        # Start containerize ROS application
-        for test_component in self.model.components:
-
-            container = self.run_package_container(test_component, master_ip)
-
-            if container:
-
-                container_ip = container.network_settings.networks[self.__network_name].ip_address
-                LOGGER.info(f"Created container '{test_component.name}' ({container_ip})")
-
-                if test_component.introspection:
-
-                    requirements: List[CommandHandler] = [
-                        self.__requirements_parser.parse(req) for req in test_component.introspection.requirements
-                    ]
-
-                    self.__requirements_manager.add_children(requirements)
-
-                    # Connect to ROS bridge inside container
-                    hostname = test_component.introspection.hostname or container_ip
-                    port = test_component.introspection.publish[0]
-                    rosbridge_client = ROSBridgeClient(hostname, port)
-                    LOGGER.info(f"Connected to ROS bridge server at '{hostname}:{port}'")
-
-                    self.__requirements_manager.connect_to_rosbridge(rosbridge_client)
-
-    def run_package_container(self, component: TestComponent, master: str) -> Optional[Container]:
-        """
-        Launch a single containerized ROS node.
-
-        :type component: TestComponent
-        :param component: Information about the test component.
-        :type master: str
-        :param master: The IP address of the ROS MASTER.
-
-        :rtype: docker.models.containers.Container
-        :return: The Docker container serving as ROS master.
-        """
-        kwargs = component._kwargs.copy()
-
-        kwargs['detach'] = True
-        kwargs['hostname'] = component.name
-
-        if 'envs' not in kwargs:
-            kwargs['envs'] = {}
-        kwargs['envs']['ROS_MASTER_URI'] = f'http://{master}:11311'
-        kwargs['envs']['ROS_HOSTNAME'] = f"{kwargs['hostname']}"
-
-        # TODO: ensure that networks can be costumized.
-        # Probably not required.
-        kwargs['networks'] = [self.__network_name]
-
-        if 'restart' not in kwargs:
-            kwargs['restart'] = 'on-failure'
-
-        if component.introspection:
-            if 'publish' not in kwargs:
-                kwargs['publish'] = [component.introspection.publish]
-            else:
-                kwargs['publish'] = kwargs['publish'] + [component.introspection.publish]
-
-        self.__docker_client.run_container(
-            component.name,
-            component.image,
-            **kwargs
-        )
-        self.__docker_client.wait_for_container_status(component.name, 'running')
-        return self.__docker_client.get_container(component.name)  # this call to 'get_container' ensures updated container data
-
-    def remove_package_containers(self) -> None:
-        """Remove a single containerized ROS node.
-
-        :type plugin: PluginModel
-        :param plugin: Test components for this package.
-        """
-        for test_component in self.model.components:
-            self.__docker_client.remove_container(test_component.name)
-            LOGGER.info(f"Removed Docker container '{test_component.name}'")
-
-    def copy_files(self) -> None:
-        """Copy files from a container to the host system.
-        """
-        root_path = f"/home/{os.environ.get('USER')}/.rigel/archives/test"
-        base_path = Path(f"{root_path}/{datetime.now().strftime('%d-%m-%Y-%H-%M-%S')}")
-        latest_path = Path(f"{root_path}/latest")
-
-        copied_files = False
-        for test_component in self.model.components:
-
-            component_container = self.__docker_client.get_container(test_component.name)
-            assert isinstance(component_container, Container)
-
-            if test_component.artifacts:
-
-                base_path.mkdir(parents=True, exist_ok=True)
-
-                LOGGER.info(f"Saving files from component '{test_component.name}':")
-                for file in test_component.artifacts:
-
-                    complete_file_path = Path(f"{base_path}/{test_component.name}")
-                    complete_file_path.mkdir(parents=True, exist_ok=True)
-
-                    try:
-
-                        component_container.copy_from(Path(file), complete_file_path)
-
-                        filename = file.rsplit('/')[-1]
-                        LOGGER.info(f"- {file} -> {str(complete_file_path.absolute())}/{filename}")
-                        copied_files = True
-
-                    except DockerException:
-
-                        LOGGER.warning(f"File '{file}' does not exist inside container. Ignoring.")
-
-        if copied_files:
-
-            if latest_path.exists():
-                latest_path.unlink()
-            latest_path.symlink_to(base_path)
+        if self.__requirements_manager:
+            self.__requirements_manager.disconnect_from_rosbridge()
 
     def setup(self) -> None:
-        self.create_simulation_network()
-        self.start_dns_server()
-        self.start_ros_master()
 
-    def run(self) -> None:
+        self.connect_to_rosbridge_server()
+
+        self.__requirements_manager = SimulationRequirementsManager(
+            self.model.timeout * 1.0,
+            self.model.ignore * 1.0
+        )
+        self.__requirements_parser = SimulationRequirementsParser()
+
+    def start(self) -> None:
         """
         Plugin entrypoint.
-        Create simulation network and all containers required for a given simulation.
+        Connect to the ROS system to be tested.
         """
-        self.bringup_ros_nodes()
-        LOGGER.info("Testing the application!")
+        self.start_introspection()
 
+    def process(self) -> None:
+        LOGGER.info("Testing the application!")
         while not self.__requirements_manager.finished:
-            pass  # TODO: separate this into a thread for efficiency
+            pass
         print(self.__requirements_manager)
 
     def stop(self) -> None:
-        """
-        Plugin graceful closing mechanism.
-        """
-        self.copy_files()
-        self.stop_ros_master()
-        self.stop_dns_server()
-        self.remove_package_containers()
-        self.remove_simulation_network()
+        self.stop_introspection()
+        self.disconnect_from_rosbridge_server()

@@ -87,21 +87,23 @@ class SimpleSimulationRequirementNode(SimulationRequirementNode):
         :type rosbridge_client: ROSBridgeClient
         """
         self.__rosbridge_client = rosbridge_client
-        self.__rosbridge_client.register_message_handler(
-            self.ros_topic,
-            self.ros_message_type,
-            self.message_handler
-        )
+        if self.__rosbridge_client:
+            self.__rosbridge_client.register_message_handler(
+                self.ros_topic,
+                self.ros_message_type,
+                self.message_handler
+            )
 
     def disconnect_from_rosbridge(self) -> None:
         """
         Unregister ROS message handler and stop listening for incoming ROS messages.
         """
-        self.__rosbridge_client.remove_message_handler(
-            self.ros_topic,
-            self.ros_message_type,
-            self.message_handler
-        )
+        if self.__rosbridge_client:
+            self.__rosbridge_client.remove_message_handler(
+                self.ros_topic,
+                self.ros_message_type,
+                self.message_handler
+            )
 
     def handle_trigger(self, timestamp: float) -> None:
         """
