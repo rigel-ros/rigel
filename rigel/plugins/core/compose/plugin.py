@@ -86,12 +86,6 @@ class Plugin(PluginBase):
             result[key.strip()] = value.strip()
         return result
 
-    def convert_volumes(self, volumes: List[str]) -> List[Tuple[str, ...]]:
-        result = []
-        for volume in volumes:
-            result.append(tuple(volume.split(':')))
-        return result
-
     def bringup_ros_nodes(self) -> None:
         """
         Launch all containerized ROS nodes required for a given simulation.
@@ -135,9 +129,6 @@ class Plugin(PluginBase):
             kwargs['envs'] = {}
         kwargs['envs']['ROS_MASTER_URI'] = f'http://{master}:11311'
         kwargs['envs']['ROS_HOSTNAME'] = f"{kwargs['hostname']}"
-
-        if 'volumes' in kwargs:
-            kwargs['volumes'] = self.convert_volumes(kwargs['volumes'])
 
         # TODO: ensure that networks can be costumized.
         # Probably not required.
