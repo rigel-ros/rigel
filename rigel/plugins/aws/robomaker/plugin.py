@@ -170,7 +170,9 @@ class Plugin(PluginBase):
             kwargs['compute'] = self.model.compute.dict()
 
         # Prepare data sources and WorldForge exports
-        kwargs['dataSources'] = [source.dict() for source in self.model.data_sources]
+        data_sources = [source.dict() for source in self.model.data_sources]
+        if data_sources:
+            kwargs['dataSources'] = data_sources
 
         # Check if a custom WorldForge export job was provided in the Rigelfile.
         worldforge_exported_jobs = [
